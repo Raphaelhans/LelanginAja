@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "210826396487",
+    "project_id": "probis-lelanginaja",
+    "storage_bucket": "probis-lelanginaja.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210826396487:android:8114c9bb463619d1118262",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHn8yE11RRFuoROtWDjRfwo9hzFab5FMU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
