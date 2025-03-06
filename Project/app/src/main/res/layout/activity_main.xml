@@ -50,7 +50,7 @@
             android:layout_marginStart="272dp"
             android:alpha="0.5"
             android:rotation="-21"
-            app:layout_constraintBottom_toTopOf="@+id/login"
+            app:layout_constraintBottom_toTopOf="@+id/RegisterBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout3"
             app:layout_constraintVertical_bias="1.0"
@@ -70,7 +70,7 @@
             app:srcCompat="@drawable/guitar" />
 
         <Button
-            android:id="@+id/regist"
+            android:id="@+id/LoginBtn"
             android:layout_width="129dp"
             android:layout_height="48dp"
             android:layout_marginBottom="156dp"
@@ -97,7 +97,7 @@
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusTopStart="16dp"
             app:boxStrokeWidth="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/regist"
+            app:layout_constraintBottom_toTopOf="@+id/LoginBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent">
@@ -165,18 +165,18 @@
             android:textColor="#333333"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/login"
+            app:layout_constraintEnd_toStartOf="@+id/RegisterBtn"
             app:layout_constraintHorizontal_bias="0.207"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/regist"
+            app:layout_constraintTop_toBottomOf="@+id/LoginBtn"
             app:layout_constraintVertical_bias="0.0" />
 
         <Button
-            android:id="@+id/login"
+            android:id="@+id/RegisterBtn"
             android:layout_width="129dp"
             android:layout_height="48dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/login_button"
+            android:background="@drawable/regist_button"
             android:text="Register"
             android:textSize="20sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView4"

@@ -14,7 +14,7 @@ class Register : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_register)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val loginBtn = findViewById<Button>(R.id.login)
+            val loginBtn = findViewById<Button>(R.id.RegisterBtn)
             loginBtn.setOnClickListener {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)

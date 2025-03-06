@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAF3E0"
+    tools:context=".HomeUser">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="410dp"
+        android:layout_height="94dp"
+        android:background="@drawable/profilebox"
+        tools:layout_editor_absoluteX="-1dp"
+        tools:layout_editor_absoluteY="114dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageView4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircleImageView"
+            tools:layout_editor_absoluteX="41dp"
+            tools:layout_editor_absoluteY="22dp"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jasong Oweng"
+            tools:layout_editor_absoluteX="109dp"
+            tools:layout_editor_absoluteY="16dp" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Saldo: "
+            tools:layout_editor_absoluteX="109dp"
+            tools:layout_editor_absoluteY="38dp" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rp. 100.000"
+            tools:layout_editor_absoluteX="126dp"
+            tools:layout_editor_absoluteY="57dp" />
+
+        <Button
+            android:id="@+id/btn1"
+            android:layout_width="97dp"
+            android:layout_height="38dp"
+            android:backgroundTint="#3674B5"
+            android:text="Top Up"
+            android:textColor="#EFE6E6"
+            android:textColorHighlight="#EFE8E8"
+            android:textColorLink="#EDE1E1"
+            app:rippleColor="#E9E3E3"
+            tools:layout_editor_absoluteX="285dp"
+            tools:layout_editor_absoluteY="28dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="169dp"
+        android:layout_height="70dp"
+        app:srcCompat="@drawable/Logo"
+        tools:layout_editor_absoluteX="121dp"
+        tools:layout_editor_absoluteY="16dp"
+        tools:srcCompat="@drawable/logo" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="scrollable"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="241dp" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="413dp"
+        android:layout_height="475dp"
+        android:layout_below="@id/tabLayout"
+        tools:layout_editor_absoluteY="289dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
