@@ -12,56 +12,97 @@
         android:id="@+id/constraintLayout2"
         android:layout_width="410dp"
         android:layout_height="94dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/profilebox"
-        tools:layout_editor_absoluteX="-1dp"
-        tools:layout_editor_absoluteY="114dp">
+        app:layout_constraintBottom_toTopOf="@+id/tabLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageView4"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/CircleImageView"
-            tools:layout_editor_absoluteX="41dp"
-            tools:layout_editor_absoluteY="22dp"
+            app:srcCompat="@drawable/burger"
             tools:src="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_semibold"
             android:text="Jasong Oweng"
-            tools:layout_editor_absoluteX="109dp"
-            tools:layout_editor_absoluteY="16dp" />
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/textView6"
+            app:layout_constraintEnd_toStartOf="@+id/topupbtn"
+            app:layout_constraintHorizontal_bias="0.333"
+            app:layout_constraintStart_toEndOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.588" />
 
         <TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Saldo: "
-            tools:layout_editor_absoluteX="109dp"
-            tools:layout_editor_absoluteY="38dp" />
+            android:layout_marginEnd="128dp"
+            android:fontFamily="@font/open_sans_semibold"
+            android:text="Saldo"
+            app:layout_constraintBottom_toTopOf="@+id/textView9"
+            app:layout_constraintEnd_toStartOf="@+id/topupbtn" />
 
         <TextView
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/open_sans_semibold"
             android:text="Rp. 100.000"
-            tools:layout_editor_absoluteX="126dp"
-            tools:layout_editor_absoluteY="57dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/topupbtn"
+            app:layout_constraintHorizontal_bias="0.241"
+            app:layout_constraintStart_toEndOf="@+id/imageView4" />
 
         <Button
-            android:id="@+id/btn1"
+            android:id="@+id/topupbtn"
             android:layout_width="97dp"
             android:layout_height="38dp"
+            android:layout_marginEnd="32dp"
             android:backgroundTint="#3674B5"
+            android:fontFamily="@font/open_sans_semibold"
             android:text="Top Up"
             android:textColor="#EFE6E6"
             android:textColorHighlight="#EFE8E8"
             android:textColorLink="#EDE1E1"
-            app:rippleColor="#E9E3E3"
-            tools:layout_editor_absoluteX="285dp"
-            tools:layout_editor_absoluteY="28dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.178"
+            app:rippleColor="#E9E3E3" />
+
+        <Button
+            android:id="@+id/withdrawbtn"
+            android:layout_width="116dp"
+            android:layout_height="37dp"
+            android:layout_marginEnd="22dp"
+            android:backgroundTint="#3674B5"
+            android:fontFamily="@font/open_sans_semibold"
+            android:text="Withdraw"
+            android:textColor="#EFE6E6"
+            android:textColorHighlight="#EFE8E8"
+            android:textColorLink="#EDE1E1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/textView9"
+            app:layout_constraintTop_toBottomOf="@+id/topupbtn"
+            app:layout_constraintVertical_bias="0.0"
+            app:rippleColor="#E9E3E3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -69,25 +110,67 @@
         android:id="@+id/imageView3"
         android:layout_width="169dp"
         android:layout_height="70dp"
-        app:srcCompat="@drawable/Logo"
-        tools:layout_editor_absoluteX="121dp"
-        tools:layout_editor_absoluteY="16dp"
-        tools:srcCompat="@drawable/logo" />
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logocopy"
+        tools:srcCompat="@drawable/logocopy" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="scrollable"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="241dp" />
+        android:background="#F6F0F0"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/viewPager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabGravity="center"
+        app:tabMode="fixed" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
-        android:layout_width="413dp"
-        android:layout_height="475dp"
+        android:layout_width="match_parent"
+        android:layout_height="517dp"
         android:layout_below="@id/tabLayout"
-        tools:layout_editor_absoluteY="289dp" />
+        android:background="#E3D2C3"
+        app:layout_constraintBottom_toTopOf="@+id/Botmenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/Botmenu"
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:background="#F6F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/homebtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/profilebtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.515"
+            app:srcCompat="@drawable/home" />
+
+        <ImageView
+            android:id="@+id/profilebtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="124dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.515"
+            app:srcCompat="@drawable/profileuser" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

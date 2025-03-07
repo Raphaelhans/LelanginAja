@@ -19,6 +19,13 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, Register::class.java)
                 startActivity(intent)
             }
+
+            val loginBtn = findViewById<Button>(R.id.LoginBtn)
+            loginBtn.setOnClickListener {
+                val intent = Intent(this, HomeUser::class.java)
+                startActivity(intent)
+            }
+
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
