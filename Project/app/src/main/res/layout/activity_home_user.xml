@@ -151,10 +151,11 @@
 
         <ImageView
             android:id="@+id/homebtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/profilebtn"
+            app:layout_constraintEnd_toStartOf="@+id/imageView8"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.515"
@@ -162,14 +163,26 @@
 
         <ImageView
             android:id="@+id/profilebtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="124dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imageView8"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.515"
-            app:srcCompat="@drawable/profileuser" />
+            app:layout_constraintVertical_bias="0.484"
+            app:srcCompat="@drawable/user" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/profilebtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/homebtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/list" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -1,6 +1,7 @@
 package com.example.project
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.project.databinding.FragmentAuctionBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,6 +25,8 @@ class Auction : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var _binding: FragmentAuctionBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,19 +36,35 @@ class Auction : Fragment() {
         }
     }
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_auction, container, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+    ): View {
+        _binding = FragmentAuctionBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         val category = arguments?.getString(ARG_CATEGORY) ?: "Electronics"
         val items = AuctionData.getItemsForCategory(category)
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
-        recyclerView.adapter = AuctionAdapter(items)
 
-        return view
+        val adapter = AuctionAdapter(items)
+        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
+        binding.recyclerView.adapter = adapter
+
+        adapter.setOnItemClickListener { item ->
+            val intent = Intent(requireContext(), auctiondetail::class.java).apply {
+                putExtra("auction_item", item)
+            }
+            startActivity(intent)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
