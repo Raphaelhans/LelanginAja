@@ -30,14 +30,14 @@ class AuctionAdapter(private val items: List<AuctionItem>) :
             return AuctionViewHolder(view)
         }
 
-    override fun onBindViewHolder(holder: AuctionViewHolder, position: Int) {
-        val item = items[position]
-        holder.bind(item, onItemClick)
-    }
+        override fun onBindViewHolder(holder: AuctionViewHolder, position: Int) {
+            val item = items[position]
+            holder.bind(item, onItemClick)
+        }
 
-        override fun getItemCount(): Int = items.size
+            override fun getItemCount(): Int = items.size
 
-    fun setOnItemClickListener(listener: (AuctionItem) -> Unit) {
-        onItemClick = listener
-    }
+        fun setOnItemClickListener(listener: (AuctionItem) -> Unit) {
+            onItemClick = listener
+        }
     }

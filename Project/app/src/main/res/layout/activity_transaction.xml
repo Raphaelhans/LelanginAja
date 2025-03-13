@@ -6,31 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FAF3E0"
-    tools:context=".transaction">
-
-    <ImageView
-        android:id="@+id/backbtn2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.043"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/left" />
+    tools:context=".Transaction">
 
     <TextView
         android:id="@+id/textView12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="80dp"
         android:text="Transaksi"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.06"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backbtn2" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Botmenu"
@@ -46,12 +34,12 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView8"
+            app:layout_constraintEnd_toStartOf="@+id/transBtn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.515"
-            app:srcCompat="@drawable/home" />
+            app:srcCompat="@drawable/homent" />
 
         <ImageView
             android:id="@+id/profilebtn"
@@ -60,13 +48,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imageView8"
+            app:layout_constraintStart_toEndOf="@+id/transBtn"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.484"
             app:srcCompat="@drawable/user" />
 
         <ImageView
-            android:id="@+id/imageView8"
+            android:id="@+id/transBtn"
             android:layout_width="35dp"
             android:layout_height="35dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -74,10 +62,11 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/homebtn"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/list" />
+            app:srcCompat="@drawable/listclik" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/transRecycler"
         android:layout_width="411dp"
         android:layout_height="652dp"
         app:layout_constraintBottom_toTopOf="@+id/Botmenu"

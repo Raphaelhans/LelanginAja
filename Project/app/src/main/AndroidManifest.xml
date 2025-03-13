@@ -16,10 +16,10 @@
             android:name=".auctiondetail"
             android:exported="false" />
         <activity
-            android:name=".transaction"
+            android:name=".Transaction"
             android:exported="false" />
         <activity
-            android:name=".withdraw"
+            android:name=".Withdraw"
             android:exported="false" />
         <activity
             android:name=".HomeUser"

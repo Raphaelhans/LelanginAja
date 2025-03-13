@@ -16,11 +16,7 @@ import com.example.project.databinding.FragmentAuctionBinding
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [Auction.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class Auction : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -70,7 +66,6 @@ class Auction : Fragment() {
     companion object {
         private const val ARG_CATEGORY = "category"
 
-        // Factory method to create a new instance with a category
         fun newInstance(category: String): Auction {
             return Auction().apply {
                 arguments = Bundle().apply {

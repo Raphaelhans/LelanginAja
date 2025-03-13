@@ -13,6 +13,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class HomeUser : AppCompatActivity() {
+    private lateinit var transbtn: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -29,6 +31,7 @@ class HomeUser : AppCompatActivity() {
         }.attach()
 
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+        transbtn = findViewById(R.id.transBtn)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -40,7 +43,12 @@ class HomeUser : AppCompatActivity() {
 
             val wdbtn = findViewById<Button>(R.id.withdrawbtn)
             wdbtn.setOnClickListener {
-                val intent = Intent(this, withdraw::class.java)
+                val intent = Intent(this, Withdraw::class.java)
+                startActivity(intent)
+            }
+
+            transbtn.setOnClickListener {
+                val intent = Intent(this, Transaction::class.java)
                 startActivity(intent)
             }
 

@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
             loginBtn.setOnClickListener {
                 val intent = Intent(this, HomeUser::class.java)
                 startActivity(intent)
+                finish()
             }
 
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
