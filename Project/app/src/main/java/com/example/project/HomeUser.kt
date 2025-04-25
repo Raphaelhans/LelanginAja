@@ -9,16 +9,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
+import com.example.project.databinding.ActivityHomeUserBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class HomeUser : AppCompatActivity() {
-    private lateinit var transbtn: ImageView
+    private lateinit var binding: ActivityHomeUserBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_home_user)
+        binding = ActivityHomeUserBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
@@ -31,27 +33,27 @@ class HomeUser : AppCompatActivity() {
         }.attach()
 
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
-        transbtn = findViewById(R.id.transBtn)
+
+        binding.profilebtn.setOnClickListener {
+            val intent = Intent(this, Profile::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        binding.transBtn.setOnClickListener {
+            val intent = Intent(this, Transaction::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        binding.withdrawbtn.setOnClickListener {
+            val intent = Intent(this, Withdraw::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-            val homebtn = findViewById<ImageView>(R.id.homebtn)
-            homebtn.setOnClickListener {
-
-            }
-
-            val wdbtn = findViewById<Button>(R.id.withdrawbtn)
-            wdbtn.setOnClickListener {
-                val intent = Intent(this, Withdraw::class.java)
-                startActivity(intent)
-            }
-
-            transbtn.setOnClickListener {
-                val intent = Intent(this, Transaction::class.java)
-                startActivity(intent)
-            }
-
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }

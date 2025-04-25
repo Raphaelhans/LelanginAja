@@ -1,6 +1,5 @@
 package com.example.project
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.project.databinding.FragmentAuctionBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -51,7 +49,7 @@ class Auction : Fragment() {
         binding.recyclerView.adapter = adapter
 
         adapter.setOnItemClickListener { item ->
-            val intent = Intent(requireContext(), auctiondetail::class.java).apply {
+            val intent = Intent(requireContext(), Auctiondetail::class.java).apply {
                 putExtra("auction_item", item)
             }
             startActivity(intent)

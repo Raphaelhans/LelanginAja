@@ -1,5 +1,6 @@
 package com.example.project
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -7,17 +8,19 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.project.databinding.ActivityTransactionBinding
 import com.example.project.databinding.TranslayoutBinding
 
 class Transaction : AppCompatActivity() {
-    private lateinit var binding: TranslayoutBinding
+    private lateinit var binding: ActivityTransactionBinding
     private lateinit var recyclerView: RecyclerView
 //    private lateinit var viewModel: TransactionHistoryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_transaction)
+        binding = ActivityTransactionBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val transactions = TransData.getAllTransactions()
 
@@ -26,6 +29,18 @@ class Transaction : AppCompatActivity() {
         val adapter = TransactionAdapter(transactions)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
+
+        binding.profilebtn.setOnClickListener {
+            val intent = Intent(this, Profile::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        binding.homebtn.setOnClickListener {
+            val intent = Intent(this, HomeUser::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

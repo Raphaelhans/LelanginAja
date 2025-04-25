@@ -7,7 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.project.databinding.ActivityAuctiondetailBinding
 
-class auctiondetail : AppCompatActivity() {
+class Auctiondetail : AppCompatActivity() {
     private lateinit var binding: ActivityAuctiondetailBinding
     override fun onCreate(savedInstanceState: Bundle?) {
 

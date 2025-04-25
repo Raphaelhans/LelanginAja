@@ -158,7 +158,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.515"
+            app:layout_constraintVertical_bias="0.5"
             app:srcCompat="@drawable/home" />
 
         <ImageView
@@ -168,9 +168,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/transBtn"
+            app:layout_constraintStart_toEndOf="@+id/addBid"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.484"
+            app:layout_constraintVertical_bias="0.5"
             app:srcCompat="@drawable/user" />
 
         <ImageView
@@ -178,11 +178,25 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/profilebtn"
+            app:layout_constraintEnd_toStartOf="@+id/addBid"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/homebtn"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
             app:srcCompat="@drawable/list" />
+
+        <ImageView
+            android:id="@+id/addBid"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/profilebtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/transBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/add" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

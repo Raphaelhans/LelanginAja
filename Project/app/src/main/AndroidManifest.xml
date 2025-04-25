@@ -13,10 +13,13 @@
         android:theme="@style/Theme.Project"
         tools:targetApi="31">
         <activity
+            android:name=".ProfileInfo"
+            android:exported="false" />
+        <activity
             android:name=".Profile"
             android:exported="false" />
         <activity
-            android:name=".auctiondetail"
+            android:name=".Auctiondetail"
             android:exported="false" />
         <activity
             android:name=".Transaction"

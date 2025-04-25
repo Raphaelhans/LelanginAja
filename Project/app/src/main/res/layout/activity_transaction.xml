@@ -8,18 +8,6 @@
     android:background="#FAF3E0"
     tools:context=".Transaction">
 
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="Transaksi"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.06"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Botmenu"
         android:layout_width="match_parent"
@@ -38,8 +26,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.515"
-            app:srcCompat="@drawable/homent" />
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/home" />
 
         <ImageView
             android:id="@+id/profilebtn"
@@ -48,9 +36,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/transBtn"
+            app:layout_constraintStart_toEndOf="@+id/addBid"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.484"
+            app:layout_constraintVertical_bias="0.5"
             app:srcCompat="@drawable/user" />
 
         <ImageView
@@ -58,22 +46,47 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/profilebtn"
+            app:layout_constraintEnd_toStartOf="@+id/addBid"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/homebtn"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/listclik" />
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/list" />
+
+        <ImageView
+            android:id="@+id/addBid"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/profilebtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/transBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/add" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Transaksi"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.06"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/transRecycler"
-        android:layout_width="411dp"
-        android:layout_height="652dp"
+        android:layout_width="match_parent"
+        android:layout_height="702dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintBottom_toTopOf="@+id/Botmenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView12"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
