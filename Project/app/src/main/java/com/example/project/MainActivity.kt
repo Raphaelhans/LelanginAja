@@ -2,8 +2,10 @@ package com.example.project
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -12,15 +14,13 @@ import com.example.project.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var viewModel: AuthViewModel
+    val viewModels by viewModels<AuthViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
         binding.RegisterBtn.setOnClickListener {
             val intent = Intent(this, Register::class.java)
@@ -35,13 +35,16 @@ class MainActivity : AppCompatActivity() {
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             } else {
-                viewModel.login(email, password)
+                viewModels.login(email, password)
             }
         }
 
-        viewModel.loginResult.observe(this) { success ->
+        viewModels.loginResult.observe(this) { success ->
             if (success) {
                 val intent = Intent(this, HomeUser::class.java)
+                intent.putExtra("email", binding.editTextEmail.text.toString())
+                intent.putExtra("balance", viewModels.currUser.value?.balance.toString())
+                intent.putExtra("name", viewModels.currUser.value?.name.toString())
                 startActivity(intent)
                 finish()
             } else {
