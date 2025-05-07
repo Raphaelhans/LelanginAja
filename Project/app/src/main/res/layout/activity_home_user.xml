@@ -33,7 +33,7 @@
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/nameUserDis"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans_semibold"
@@ -53,11 +53,11 @@
             android:layout_marginEnd="132dp"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Saldo"
-            app:layout_constraintBottom_toTopOf="@+id/textView9"
+            app:layout_constraintBottom_toTopOf="@+id/saldouserDis"
             app:layout_constraintEnd_toStartOf="@+id/topupbtn" />
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/saldouserDis"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -99,7 +99,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/textView9"
+            app:layout_constraintStart_toEndOf="@+id/saldouserDis"
             app:layout_constraintTop_toBottomOf="@+id/topupbtn"
             app:layout_constraintVertical_bias="0.0"
             app:rippleColor="#E9E3E3" />

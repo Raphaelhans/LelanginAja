@@ -3,6 +3,8 @@ package com.example.project
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.project.ui.auction.Auction
+import com.example.project.ui.auction.AuctionData
 
 class FragmentAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
     override fun getItemCount(): Int = AuctionData.categories.size
