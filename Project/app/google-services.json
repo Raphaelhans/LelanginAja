@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "210826396487",
+    "firebase_url": "https://probis-lelanginaja-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "probis-lelanginaja",
     "storage_bucket": "probis-lelanginaja.firebasestorage.app"
   },

@@ -8,8 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.project.databinding.ActivityProfileBinding
-import com.example.project.databinding.OutselllayoutBinding
-import com.example.project.databinding.PopUpMenuBinding
+import com.example.project.ui.transaction.Transaction
 
 class Profile : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding

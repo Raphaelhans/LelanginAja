@@ -3,16 +3,20 @@ package com.example.project
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.example.project.databinding.ActivityHomeUserBinding
+import com.example.project.ui.auction.AuctionData
+import com.example.project.ui.transaction.Transaction
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class HomeUser : AppCompatActivity() {
     private lateinit var binding: ActivityHomeUserBinding
+    val viewModel by viewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +54,21 @@ class HomeUser : AppCompatActivity() {
             finish()
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        viewModel.currUser.observe(this) { user ->
+            if (user != null) {
+                binding.nameUserDis.text = user.name
+                binding.saldouserDis.text = user.balance.toString()
+            } else {
+                binding.nameUserDis.text = ""
+                binding.saldouserDis.text = ""
+            }
         }
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val email = intent.getStringExtra("email")
+        viewModel.getCurrUser(email!!)
     }
 }

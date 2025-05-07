@@ -1,4 +1,4 @@
-package com.example.project
+package com.example.project.database.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,5 +9,7 @@ data class User(
     val name: String,
     val phone: String,
     val email: String,
-    val password: String
+    val password: String,
+    var balance: Int,
+    var isSeller:Boolean
 )
