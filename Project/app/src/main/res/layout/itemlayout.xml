@@ -11,6 +11,7 @@
         android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:background="@drawable/auctionitem"
+        android:backgroundTint="#D1B993"
         android:orientation="vertical"
         android:paddingStart="8dp">
 

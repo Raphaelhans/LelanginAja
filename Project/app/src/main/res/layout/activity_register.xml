@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAF3E0"
+    android:background="#F0E6C9"
     tools:context=".Register">
 
     <TextView
@@ -39,6 +39,7 @@
         android:layout_width="416dp"
         android:layout_height="605dp"
         android:background="@drawable/round_box"
+        android:backgroundTint="#FFC107"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -140,7 +141,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.841"
+            app:layout_constraintVertical_bias="0.792"
             app:srcCompat="@drawable/shoes" />
 
         <ImageView

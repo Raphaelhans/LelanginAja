@@ -5,17 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAF3E0"
+    android:background="#F0E6C9"
     tools:context=".ProfileInfo">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/editName"
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="65dp"
         android:layout_marginVertical="20dp"
-        android:background="#FFFFFF"
-        android:backgroundTint="#FDFDFD"
+        android:background="#FAFAFA"
+        android:backgroundTint="#F6ECEC"
         android:gravity="center_vertical"
         android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/editNumber"
@@ -61,10 +61,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout5"
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="65dp"
         android:layout_marginVertical="20dp"
-        android:background="#FFFFFF"
+        android:background="#F6ECEC"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -125,14 +125,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="60dp"
-        android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
-        android:background="#FFFFFF"
+        android:background="#F6ECEC"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
 
@@ -174,13 +172,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.018"
-        app:srcCompat="@drawable/left" />
+        app:srcCompat="@drawable/leftnew" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/editNumber"
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="65dp"
-        android:background="#FFFFFF"
+        android:background="#F6ECEC"
         android:gravity="center_vertical"
         android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout5"
@@ -222,6 +220,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.428"
             app:srcCompat="@drawable/chevron" />
+
+        <!-- res/drawable/rounded_box.xml -->
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
