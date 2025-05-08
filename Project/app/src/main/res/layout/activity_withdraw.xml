@@ -14,7 +14,7 @@
         android:layout_height="159dp"
         android:layout_marginBottom="72dp"
         android:background="@drawable/profilebox"
-        app:layout_constraintBottom_toTopOf="@+id/editTextNumber"
+        app:layout_constraintBottom_toTopOf="@+id/wdbalanceTxt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
@@ -26,7 +26,7 @@
             android:layout_marginStart="48dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView10"
+            app:layout_constraintEnd_toStartOf="@+id/namewdDis"
             app:layout_constraintHorizontal_bias="0.111"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -36,20 +36,22 @@
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/namewdDis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
             android:layout_marginEnd="100dp"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Jasong Oweng"
             android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView11"
+            app:layout_constraintBottom_toTopOf="@+id/balancewdDis"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.735" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/balancewdDis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -76,30 +78,30 @@
         app:srcCompat="@drawable/left" />
 
     <EditText
-        android:id="@+id/editTextNumber"
+        android:id="@+id/wdbalanceTxt"
         android:layout_width="352dp"
         android:layout_height="48dp"
         android:layout_marginBottom="52dp"
         android:ems="10"
         android:hint="Masukkan Nominal yang mau di tarik"
-        android:inputType="number"
-        app:layout_constraintBottom_toTopOf="@+id/spinner2"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/listBank"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/listBank"
         android:layout_width="352dp"
         android:layout_height="31dp"
         android:layout_marginBottom="44dp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextText"
+        app:layout_constraintBottom_toTopOf="@+id/accnumberTxt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/accnumberTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="36dp"
