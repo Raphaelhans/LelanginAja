@@ -134,7 +134,7 @@
         android:layout_width="match_parent"
         android:layout_height="517dp"
         android:layout_below="@id/tabLayout"
-        android:background="#E3D2C3"
+        android:background="#EDCB70"
         app:layout_constraintBottom_toTopOf="@+id/Botmenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
