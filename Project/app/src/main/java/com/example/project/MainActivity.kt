@@ -14,7 +14,7 @@ import com.example.project.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    val viewModels by viewModels<UserViewModel>()
+    val viewModels by viewModels<AuthViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +37,10 @@ class MainActivity : AppCompatActivity() {
             } else {
                 viewModels.loginUser(email, password)
             }
+        }
+
+        viewModels.resresponse.observe(this){ response ->
+            Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
         }
 
         viewModels.checkres.observe(this) { success ->

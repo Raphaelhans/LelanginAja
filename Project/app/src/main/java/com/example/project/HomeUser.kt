@@ -36,28 +36,29 @@ class HomeUser : AppCompatActivity() {
 
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
-        binding.profilebtn.setOnClickListener {
-            val intent = Intent(this, Profile::class.java)
-            startActivity(intent)
-            finish()
-        }
-
-        binding.transBtn.setOnClickListener {
-            val intent = Intent(this, Transaction::class.java)
-            startActivity(intent)
-            finish()
-        }
-
-        binding.withdrawbtn.setOnClickListener {
-            val intent = Intent(this, Withdraw::class.java)
-            startActivity(intent)
-            finish()
-        }
-
         viewModel.currUser.observe(this) { user ->
             if (user != null) {
                 binding.nameUserDis.text = user.name
                 binding.saldouserDis.text = user.balance.toString()
+
+                binding.profilebtn.setOnClickListener {
+                    val intent = Intent(this, Profile::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+
+                binding.transBtn.setOnClickListener {
+                    val intent = Intent(this, Transaction::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+
+                binding.withdrawbtn.setOnClickListener {
+                    val intent = Intent(this, Withdraw::class.java)
+                    intent.putExtra("email", viewModel.currUser.value?.email)
+                    startActivity(intent)
+                    finish()
+                }
             } else {
                 binding.nameUserDis.text = ""
                 binding.saldouserDis.text = ""
