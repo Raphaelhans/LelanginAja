@@ -1,4 +1,4 @@
-package com.example.project
+package com.example.project.ui.transaction
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,8 +8,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.project.HomeUser
+import com.example.project.Profile
+import com.example.project.R
 import com.example.project.databinding.ActivityTransactionBinding
-import com.example.project.databinding.TranslayoutBinding
 
 class Transaction : AppCompatActivity() {
     private lateinit var binding: ActivityTransactionBinding

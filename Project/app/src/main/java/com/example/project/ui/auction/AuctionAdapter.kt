@@ -1,4 +1,4 @@
-package com.example.project
+package com.example.project.ui.auction
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.project.R
 
 class AuctionAdapter(private val items: List<AuctionItem>) :
     RecyclerView.Adapter<AuctionAdapter.AuctionViewHolder>() {

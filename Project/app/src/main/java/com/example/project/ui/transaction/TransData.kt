@@ -1,4 +1,6 @@
-package com.example.project
+package com.example.project.ui.transaction
+
+import com.example.project.R
 
 object TransData {
     val transactions = listOf(

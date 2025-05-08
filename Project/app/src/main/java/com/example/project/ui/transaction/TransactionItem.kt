@@ -1,4 +1,4 @@
-package com.example.project
+package com.example.project.ui.transaction
 
 import android.os.Parcel
 import android.os.Parcelable

@@ -1,7 +1,6 @@
-package com.example.project
+package com.example.project.ui.transaction
 
 import android.view.LayoutInflater
-import android.view.SurfaceControl.Transaction
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
