@@ -3,6 +3,7 @@ package com.example.project
 import android.R
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.project.database.dataclass.Users
 import com.example.project.databinding.ActivityRegisterBinding
 
@@ -46,6 +48,12 @@ class Register : AppCompatActivity() {
             } else if (!email.contains("@gmail.com")) {
                 Toast.makeText(this, "Invalid email", Toast.LENGTH_SHORT).show()
             } else {
+                binding.RegisBtn.text = ""
+                binding.loadingRegis.visibility = View.VISIBLE
+                Glide.with(this)
+                    .asGif()
+                    .load(com.example.project.R.drawable.rotate)
+                    .into(binding.loadingRegis)
                 viewModel.registerUser(name, phone, email, password, 0, 0, location)
             }
         }
@@ -63,6 +71,8 @@ class Register : AppCompatActivity() {
                 finish()
             } else {
                 Toast.makeText(this, "Email already registered", Toast.LENGTH_SHORT).show()
+                binding.RegisBtn.text = "Register"
+                binding.loadingRegis.visibility = View.GONE
             }
         }
 

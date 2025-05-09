@@ -11,7 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import at.favre.lib.crypto.bcrypt.BCrypt
+import org.mindrot.jbcrypt.BCrypt
 import com.example.project.database.dataclass.Users
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -43,7 +43,6 @@ class UserViewModel:ViewModel() {
 
     private val _currUser = MutableLiveData<Users?>()
     val currUser: LiveData<Users?> get() = _currUser
-    private val storage = FirebaseStorage.getInstance()
 
     private val _resresponse = MutableLiveData<String>()
     val resresponse: LiveData<String> get() = _resresponse
@@ -133,14 +132,28 @@ class UserViewModel:ViewModel() {
         viewModelScope.launch {
             if (condition == "Name"){
                 db.collection("Users").document(currUser.value?.user_id.toString()).update("name", changes)
+                _resresponse.value = "Name successfully changed to $changes"
             }
             else if (condition == "Phone"){
                 db.collection("Users").document(currUser.value?.user_id.toString()).update("phone", changes)
-            }
-            else{
-                db.collection("Users").document(currUser.value?.user_id.toString()).update("password", changes)
+                _resresponse.value = "Phone successfully changed to $changes"
             }
             getCurrUser(currUser.value?.email.toString())
+        }
+    }
+
+    fun changePassword(oldPassword: String, newPassword: String) {
+        viewModelScope.launch {
+            val checkPass = BCrypt.checkpw(oldPassword, currUser.value?.password)
+            if (checkPass) {
+                val hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt())
+                db.collection("Users").document(currUser.value?.user_id.toString())
+                    .update("password", hashedPassword)
+                _resresponse.value = "Password successfully changed"
+            }
+            else{
+                _resresponse.value = "Incorrect old password"
+            }
         }
     }
 

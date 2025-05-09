@@ -2,10 +2,14 @@ package com.example.project.ui.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.isDigitsOnly
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.project.R
@@ -35,8 +39,25 @@ class ProfileInfo : AppCompatActivity() {
                         viewModel.editProfile("Name", newValue)
                         binding.userName.text = viewModel.currUser.value?.name
                     }
+                    else{
+                        Toast.makeText(this, "Invalid Name", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
+            binding.editNumber.setOnClickListener{
+                showEditDialog("Phone Number", viewModel.currUser.value?.phone!!) { newValue ->
+                    if (newValue.isNotEmpty() && newValue != viewModel.currUser.value?.name && newValue.isDigitsOnly()){
+                        viewModel.editProfile("Phone", newValue)
+                        binding.userName.text = viewModel.currUser.value?.name
+                    }
+                    else{
+                        Toast.makeText(this, "Invalid Phone Number", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+                binding.editPass.setOnClickListener{
+                    showPasswordChangeDialog()
+                }
 
             binding.backBtn.setOnClickListener {
                 val intent = Intent(this, Profile::class.java)
@@ -46,7 +67,9 @@ class ProfileInfo : AppCompatActivity() {
             }
         }
 
-
+        viewModel.resresponse.observe(this) { response ->
+            Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showEditDialog(fieldName: String, currentValue: String, onSave: (String) -> Unit) {
@@ -64,6 +87,32 @@ class ProfileInfo : AppCompatActivity() {
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+
+    private fun showPasswordChangeDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Change Password")
+
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_password, null)
+        val oldPasswordEditText = view.findViewById<EditText>(R.id.oldPasswordEditText)
+        val newPasswordEditText = view.findViewById<EditText>(R.id.newPasswordEditText)
+
+        builder.setView(view)
+
+        builder.setPositiveButton("Save") { _, _ ->
+            val oldPassword = oldPasswordEditText.text.toString()
+            val newPassword = newPasswordEditText.text.toString()
+            if (oldPassword.isNotEmpty() && newPassword.isNotEmpty()) {
+                viewModel.changePassword(oldPassword, newPassword)
+            } else {
+                Toast.makeText(this, "Both fields must be filled", Toast.LENGTH_SHORT).show()
+            }
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel()
+        }
+
+        builder.show()
     }
 
     override fun onStart() {

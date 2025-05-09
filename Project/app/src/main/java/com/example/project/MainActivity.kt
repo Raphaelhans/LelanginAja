@@ -3,6 +3,7 @@ package com.example.project
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.project.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +37,12 @@ class MainActivity : AppCompatActivity() {
             if (email.isEmpty() || password.isEmpty() || !email.contains("@gmail.com")) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             } else {
+                binding.LoginBtn.text = ""
+                Glide.with(this)
+                    .asGif()
+                    .load(R.drawable.rotate)
+                    .into(binding.loadingGif)
+                binding.loadingGif.visibility = View.VISIBLE
                 viewModels.loginUser(email, password)
             }
         }
@@ -47,8 +55,13 @@ class MainActivity : AppCompatActivity() {
             if (success) {
                 val intent = Intent(this, HomeUser::class.java)
                 intent.putExtra("email", binding.editTextEmail.text.toString())
+                Toast.makeText(getApplication(), "Login Success", Toast.LENGTH_SHORT).show()
                 startActivity(intent)
                 finish()
+            }
+            else{
+                binding.LoginBtn.text = "Login"
+                binding.loadingGif.visibility = View.GONE
             }
         }
 

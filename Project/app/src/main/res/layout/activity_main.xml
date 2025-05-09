@@ -185,6 +185,19 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/textView4"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <ImageView
+            android:id="@+id/loadingGif"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="147dp"
+            android:layout_marginBottom="99dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/textView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout3"
+            app:srcCompat="@drawable/bill" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

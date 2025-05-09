@@ -39,7 +39,7 @@ class HomeUser : BaseClass() {
         viewModels.currUser.observe(this) { user ->
             if (user != null) {
                 binding.nameUserDis.text = user.name
-                binding.saldouserDis.text = user.balance.toString()
+                binding.saldouserDis.text = "Rp. " + user.balance.toString()
 
                 binding.profilebtn.setOnClickListener {
                     val intent = Intent(this, Profile::class.java)

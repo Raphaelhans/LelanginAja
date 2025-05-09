@@ -2,6 +2,7 @@ package com.example.project
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -103,9 +104,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     checkres.value = true
                 } else {
                     _resresponse.value = "Incorrect password"
+                    checkres.value = false
                 }
             } catch (e: Exception) {
                 _resresponse.value = e.message
+                checkres.value = false
             }
         }
     }
