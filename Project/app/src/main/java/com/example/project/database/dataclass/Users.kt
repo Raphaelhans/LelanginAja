@@ -8,5 +8,6 @@ data class Users(
     val password: String = "",
     val balance: Int = 0,
     val status: Int = 0,
-    val lokasi: String = ""
+    val lokasi: String = "",
+    val pin: String =""
 )

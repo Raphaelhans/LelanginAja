@@ -1,9 +1,11 @@
 package com.example.project
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
@@ -18,12 +20,22 @@ import java.util.Locale
 class Withdraw : AppCompatActivity() {
     private lateinit var binding: ActivityWithdrawBinding
     val viewModel by viewModels<UserViewModel>()
+    private lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityWithdrawBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        dialog = Dialog(this)
+        dialog.setContentView(R.layout.pin_confirmation)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setBackgroundDrawable(getDrawable(R.drawable.custom_dialog_bg))
+        dialog.setCancelable(true)
 
         val spinner = findViewById<Spinner>(R.id.listBank)
         val adapter = ArrayAdapter.createFromResource(
@@ -44,7 +56,6 @@ class Withdraw : AppCompatActivity() {
             if (user != null) {
                 binding.namewdDis.text = user.name
                 binding.balancewdDis.text = "Rp." + user.balance.toString()
-
 
             }
         }
@@ -86,6 +97,11 @@ class Withdraw : AppCompatActivity() {
 
         })
 
+        binding.btnwd.setOnClickListener {
+            dialog.show()
+        }
+
+//        binding.btnNext
 
     }
 

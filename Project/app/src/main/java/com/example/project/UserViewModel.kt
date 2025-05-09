@@ -19,6 +19,8 @@ class UserViewModel:ViewModel() {
     private val _currUser = MutableLiveData<Users?>()
     val currUser: LiveData<Users?> get() = _currUser
 
+    private val _withdrawResult = MutableLiveData<String>()
+    val withdrawResult: LiveData<String> get() = _withdrawResult
 
     fun getCurrUser(email: String) {
         viewModelScope.launch {
@@ -40,4 +42,49 @@ class UserViewModel:ViewModel() {
         }
     }
 
+    fun process(email: String, inputPin: String, amount: Int){
+        viewModelScope.launch {
+            try {
+                val userSnapshot = db.collection("Users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .await()
+
+                if (userSnapshot.isEmpty) {
+                    _withdrawResult.value = "User tidak ditemukan"
+                    return@launch
+                }
+
+                val doc = userSnapshot.documents.first()
+                val user = doc.toObject(Users::class.java)
+
+                if (user == null) {
+                    _withdrawResult.value = "Data user tidak valid"
+                    return@launch
+                }
+
+                if (user.pin != inputPin) {
+                    _withdrawResult.value = "PIN salah"
+                    return@launch
+                }
+
+                if (user.balance < amount) {
+                    _withdrawResult.value = "Saldo tidak mencukupi"
+                    return@launch
+                }
+
+                val newBalance = user.balance - amount
+                db.collection("Users").document(doc.id)
+                    .update("balance", newBalance)
+                    .await()
+
+                _currUser.value = user.copy(balance = newBalance)
+                _withdrawResult.value = "Withdraw berhasil. Saldo sekarang: Rp$newBalance"
+
+            } catch (e: Exception) {
+                Log.e("Withdraw", "Error: ${e.message}", e)
+                _withdrawResult.value = "Gagal melakukan withdraw: ${e.message}"
+            }
+            }
+    }
 }
