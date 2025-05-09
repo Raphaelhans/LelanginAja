@@ -49,8 +49,6 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("email", binding.editTextEmail.text.toString())
                 startActivity(intent)
                 finish()
-            } else {
-                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
             }
         }
 

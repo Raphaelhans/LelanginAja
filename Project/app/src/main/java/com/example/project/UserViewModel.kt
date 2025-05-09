@@ -129,4 +129,19 @@ class UserViewModel:ViewModel() {
         }
     }
 
+    fun editProfile(condition: String, changes:String){
+        viewModelScope.launch {
+            if (condition == "Name"){
+                db.collection("Users").document(currUser.value?.user_id.toString()).update("name", changes)
+            }
+            else if (condition == "Phone"){
+                db.collection("Users").document(currUser.value?.user_id.toString()).update("phone", changes)
+            }
+            else{
+                db.collection("Users").document(currUser.value?.user_id.toString()).update("password", changes)
+            }
+            getCurrUser(currUser.value?.email.toString())
+        }
+    }
+
 }
