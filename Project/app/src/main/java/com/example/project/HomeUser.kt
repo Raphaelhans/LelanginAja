@@ -5,18 +5,18 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.example.project.databinding.ActivityHomeUserBinding
 import com.example.project.ui.auction.AuctionData
+import com.example.project.ui.profile.Profile
 import com.example.project.ui.transaction.Transaction
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class HomeUser : AppCompatActivity() {
+class HomeUser : BaseClass() {
     private lateinit var binding: ActivityHomeUserBinding
-    val viewModel by viewModels<UserViewModel>()
+    val viewModels by viewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,13 +36,14 @@ class HomeUser : AppCompatActivity() {
 
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
-        viewModel.currUser.observe(this) { user ->
+        viewModels.currUser.observe(this) { user ->
             if (user != null) {
                 binding.nameUserDis.text = user.name
                 binding.saldouserDis.text = user.balance.toString()
 
                 binding.profilebtn.setOnClickListener {
                     val intent = Intent(this, Profile::class.java)
+                    intent.putExtra("email", viewModels.currUser.value?.email)
                     startActivity(intent)
                     finish()
                 }
@@ -55,9 +56,15 @@ class HomeUser : AppCompatActivity() {
 
                 binding.withdrawbtn.setOnClickListener {
                     val intent = Intent(this, Withdraw::class.java)
-                    intent.putExtra("email", viewModel.currUser.value?.email)
+                    intent.putExtra("email", viewModels.currUser.value?.email)
                     startActivity(intent)
                     finish()
+                }
+
+                if (viewModels.currUser.value?.profilePicturePath != "") {
+                    Glide.with(this).load(viewModels.currUser.value?.profilePicturePath).into(binding.userpfpHome)
+                } else {
+                    binding.userpfpHome.setImageResource(R.drawable.profile)
                 }
             } else {
                 binding.nameUserDis.text = ""
@@ -70,6 +77,6 @@ class HomeUser : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val email = intent.getStringExtra("email")
-        viewModel.getCurrUser(email!!)
+        viewModels.getCurrUser(email!!)
     }
 }

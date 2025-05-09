@@ -6,19 +6,21 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.project.database.App
 import com.example.project.database.dataclass.Users
 import com.example.project.database.local.Item
 import com.example.project.database.local.User
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import org.mindrot.jbcrypt.BCrypt
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Firebase.firestore
+    private val auth = FirebaseAuth.getInstance()
 
     private val _items = MutableLiveData<List<Item>>()
     val items: LiveData<List<Item>> get() = _items
@@ -54,7 +56,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     highestIdQuery.documents.first().toObject(Users::class.java)?.user_id?.plus(1) ?: 1
                 }
 
-                val hashedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray())
+                val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
 
                 db.runTransaction { transaction ->
                     val user = Users(
@@ -65,7 +67,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         password = hashedPassword,
                         balance = balance,
                         status = status,
-                        lokasi = lokasi
+                        location = lokasi
                     )
                     transaction.set(db.collection("Users").document(highestId.toString()), user)
                 }
@@ -81,33 +83,28 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun loginUser(email: String, password: String) {
         viewModelScope.launch {
             try {
-                val cekUsn = db.collection("Users")
+                val query = db.collection("Users")
                     .whereEqualTo("email", email)
                     .get()
                     .await()
 
-                if (cekUsn.isEmpty) {
-                    _resresponse.value = "Email not found"
+                if (query.isEmpty) {
+                    _resresponse.value = "Invalid username"
                     return@launch
                 }
 
-                val cekPass = db.collection("Users")
-                    .whereEqualTo("email", email)
-                    .whereEqualTo("password", password)
-                    .get()
-                    .await()
+                val user = query.documents.first().toObject(Users::class.java)
+                val storedHash = user?.password ?: throw Exception("Invalid user data")
 
-                if (cekPass.isEmpty) {
-                    _resresponse.value = "Invalid password"
-                    return@launch
+                val isPasswordCorrect = BCrypt.checkpw(password, storedHash)
+
+                if (isPasswordCorrect) {
+                    checkres.value = true
+                } else {
+                    _resresponse.value = "Incorrect password"
                 }
-
-                checkres.value = true
-
-            }catch (e: Exception) {
-                Log.d("Firestore Error", e.message, e)
-                _resresponse.value = "Failed to login: ${e.message}"
-                checkres.value = false
+            } catch (e: Exception) {
+                _resresponse.value = e.message
             }
         }
     }

@@ -34,18 +34,16 @@ class Withdraw : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
-        val backbtn = findViewById<ImageView>(R.id.backbtn)
-        backbtn.setOnClickListener{
-            val intent = Intent(this, HomeUser::class.java)
-            startActivity(intent)
-        }
 
         viewModel.currUser.observe(this) { user ->
             if (user != null) {
                 binding.namewdDis.text = user.name
                 binding.balancewdDis.text = "Rp." + user.balance.toString()
-
-
+                binding.backbtn.setOnClickListener{
+                    val intent = Intent(this, HomeUser::class.java)
+                    intent.putExtra("email", viewModel.currUser.value?.email)
+                    startActivity(intent)
+                }
             }
         }
 
