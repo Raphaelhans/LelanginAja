@@ -9,5 +9,6 @@ data class Users(
     val balance: Int = 0,
     val status: Int = 0,
     val location: String = "",
-    val profilePicturePath: String = ""
+    val profilePicturePath: String = "",
+    val pin: String =""
 )

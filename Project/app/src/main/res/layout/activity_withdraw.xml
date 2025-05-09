@@ -8,126 +8,154 @@
     android:background="#FAF3E0"
     tools:context=".Withdraw">
 
+    <!-- Back Button -->
+    <ImageView
+        android:id="@+id/backbtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/left" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/withdrawTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="24dp"
+        android:text="Withdraw"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/backbtn"
+        app:layout_constraintStart_toEndOf="@+id/backbtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Profile Container -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="159dp"
-        android:layout_marginBottom="72dp"
-        android:background="@drawable/profilebox"
-        app:layout_constraintBottom_toTopOf="@+id/wdbalanceTxt"
+        android:layout_width="345dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="#E9DAB1"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageView6"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="48dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/namewdDis"
-            app:layout_constraintHorizontal_bias="0.111"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.493"
-            app:shapeAppearanceOverlay="@style/CircleImageView"
-            app:srcCompat="@drawable/burger"
-            tools:src="@tools:sample/avatars" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backbtn">
 
         <TextView
             android:id="@+id/namewdDis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginEnd="100dp"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Jasong Oweng"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/balancewdDis"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/balanceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Saldo yang dapat ditarik"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView6"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.735" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/namewdDis"
+            app:layout_constraintTop_toBottomOf="@+id/namewdDis" />
 
         <TextView
             android:id="@+id/balancewdDis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="40dp"
-            android:fontFamily="@font/open_sans_semibold"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-black"
             android:text="Rp. 100.000"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/imageView6" />
+            app:layout_constraintStart_toStartOf="@+id/namewdDis"
+            app:layout_constraintTop_toBottomOf="@+id/balanceLabel" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/backbtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.043"
+    <!-- Label Nominal -->
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Nominal"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.326"
-        app:srcCompat="@drawable/left" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
 
+    <!-- Input Nominal -->
     <EditText
         android:id="@+id/wdbalanceTxt"
         android:layout_width="352dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="52dp"
-        android:ems="10"
-        android:hint="Masukkan Nominal yang mau di tarik"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/listBank"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
+        android:layout_marginTop="4dp"
+        android:hint="Minimum Rp10,000"
+        android:inputType="number"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Label Rekening -->
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Rekening Tujuan"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/wdbalanceTxt"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Spinner Bank -->
     <Spinner
         android:id="@+id/listBank"
         android:layout_width="352dp"
-        android:layout_height="31dp"
-        android:layout_marginBottom="44dp"
-        app:layout_constraintBottom_toTopOf="@+id/accnumberTxt"
+        android:layout_height="35dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
+    <!-- Input Nomor Rekening -->
     <EditText
         android:id="@+id/accnumberTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
-        android:width="352dp"
-        android:height="48dp"
-        android:ems="10"
+        android:layout_width="352dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
         android:hint="Masukkan Nomor Rekening"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@+id/listBank"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Tombol Withdraw -->
     <Button
-        android:id="@+id/button"
-        android:layout_width="349dp"
-        android:layout_height="63dp"
-        android:layout_marginBottom="252dp"
-        android:width="352dp"
-        android:backgroundTint="#3674B5"
+        android:id="@+id/btnwd"
+        android:layout_width="352dp"
+        android:layout_height="47dp"
+        android:layout_marginBottom="50dp"
+        android:backgroundTint="#33BA21"
         android:fontFamily="@font/open_sans_semibold"
         android:text="Withdraw"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

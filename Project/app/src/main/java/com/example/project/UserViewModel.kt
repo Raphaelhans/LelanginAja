@@ -1,11 +1,10 @@
 package com.example.project
 
+import android.util.Log
+import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.provider.MediaStore
-import android.util.Log
-import android.content.ContentResolver
 import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -47,6 +46,9 @@ class UserViewModel:ViewModel() {
     private val _resresponse = MutableLiveData<String>()
     val resresponse: LiveData<String> get() = _resresponse
 
+    private val _withdrawResult = MutableLiveData<String>()
+    val withdrawResult: LiveData<String> get() = _withdrawResult
+
     fun getCurrUser(email: String) {
         viewModelScope.launch {
             try {
@@ -63,19 +65,6 @@ class UserViewModel:ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.e("Firestore Error", "Error fetching user: ${e.message}", e)
-            }
-        }
-    }
-
-    fun uploadImageToStorage(path:String) {
-        viewModelScope.launch {
-            try {
-                val userId = currUser.value?.user_id.toString()
-                db.collection("Users").document(userId).update("profilePicturePath", path).await()
-
-                _resresponse.value = "Success changing pfp to "+path
-            } catch (e: Exception) {
-                _resresponse.value = e.message
             }
         }
     }
@@ -157,4 +146,49 @@ class UserViewModel:ViewModel() {
         }
     }
 
+    fun process(email: String, inputPin: String, amount: Int){
+        viewModelScope.launch {
+            try {
+                val userSnapshot = db.collection("Users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .await()
+
+                if (userSnapshot.isEmpty) {
+                    _withdrawResult.value = "User tidak ditemukan"
+                    return@launch
+                }
+
+                val doc = userSnapshot.documents.first()
+                val user = doc.toObject(Users::class.java)
+
+                if (user == null) {
+                    _withdrawResult.value = "Data user tidak valid"
+                    return@launch
+                }
+
+                if (user.pin != inputPin) {
+                    _withdrawResult.value = "PIN salah"
+                    return@launch
+                }
+
+                if (user.balance < amount) {
+                    _withdrawResult.value = "Saldo tidak mencukupi"
+                    return@launch
+                }
+
+                val newBalance = user.balance - amount
+                db.collection("Users").document(doc.id)
+                    .update("balance", newBalance)
+                    .await()
+
+                _currUser.value = user.copy(balance = newBalance)
+                _withdrawResult.value = "Withdraw berhasil. Saldo sekarang: Rp$newBalance"
+
+            } catch (e: Exception) {
+                Log.e("Withdraw", "Error: ${e.message}", e)
+                _withdrawResult.value = "Gagal melakukan withdraw: ${e.message}"
+            }
+            }
+    }
 }
