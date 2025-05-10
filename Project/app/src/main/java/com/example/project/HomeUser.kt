@@ -3,16 +3,20 @@ package com.example.project
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.example.project.databinding.ActivityHomeUserBinding
+import com.example.project.ui.auction.AuctionData
+import com.example.project.ui.profile.Profile
+import com.example.project.ui.transaction.Transaction
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class HomeUser : AppCompatActivity() {
+class HomeUser : BaseClass() {
     private lateinit var binding: ActivityHomeUserBinding
+    val viewModels by viewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,28 +36,47 @@ class HomeUser : AppCompatActivity() {
 
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
-        binding.profilebtn.setOnClickListener {
-            val intent = Intent(this, Profile::class.java)
-            startActivity(intent)
-            finish()
+        viewModels.currUser.observe(this) { user ->
+            if (user != null) {
+                binding.nameUserDis.text = user.name
+                binding.saldouserDis.text = "Rp. " + user.balance.toString()
+
+                binding.profilebtn.setOnClickListener {
+                    val intent = Intent(this, Profile::class.java)
+                    intent.putExtra("email", viewModels.currUser.value?.email)
+                    startActivity(intent)
+                    finish()
+                }
+
+                binding.transBtn.setOnClickListener {
+                    val intent = Intent(this, Transaction::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+
+                binding.withdrawbtn.setOnClickListener {
+                    val intent = Intent(this, Withdraw::class.java)
+                    intent.putExtra("email", viewModels.currUser.value?.email)
+                    startActivity(intent)
+                    finish()
+                }
+
+                if (viewModels.currUser.value?.profilePicturePath != "") {
+                    Glide.with(this).load(viewModels.currUser.value?.profilePicturePath).into(binding.userpfpHome)
+                } else {
+                    binding.userpfpHome.setImageResource(R.drawable.profile)
+                }
+            } else {
+                binding.nameUserDis.text = ""
+                binding.saldouserDis.text = ""
+            }
         }
 
-        binding.transBtn.setOnClickListener {
-            val intent = Intent(this, Transaction::class.java)
-            startActivity(intent)
-            finish()
-        }
+    }
 
-        binding.withdrawbtn.setOnClickListener {
-            val intent = Intent(this, Withdraw::class.java)
-            startActivity(intent)
-            finish()
-        }
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onStart() {
+        super.onStart()
+        val email = intent.getStringExtra("email")
+        viewModels.getCurrUser(email!!)
     }
 }

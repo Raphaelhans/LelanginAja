@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/userpfpHome"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
@@ -33,16 +33,16 @@
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
+            android:id="@+id/nameUserDis"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Jasong Oweng"
-            android:textSize="16sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/textView6"
             app:layout_constraintEnd_toStartOf="@+id/topupbtn"
-            app:layout_constraintHorizontal_bias="0.333"
-            app:layout_constraintStart_toEndOf="@+id/imageView4"
+            app:layout_constraintHorizontal_bias="0.727"
+            app:layout_constraintStart_toEndOf="@+id/userpfpHome"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.588" />
 
@@ -50,23 +50,23 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="128dp"
+            android:layout_marginEnd="132dp"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Saldo"
-            app:layout_constraintBottom_toTopOf="@+id/textView9"
+            app:layout_constraintBottom_toTopOf="@+id/saldouserDis"
             app:layout_constraintEnd_toStartOf="@+id/topupbtn" />
 
         <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
+            android:id="@+id/saldouserDis"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Rp. 100.000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/topupbtn"
-            app:layout_constraintHorizontal_bias="0.241"
-            app:layout_constraintStart_toEndOf="@+id/imageView4" />
+            app:layout_constraintHorizontal_bias="0.714"
+            app:layout_constraintStart_toEndOf="@+id/userpfpHome" />
 
         <Button
             android:id="@+id/topupbtn"
@@ -99,7 +99,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/textView9"
+            app:layout_constraintStart_toEndOf="@+id/saldouserDis"
             app:layout_constraintTop_toBottomOf="@+id/topupbtn"
             app:layout_constraintVertical_bias="0.0"
             app:rippleColor="#E9E3E3" />
@@ -134,7 +134,7 @@
         android:layout_width="match_parent"
         android:layout_height="517dp"
         android:layout_below="@id/tabLayout"
-        android:background="#E3D2C3"
+        android:background="#EDCB70"
         app:layout_constraintBottom_toTopOf="@+id/Botmenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

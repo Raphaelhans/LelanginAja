@@ -12,7 +12,7 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="60dp"
         android:text="Sign Up"
         android:textColor="#666666"
         android:textColorLink="#333333"
@@ -96,7 +96,7 @@
                 android:id="@+id/Numbertext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
+                android:inputType="number"
                 android:padding="12dp"
                 android:textSize="16sp" />
 
@@ -140,35 +140,32 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.841"
+            app:layout_constraintVertical_bias="0.858"
             app:srcCompat="@drawable/shoes" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="182dp"
             android:layout_height="169dp"
-            android:layout_marginEnd="280dp"
+            android:layout_marginEnd="288dp"
             android:alpha="0.5"
             android:rotation="17"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.784"
+            app:layout_constraintVertical_bias="0.938"
             app:srcCompat="@drawable/guitar" />
 
         <Button
             android:id="@+id/RegisBtn"
-            android:layout_width="129dp"
+            android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginBottom="84dp"
+            android:layout_marginBottom="40dp"
             android:background="@drawable/regist_button"
             android:text="Register"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/LogBtn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView2"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -176,7 +173,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="28dp"
+            android:layout_marginBottom="22dp"
             android:hint="Confirmation Password"
             android:orientation="vertical"
             android:paddingLeft="14dp"
@@ -186,7 +183,7 @@
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusTopStart="16dp"
             app:boxStrokeWidth="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/RegisBtn"
+            app:layout_constraintBottom_toTopOf="@+id/Lokasitxt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent">
@@ -268,6 +265,28 @@
                 android:textSize="16sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/Lokasitxt"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/RegisBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/loadingRegis"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="38dp"
+            android:layout_marginBottom="53dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/textView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Lokasitxt"
+            tools:srcCompat="@tools:sample/avatars" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

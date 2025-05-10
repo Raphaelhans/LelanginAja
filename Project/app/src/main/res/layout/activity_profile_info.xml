@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FAF3E0"
-    tools:context=".ProfileInfo">
+    tools:context=".ui.profile.ProfileInfo">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,7 +60,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout5"
+        android:id="@+id/editPass"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginVertical="20dp"
@@ -134,7 +134,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+        app:layout_constraintTop_toBottomOf="@+id/editPass">
 
         <TextView
             android:id="@+id/textView22"
@@ -183,7 +183,7 @@
         android:background="#FFFFFF"
         android:gravity="center_vertical"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout5"
+        app:layout_constraintBottom_toTopOf="@+id/editPass"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editName">
