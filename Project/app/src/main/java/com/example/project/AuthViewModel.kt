@@ -124,7 +124,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     return@launch
                 }
 
-                // If not found in Users, check Staffs collection (plain text comparison)
+
                 val staffQuery = db.collection("Staffs")
                     .whereEqualTo("email", email)
                     .get()
