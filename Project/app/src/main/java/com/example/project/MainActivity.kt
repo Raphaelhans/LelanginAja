@@ -47,24 +47,31 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModels.resresponse.observe(this){ response ->
+        viewModels.resresponse.observe(this) { response ->
             Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
         }
 
         viewModels.checkres.observe(this) { success ->
             if (success) {
-                val intent = Intent(this, HomeUser::class.java)
-                intent.putExtra("email", binding.editTextEmail.text.toString())
-                Toast.makeText(getApplication(), "Login Success", Toast.LENGTH_SHORT).show()
-                startActivity(intent)
-                finish()
-            }
-            else{
+                val email = binding.editTextEmail.text.toString()
+                viewModels.loginDestination.observe(this) { destination ->
+                    val intent = when (destination) {
+                        "HomeUser" -> Intent(this, HomeUser::class.java)
+                        "HomeManager" -> Intent(this, HomeManager::class.java)
+                        "HomeStaffs" -> Intent(this, HomeStaffs::class.java)
+                        else -> null
+                    }
+                    intent?.putExtra("email", email)
+                    Toast.makeText(application, "Login Success", Toast.LENGTH_SHORT).show()
+                    intent?.let {
+                        startActivity(it)
+                        finish()
+                    }
+                }
+            } else {
                 binding.LoginBtn.text = "Login"
                 binding.loadingGif.visibility = View.GONE
             }
         }
-
-
     }
 }
