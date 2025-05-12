@@ -62,7 +62,8 @@ dependencies {
     implementation(libs.okhttp)
     implementation (libs.github.glide)
     annotationProcessor (libs.compiler)
-    implementation (libs.midtrans.uikit)
+    implementation ("com.midtrans:uikit:2.0.0")
+
 
     implementation("com.google.android.gms:play-services-maps:19.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")

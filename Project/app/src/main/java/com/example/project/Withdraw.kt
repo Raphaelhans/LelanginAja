@@ -100,8 +100,6 @@ class Withdraw : AppCompatActivity() {
             dialog.show()
         }
 
-//        binding.btnNext
-
     }
 
     override fun onStart() {

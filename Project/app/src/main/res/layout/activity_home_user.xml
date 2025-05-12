@@ -65,7 +65,7 @@
             android:text="Rp. 100.000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/topupbtn"
-            app:layout_constraintHorizontal_bias="0.714"
+            app:layout_constraintHorizontal_bias="0.742"
             app:layout_constraintStart_toEndOf="@+id/userpfpHome" />
 
         <Button

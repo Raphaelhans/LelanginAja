@@ -6,6 +6,12 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <meta-data
+        android:name="com.midtrans.sdk.corekit.api.client_key"
+        android:value="Mid-client-fy6t4tL63hGwcx0n" />
+    <meta-data
+        android:name="com.midtrans.sdk.corekit.api.merchant_base_url"
+        android:value="https://example.com/" />
 
 
     <application

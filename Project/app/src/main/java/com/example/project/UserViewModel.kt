@@ -139,10 +139,37 @@ class UserViewModel:ViewModel() {
                 db.collection("Users").document(currUser.value?.user_id.toString())
                     .update("password", hashedPassword)
                 _resresponse.value = "Password successfully changed"
+                getCurrUser(currUser.value?.email.toString())
             }
             else{
                 _resresponse.value = "Incorrect old password"
             }
+        }
+    }
+
+    fun changePIN(currPIN: String, newPIN: String) {
+        viewModelScope.launch {
+            val checkPIN = BCrypt.checkpw(currPIN, currUser.value?.pin.toString())
+            if (checkPIN){
+                val hashedPIN = BCrypt.hashpw(newPIN, BCrypt.gensalt())
+                db.collection("Users").document(currUser.value?.user_id.toString())
+                    .update("pin", hashedPIN)
+                _resresponse.value = "Successfully changed PIN"
+                getCurrUser(currUser.value?.email.toString())
+            }
+            else{
+                _resresponse.value = "Incorrect current PIN"
+            }
+        }
+    }
+
+    fun createPIN(newPIN: String) {
+        viewModelScope.launch {
+            val hashedPIN = BCrypt.hashpw(newPIN, BCrypt.gensalt())
+            db.collection("Users").document(currUser.value?.user_id.toString())
+                .update("pin", hashedPIN)
+            _resresponse.value = "Successfully created PIN"
+            getCurrUser(currUser.value?.email.toString())
         }
     }
 
@@ -167,7 +194,7 @@ class UserViewModel:ViewModel() {
                     return@launch
                 }
 
-                if (user.pin != inputPin) {
+                if (user.pin.toString() != inputPin) {
                     _withdrawResult.value = "PIN salah"
                     return@launch
                 }
@@ -189,6 +216,6 @@ class UserViewModel:ViewModel() {
                 Log.e("Withdraw", "Error: ${e.message}", e)
                 _withdrawResult.value = "Gagal melakukan withdraw: ${e.message}"
             }
-            }
+        }
     }
 }

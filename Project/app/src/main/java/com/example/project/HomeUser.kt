@@ -13,6 +13,9 @@ import com.example.project.ui.profile.Profile
 import com.example.project.ui.transaction.Transaction
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.midtrans.sdk.corekit.core.MidtransSDK
+import com.midtrans.sdk.corekit.core.TransactionRequest
+import com.midtrans.sdk.corekit.models.ItemDetails
 
 class HomeUser : BaseClass() {
     private lateinit var binding: ActivityHomeUserBinding
@@ -50,6 +53,7 @@ class HomeUser : BaseClass() {
 
                 binding.transBtn.setOnClickListener {
                     val intent = Intent(this, Transaction::class.java)
+                    intent.putExtra("email", viewModels.currUser.value?.email)
                     startActivity(intent)
                     finish()
                 }
@@ -59,6 +63,10 @@ class HomeUser : BaseClass() {
                     intent.putExtra("email", viewModels.currUser.value?.email)
                     startActivity(intent)
                     finish()
+                }
+
+                binding.topupbtn.setOnClickListener {
+
                 }
 
                 if (viewModels.currUser.value?.profilePicturePath != "") {
