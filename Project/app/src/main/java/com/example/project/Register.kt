@@ -37,7 +37,7 @@ class Register : AppCompatActivity() {
             val name = binding.Nametext.text.toString()
             val phone = binding.Numbertext.text.toString()
             val email = binding.editTextEmail.text.toString()
-            val password = binding.TelpText.text.toString()
+            val password = binding.PasswordText.text.toString()
             val confirmPassword = binding.editTextPassword.text.toString()
             val location = binding.Lokasitxt.selectedItem.toString()
 
