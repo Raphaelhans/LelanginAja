@@ -75,6 +75,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     transaction.set(db.collection("Users").document(highestId.toString()), user)
                 }
 
+                _resresponse.value = "Successfully registered"
                 checkres.value = true
             } catch (e: Exception) {
                 Log.d("Firestore Error", "Error adding user: ${e.message}", e)

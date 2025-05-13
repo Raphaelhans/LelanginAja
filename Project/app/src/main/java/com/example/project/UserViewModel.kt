@@ -10,6 +10,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.project.database.App
+import com.example.project.database.dataclass.CustomerDetails
+import com.example.project.database.dataclass.ItemDetails
+import com.example.project.database.dataclass.MidtransPayload
+import com.example.project.database.dataclass.MidtransResponse
+import com.example.project.database.dataclass.TransactionDetails
 import org.mindrot.jbcrypt.BCrypt
 import com.example.project.database.dataclass.Users
 import com.google.firebase.Firebase
@@ -45,6 +51,9 @@ class UserViewModel:ViewModel() {
 
     private val _resresponse = MutableLiveData<String>()
     val resresponse: LiveData<String> get() = _resresponse
+
+    private val _snapRedirectToken = MutableLiveData<String>()
+    val snapRedirectToken: LiveData<String> get() = _snapRedirectToken
 
     private val _withdrawResult = MutableLiveData<String>()
     val withdrawResult: LiveData<String> get() = _withdrawResult
@@ -215,6 +224,37 @@ class UserViewModel:ViewModel() {
             } catch (e: Exception) {
                 Log.e("Withdraw", "Error: ${e.message}", e)
                 _withdrawResult.value = "Gagal melakukan withdraw: ${e.message}"
+            }
+        }
+    }
+
+    fun createMidtransTransaction(amount: Int, orderId: String, customerName: String, customerEmail: String) {
+        viewModelScope.launch {
+            try {
+                val payload = MidtransPayload(
+                    TransactionDetails(orderId, amount),
+                    CustomerDetails(customerName, customerEmail),
+                    listOf(
+                        ItemDetails("item1", amount, 1, "Top Up")
+                    )
+                )
+                val response = App.api.createTransaction(payload)
+
+                _snapRedirectToken.value = response.token
+            } catch (e: Exception) {
+                _resresponse.value = "Payment failed: ${e.message}"
+                Log.e("PaymentVM", "Error: ${e.message}", e)
+            }
+        }
+    }
+
+        fun checkPaymentStatus(orderId: String) {
+        viewModelScope.launch {
+            try {
+                val status = App.api.checkStatus(orderId)
+                Log.d("MidtransStatus", "Status: ${status.transactionStatus}")
+            } catch (e: Exception) {
+                Log.e("MidtransStatus", "Failed to check status: ${e.message}")
             }
         }
     }

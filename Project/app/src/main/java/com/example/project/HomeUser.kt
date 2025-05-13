@@ -1,7 +1,9 @@
 package com.example.project
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -66,7 +68,12 @@ class HomeUser : BaseClass() {
                 }
 
                 binding.topupbtn.setOnClickListener {
-
+                    viewModels.createMidtransTransaction(
+                        amount = 20000,
+                        orderId = "ORDER-${System.currentTimeMillis()}",
+                        customerName = viewModels.currUser.value?.name ?: "Anonymous",
+                        customerEmail = viewModels.currUser.value?.email ?: "user@example.com"
+                    )
                 }
 
                 if (viewModels.currUser.value?.profilePicturePath != "") {
@@ -77,6 +84,16 @@ class HomeUser : BaseClass() {
             } else {
                 binding.nameUserDis.text = ""
                 binding.saldouserDis.text = ""
+            }
+        }
+
+        viewModels.snapRedirectToken.observe(this) { token ->
+            MidtransSDK.getInstance().startPaymentUiFlow(this, token)
+        }
+
+        viewModels.resresponse.observe(this) { msg ->
+            msg?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             }
         }
 

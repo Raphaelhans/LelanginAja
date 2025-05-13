@@ -49,11 +49,11 @@ class Register : AppCompatActivity() {
                 Toast.makeText(this, "Invalid email", Toast.LENGTH_SHORT).show()
             } else {
                 binding.RegisBtn.text = ""
-                binding.loadingRegis.visibility = View.VISIBLE
-                Glide.with(this)
-                    .asGif()
-                    .load(com.example.project.R.drawable.rotate)
-                    .into(binding.loadingRegis)
+//                binding.loadingRegis.visibility = View.VISIBLE
+//                Glide.with(this)
+//                    .asGif()
+//                    .load(com.example.project.R.drawable.rotate)
+//                    .into(binding.loadingRegis)
                 viewModel.registerUser(name, phone, email, password, 0, 0, location)
             }
         }
@@ -72,9 +72,16 @@ class Register : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Email already registered", Toast.LENGTH_SHORT).show()
                 binding.RegisBtn.text = "Register"
-                binding.loadingRegis.visibility = View.GONE
+//                binding.loadingRegis.visibility = View.GONE
             }
         }
+
+        viewModel.resresponse.observe(this) { response ->
+            Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+            binding.RegisBtn.text = "Register"
+//            binding.loadingRegis.visibility = View.GONE
+        }
+
 
 
     }

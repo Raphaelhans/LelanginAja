@@ -38,11 +38,11 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             } else {
                 binding.LoginBtn.text = ""
-                Glide.with(this)
-                    .asGif()
-                    .load(R.drawable.rotate)
-                    .into(binding.loadingGif)
-                binding.loadingGif.visibility = View.VISIBLE
+//                Glide.with(this)
+//                    .asGif()
+//                    .load(R.drawable.rotate)
+//                    .into(binding.loadingGif)
+//                binding.loadingGif.visibility = View.VISIBLE
                 viewModels.loginUser(email, password)
             }
         }
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             }
             else{
                 binding.LoginBtn.text = "Login"
-                binding.loadingGif.visibility = View.GONE
+//                binding.loadingGif.visibility = View.GONE
             }
         }
 
