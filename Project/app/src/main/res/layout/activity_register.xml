@@ -8,6 +8,7 @@
     android:background="@drawable/bg_gradient"
     tools:context=".Register">
 
+<!--    CONSTRAINT-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/registerCard"
         android:layout_width="0dp"
