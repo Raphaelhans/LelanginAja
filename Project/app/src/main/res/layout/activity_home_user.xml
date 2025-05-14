@@ -120,7 +120,7 @@
         <Button
             android:id="@+id/withdrawbtn"
             android:layout_width="116dp"
-            android:layout_height="37dp"
+            android:layout_height="38dp"
             android:backgroundTint="#3674B5"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Withdraw"
