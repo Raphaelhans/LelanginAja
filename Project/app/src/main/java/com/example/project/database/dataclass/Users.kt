@@ -10,5 +10,6 @@ data class Users(
     val status: Int = 0,
     val location: String = "",
     val profilePicturePath: String = "",
-    val pin: String =""
+    val pin: String = "",
+    val suspended: Boolean = false
 )

@@ -3,7 +3,11 @@ package com.example.project
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +19,9 @@ class HomeManager : AppCompatActivity() {
     private val db = FirebaseFirestore.getInstance()
     private lateinit var staffAdapter: StaffAdapter
     private val staffList = mutableListOf<Staff>()
+    private val filteredStaffList = mutableListOf<Staff>()
+    private var currentFilter = "All"
+    private var currentSearchQuery = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,12 +29,13 @@ class HomeManager : AppCompatActivity() {
         setContentView(binding.root)
 
         setupRecyclerView()
+        setupSearchFilter()
+        setupStatusFilter()
         fetchStaffList()
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
-
                     true
                 }
                 R.id.nav_add -> {
@@ -35,7 +43,6 @@ class HomeManager : AppCompatActivity() {
                     true
                 }
                 R.id.nav_certificate -> {
-
                     Toast.makeText(this, "Certificate clicked", Toast.LENGTH_SHORT).show()
                     true
                 }
@@ -52,7 +59,7 @@ class HomeManager : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        staffAdapter = StaffAdapter(staffList,
+        staffAdapter = StaffAdapter(filteredStaffList,
             onSuspendClick = { staff ->
                 toggleSuspendStatus(staff)
             },
@@ -64,6 +71,31 @@ class HomeManager : AppCompatActivity() {
         binding.recyclerViewStaff.adapter = staffAdapter
     }
 
+    private fun setupSearchFilter() {
+        binding.editTextSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                currentSearchQuery = s.toString().trim().lowercase()
+                applyFilters()
+            }
+        })
+    }
+
+    private fun setupStatusFilter() {
+        binding.spinnerFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                currentFilter = parent?.getItemAtPosition(position).toString()
+                applyFilters()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                currentFilter = "All"
+                applyFilters()
+            }
+        }
+    }
+
     private fun fetchStaffList() {
         db.collection("Staffs")
             .whereEqualTo("status", false)
@@ -72,12 +104,28 @@ class HomeManager : AppCompatActivity() {
                 val staff = querySnapshot.documents.mapNotNull { it.toObject(Staff::class.java) }
                 staffList.clear()
                 staffList.addAll(staff)
-                staffAdapter.notifyDataSetChanged()
+                applyFilters()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this@HomeManager, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 Log.e("FirestoreError", "Fetch staff list failed: ${e.message}", e)
             }
+    }
+
+    private fun applyFilters() {
+        filteredStaffList.clear()
+        val filtered = staffList.filter { staff ->
+            val matchesName = staff.name.lowercase().contains(currentSearchQuery)
+            val matchesStatus = when (currentFilter) {
+                "All" -> true
+                "Active" -> !staff.suspended
+                "Suspended" -> staff.suspended
+                else -> true
+            }
+            matchesName && matchesStatus
+        }
+        filteredStaffList.addAll(filtered)
+        staffAdapter.notifyDataSetChanged()
     }
 
     private fun toggleSuspendStatus(staff: Staff) {

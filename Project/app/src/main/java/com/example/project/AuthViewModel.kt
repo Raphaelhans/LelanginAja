@@ -81,7 +81,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         balance = balance,
                         status = status,
                         location = lokasi,
-                        profilePicturePath = ""
+                        profilePicturePath = "",
+                        suspended = false
                     )
                     transaction.set(db.collection("Users").document(highestId.toString()), user)
                 }
@@ -106,6 +107,12 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     val user = userQuery.documents.first().toObject(Users::class.java)
                     val storedHash = user?.password ?: throw Exception("Invalid user data")
                     Log.d("LoginDebug", "User password hash: $storedHash")
+
+                    if (user.suspended) {
+                        _resresponse.value = "Account suspended"
+                        checkres.value = false
+                        return@launch
+                    }
 
                     try {
                         val isPasswordCorrect = BCrypt.checkpw(password, storedHash)
@@ -140,12 +147,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 val storedPassword = staff?.password ?: throw Exception("Invalid staff data")
                 Log.d("LoginDebug", "Staff password: $storedPassword")
 
+                if (staff.suspended) {
+                    _resresponse.value = "Account suspended"
+                    checkres.value = false
+                    return@launch
+                }
+
                 if (storedPassword == password) {
-                    if (staff.suspended) {
-                        _resresponse.value = "Account suspended"
-                        checkres.value = false
-                        return@launch
-                    }
                     checkres.value = true
                     _loginDestination.value = if (staff.status) "HomeManager" else "HomeStaffs"
                 } else {
