@@ -30,6 +30,11 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
+        Glide.with(this)
+            .asGif()
+            .load(R.drawable.rotate)
+            .preload()
+
         binding.LoginBtn.setOnClickListener {
             val email = binding.editTextEmail.text.toString()
             val password = binding.editTextPassword.text.toString()
@@ -37,12 +42,12 @@ class MainActivity : AppCompatActivity() {
             if (email.isEmpty() || password.isEmpty() || !email.contains("@gmail.com")) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             } else {
-                binding.LoginBtn.text = ""
-//                Glide.with(this)
-//                    .asGif()
-//                    .load(R.drawable.rotate)
-//                    .into(binding.loadingGif)
-//                binding.loadingGif.visibility = View.VISIBLE
+                binding.LoginBtn.visibility = View.GONE
+                Glide.with(this)
+                    .asGif()
+                    .load(R.drawable.rotate)
+                    .into(binding.loadingLogin)
+                binding.loadingLogin.visibility = View.VISIBLE
                 viewModels.loginUser(email, password)
             }
         }
@@ -60,8 +65,8 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
             else{
-                binding.LoginBtn.text = "Login"
-//                binding.loadingGif.visibility = View.GONE
+                binding.LoginBtn.visibility = View.VISIBLE
+                binding.loadingLogin.visibility = View.GONE
             }
         }
 

@@ -2,9 +2,10 @@ package com.example.project
 
 import android.app.Dialog
 import android.content.Intent
-import android.os.Bundle
+import  android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -25,15 +26,16 @@ class Withdraw : AppCompatActivity() {
     private lateinit var binding: ActivityWithdrawBinding
     val viewModel by viewModels<UserViewModel>()
     private lateinit var dialog: Dialog
-    val option = arrayOf("Bank Mandiri", "Bank Permata", "Bank Danamon", "Bank BNI", "Bank BCA")
     var amount = 0
     val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
+    private lateinit var formattedList:List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityWithdrawBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        var dropdown = findViewById<AutoCompleteTextView>(R.id.listBank)
 
         dialog = Dialog(this)
         dialog.setContentView(R.layout.pin_confirmation)
@@ -48,21 +50,11 @@ class Withdraw : AppCompatActivity() {
         val confirmButton = dialog.findViewById<Button>(R.id.btnNext)
         val pin = dialog.findViewById<EditText>(R.id.wdpin)
 
-        val dropdown = findViewById<AutoCompleteTextView>(R.id.listBank)
-
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, option)
-        dropdown.setAdapter(adapter)
-        dropdown.setSelection(0)
-
-        dropdown.setOnClickListener {
-            dropdown.showDropDown()
-        }
-
-
         viewModel.currUser.observe(this) { user ->
             if (user != null) {
                 binding.namewdDis.text = user.name
                 binding.balancewdDis.text = "Rp." + formatter.format(user.balance)
+
                 binding.backbtn.setOnClickListener{
                     val intent = Intent(this, HomeUser::class.java)
                     intent.putExtra("email", viewModel.currUser.value?.email)
@@ -72,7 +64,7 @@ class Withdraw : AppCompatActivity() {
                 binding.btnwd.setOnClickListener {
                     if (binding.wdbalanceTxt.text.toString().isNotEmpty()){
                         amount = binding.wdbalanceTxt.text.toString().replace(".", "").toInt()
-                        if (amount >= 10000 && amount <= user.balance && binding.accnumberTxt.text.toString().isNotEmpty() && binding.accnumberTxt.text.toString().length == 16 && viewModel.currUser.value?.pin != ""){
+                        if (amount >= 10000 && amount <= user.balance  &&  viewModel.currUser.value?.pin != ""){
                             dialog.show()
                         }
                         else if (viewModel.currUser.value?.pin == ""){
@@ -89,13 +81,26 @@ class Withdraw : AppCompatActivity() {
 
                 confirmButton.setOnClickListener {
                     if (pin.text.isNotEmpty() && pin.text.length == 4){
-                        viewModel.withdrawConfirmation(amount, pin.text.toString(), dropdown.text.toString(), binding.accnumberTxt.text.toString())
+                        val selectedItem = dropdown.text.toString().split(" - ")
+                        viewModel.withdrawConfirmation(amount, pin.text.toString(), selectedItem[0], selectedItem[2], selectedItem[1])
                     }
                     else{
                         Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     }
                 }
+            }
+        }
+
+        viewModel.userBankAccount.observe(this){ account ->
+            formattedList = viewModel.userBankAccount.value?.map { "${it.bankName} - ${it.accountHolder} - ${it.accountNumber}" } ?: emptyList()
+
+            val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, formattedList)
+            dropdown.setAdapter(adapter)
+            dropdown.setSelection(0)
+
+            dropdown.setOnClickListener {
+                dropdown.showDropDown()
             }
         }
 

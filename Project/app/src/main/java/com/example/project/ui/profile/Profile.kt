@@ -16,6 +16,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.project.AccountNumber
 import com.example.project.AuthViewModel
 import com.example.project.BaseClass
 import com.example.project.HomeUser
@@ -81,7 +82,7 @@ class Profile : BaseClass() {
             }
 
             binding.accNumberBtn.setOnClickListener{
-                val intent = Intent(this, AccNumber::class.java)
+                val intent = Intent(this, AccountNumber::class.java)
                 intent.putExtra("email", viewModel.currUser.value?.email)
                 startActivity(intent)
                 finish()

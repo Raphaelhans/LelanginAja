@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.database.App
+import com.example.project.database.dataclass.BankAccount
 import com.example.project.database.dataclass.CustomerDetails
 import com.example.project.database.dataclass.ItemDetails
 import com.example.project.database.dataclass.MidtransPayload
@@ -53,6 +54,9 @@ class UserViewModel:ViewModel() {
     private val _currUser = MutableLiveData<Users?>()
     val currUser: LiveData<Users?> get() = _currUser
 
+    private val _userBankAccount = MutableLiveData<List<BankAccount>>()
+    val userBankAccount: MutableLiveData<List<BankAccount>> get() = _userBankAccount
+
     private val _resresponse = MutableLiveData<String>()
     val resresponse: LiveData<String> get() = _resresponse
 
@@ -79,10 +83,63 @@ class UserViewModel:ViewModel() {
                 if (!curruser.isEmpty) {
                     val user = curruser.documents.first().toObject(Users::class.java)
                     _currUser.value = user
+                    getUserAccount()
                 } else {
                     Log.d("Firestore", "No user found with email: $email")
                 }
             } catch (e: Exception) {
+                Log.e("Firestore Error", "Error fetching user: ${e.message}", e)
+            }
+        }
+    }
+
+    fun addBankAccount(bankAccount: BankAccount){
+        viewModelScope.launch {
+            try {
+                val count = (db.collection("BankAccounts")
+                    .count()
+                    .get(AggregateSource.SERVER)
+                    .await()
+                    .count + 1) ?: 1
+
+                val checkNumber = userBankAccount.value?.filter { it.accountNumber == bankAccount.accountNumber }
+
+                if (checkNumber != null) {
+                    if (checkNumber.isEmpty()){
+                        db.runTransaction { transaction ->
+                            transaction.set(db.collection("BankAccounts").document("Bank-"+count.toString()), bankAccount)
+                        }
+                        getUserAccount()
+                        _resresponse.value = "Successfully added bank account"
+                    }
+                    else{
+                        _resresponse.value = "Bank account already exists"
+                    }
+                }
+            }catch (e: Exception){
+                Log.e("Firestore Error", "Error adding bank account: ${e.message}", e)
+
+            }
+        }
+    }
+
+    fun getUserAccount(){
+        viewModelScope.launch {
+            try {
+                val bankAcc = db.collection("BankAccounts")
+                    .whereEqualTo("user_id", currUser.value?.user_id)
+                    .get()
+                    .await()
+
+                if (!bankAcc.isEmpty){
+                    val accList = bankAcc.documents.mapNotNull { it.toObject(BankAccount::class.java) }
+                    _userBankAccount.value = accList.reversed()
+                }
+                else{
+                    Log.d("Firestore", "No user found with user id: ${currUser.value?.user_id}")
+                }
+
+            }catch (e:Exception){
                 Log.e("Firestore Error", "Error fetching user: ${e.message}", e)
             }
         }
@@ -238,7 +295,7 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    fun withdrawConfirmation(saldotarik:Int, pin:String, bank:String, accNumber:String){
+    fun withdrawConfirmation(saldotarik:Int, pin:String, bank:String, accNumber:String, accHolder: String){
         viewModelScope.launch {
             try {
                 val inputPIN = BCrypt.checkpw(pin,currUser.value?.pin)
@@ -251,7 +308,7 @@ class UserViewModel:ViewModel() {
                 if (inputPIN){
                     db.runTransaction { transaction ->
                          val wd = Withdraws(
-                            currUser.value?.user_id!!, saldotarik, bank, accNumber
+                            currUser.value?.user_id!!, saldotarik, bank, accNumber, accHolder
                         )
                         transaction.set(db.collection("Withdraws").document("Withdraw-"+count.toString()), wd)
                     }
@@ -290,17 +347,6 @@ class UserViewModel:ViewModel() {
             } catch (e: Exception) {
                 _resresponse.value = "Payment failed: ${e.message}"
                 Log.e("PaymentVM", "Error: ${e.message}", e)
-            }
-        }
-    }
-
-    fun checkPaymentStatus(orderId: String) {
-        viewModelScope.launch {
-            try {
-                val status = App.api.checkStatus(orderId)
-                Log.d("MidtransStatus", "Status: ${status.transactionStatus}")
-            } catch (e: Exception) {
-                Log.e("MidtransStatus", "Failed to check status: ${e.message}")
             }
         }
     }

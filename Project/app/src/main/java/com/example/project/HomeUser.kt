@@ -25,6 +25,7 @@ class HomeUser : BaseClass() {
     private lateinit var binding: ActivityHomeUserBinding
     val viewModels by viewModels<UserViewModel>()
     val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
+    var balanceDisplay = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,13 +48,25 @@ class HomeUser : BaseClass() {
         viewModels.currUser.observe(this) { user ->
             if (user != null) {
                 binding.nameUserDis.text = user.name
-                binding.saldouserDis.text = "Rp. " + formatter.format(user.balance)
+                binding.saldouserDis.text = "Rp. **********"
 
                 binding.profilebtn.setOnClickListener {
                     val intent = Intent(this, Profile::class.java)
                     intent.putExtra("email", viewModels.currUser.value?.email)
                     startActivity(intent)
                     finish()
+                }
+
+                binding.showBalance.setOnClickListener {
+                    if (balanceDisplay) {
+                        binding.saldouserDis.text = "Rp. " + formatter.format(user.balance)
+                        binding.showBalance.setImageResource(R.drawable.hide)
+                    }
+                    else {
+                        binding.saldouserDis.text = "Rp. **********"
+                        binding.showBalance.setImageResource(R.drawable.visible)
+                    }
+                    balanceDisplay = !balanceDisplay
                 }
 
                 binding.transBtn.setOnClickListener {

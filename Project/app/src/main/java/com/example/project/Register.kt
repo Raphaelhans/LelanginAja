@@ -33,6 +33,11 @@ class Register : AppCompatActivity() {
             finish()
         }
 
+        Glide.with(this)
+            .asGif()
+            .load(com.example.project.R.drawable.rotate)
+            .preload()
+
         binding.RegisBtn.setOnClickListener {
             val name = binding.Nametext.text.toString()
             val phone = binding.Numbertext.text.toString()
@@ -70,7 +75,6 @@ class Register : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } else {
-                Toast.makeText(this, "Email already registered", Toast.LENGTH_SHORT).show()
                 binding.RegisBtn.visibility = View.VISIBLE
                 binding.loadingGif.visibility = View.GONE
             }

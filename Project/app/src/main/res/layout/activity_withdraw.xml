@@ -151,12 +151,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/nominalInputLayout" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/bankSpinnerLayout"
+                android:id="@+id/listbankTxt"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="Pilih Bank"
+                android:hint="Choose Bank Account"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bankLabel">
@@ -169,24 +169,6 @@
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/accountNumberLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="Masukkan Nomor Rekening"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bankSpinnerLayout">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/accnumberTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
-
             <LinearLayout
                 android:id="@+id/layoutTambahRekening"
                 android:layout_width="0dp"
@@ -196,7 +178,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/accountNumberLayout">
+                app:layout_constraintTop_toBottomOf="@+id/listbankTxt">
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
