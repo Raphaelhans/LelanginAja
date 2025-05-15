@@ -8,7 +8,8 @@ data class MidtransPayload(
 
 data class TransactionDetails(
     val order_id: String,
-    val gross_amount: Int
+    val gross_amount: Int,
+    val currency: String = "IDR"
 )
 
 data class CustomerDetails(

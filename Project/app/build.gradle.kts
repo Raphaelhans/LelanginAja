@@ -77,7 +77,7 @@ dependencies {
     kapt(libs.moshi.kotlin.codegen)
     implementation(libs.retrofit2.retrofit)
 
-    implementation ("com.midtrans:uikit:2.0.0")
+    implementation ("com.midtrans:uikit:2.0.0-SANDBOX")
     implementation ("com.squareup.retrofit2:retrofit:2.11.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.11.0")

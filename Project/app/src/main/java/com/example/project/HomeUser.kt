@@ -18,10 +18,13 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.midtrans.sdk.corekit.core.MidtransSDK
 import com.midtrans.sdk.corekit.core.TransactionRequest
 import com.midtrans.sdk.corekit.models.ItemDetails
+import java.text.NumberFormat
+import java.util.Locale
 
 class HomeUser : BaseClass() {
     private lateinit var binding: ActivityHomeUserBinding
     val viewModels by viewModels<UserViewModel>()
+    val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +47,7 @@ class HomeUser : BaseClass() {
         viewModels.currUser.observe(this) { user ->
             if (user != null) {
                 binding.nameUserDis.text = user.name
-                binding.saldouserDis.text = "Rp. " + user.balance.toString()
+                binding.saldouserDis.text = "Rp. " + formatter.format(user.balance)
 
                 binding.profilebtn.setOnClickListener {
                     val intent = Intent(this, Profile::class.java)
@@ -68,12 +71,10 @@ class HomeUser : BaseClass() {
                 }
 
                 binding.topupbtn.setOnClickListener {
-                    viewModels.createMidtransTransaction(
-                        amount = 20000,
-                        orderId = "ORDER-${System.currentTimeMillis()}",
-                        customerName = viewModels.currUser.value?.name ?: "Anonymous",
-                        customerEmail = viewModels.currUser.value?.email ?: "user@example.com"
-                    )
+                    val intent = Intent(this, TopUp::class.java)
+                    intent.putExtra("email", viewModels.currUser.value?.email)
+                    startActivity(intent)
+                    finish()
                 }
 
                 if (viewModels.currUser.value?.profilePicturePath != "") {
@@ -85,10 +86,6 @@ class HomeUser : BaseClass() {
                 binding.nameUserDis.text = ""
                 binding.saldouserDis.text = ""
             }
-        }
-
-        viewModels.snapRedirectToken.observe(this) { token ->
-            MidtransSDK.getInstance().startPaymentUiFlow(this, token)
         }
 
         viewModels.resresponse.observe(this) { msg ->

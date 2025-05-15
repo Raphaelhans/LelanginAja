@@ -7,8 +7,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +25,9 @@ class Withdraw : AppCompatActivity() {
     private lateinit var binding: ActivityWithdrawBinding
     val viewModel by viewModels<UserViewModel>()
     private lateinit var dialog: Dialog
+    val option = arrayOf("Bank Mandiri", "Bank Permata", "Bank Danamon", "Bank BNI", "Bank BCA")
+    var amount = 0
+    val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,28 +41,68 @@ class Withdraw : AppCompatActivity() {
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
+
         dialog.window?.setBackgroundDrawable(getDrawable(R.drawable.custom_dialog_bg))
         dialog.setCancelable(true)
 
-        val spinner = findViewById<Spinner>(R.id.listBank)
-        val adapter = ArrayAdapter.createFromResource(
-            this,
-            R.array.bankoption,
-            android.R.layout.simple_spinner_item
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+        val confirmButton = dialog.findViewById<Button>(R.id.btnNext)
+        val pin = dialog.findViewById<EditText>(R.id.wdpin)
+
+        val dropdown = findViewById<AutoCompleteTextView>(R.id.listBank)
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, option)
+        dropdown.setAdapter(adapter)
+        dropdown.setSelection(0)
+
+        dropdown.setOnClickListener {
+            dropdown.showDropDown()
+        }
+
 
         viewModel.currUser.observe(this) { user ->
             if (user != null) {
                 binding.namewdDis.text = user.name
-                binding.balancewdDis.text = "Rp." + user.balance.toString()
+                binding.balancewdDis.text = "Rp." + formatter.format(user.balance)
                 binding.backbtn.setOnClickListener{
                     val intent = Intent(this, HomeUser::class.java)
                     intent.putExtra("email", viewModel.currUser.value?.email)
                     startActivity(intent)
                 }
 
+                binding.btnwd.setOnClickListener {
+                    if (binding.wdbalanceTxt.text.toString().isNotEmpty()){
+                        amount = binding.wdbalanceTxt.text.toString().replace(".", "").toInt()
+                        if (amount >= 10000 && amount <= user.balance && binding.accnumberTxt.text.toString().isNotEmpty() && binding.accnumberTxt.text.toString().length == 16 && viewModel.currUser.value?.pin != ""){
+                            dialog.show()
+                        }
+                        else if (viewModel.currUser.value?.pin == ""){
+                            Toast.makeText(this, "Please create PIN first", Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    else{
+                        Toast.makeText(this, "Please enter an amount", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                confirmButton.setOnClickListener {
+                    if (pin.text.isNotEmpty() && pin.text.length == 4){
+                        viewModel.withdrawConfirmation(amount, pin.text.toString(), dropdown.text.toString(), binding.accnumberTxt.text.toString())
+                    }
+                    else{
+                        Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    }
+                }
+            }
+        }
+
+        viewModel.resresponse.observe(this){ response ->
+            Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+            if (response == "Withdraw successful"){
+                dialog.dismiss()
             }
         }
 
@@ -73,7 +120,6 @@ class Withdraw : AppCompatActivity() {
                     try {
                         val number = rawInput.toLong()
 
-                        val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
                         formatter.minimumFractionDigits = 0
                         formatter.maximumFractionDigits = 0
                         val formatted = formatter.format(number)
@@ -95,10 +141,6 @@ class Withdraw : AppCompatActivity() {
             }
 
         })
-
-        binding.btnwd.setOnClickListener {
-            dialog.show()
-        }
 
     }
 

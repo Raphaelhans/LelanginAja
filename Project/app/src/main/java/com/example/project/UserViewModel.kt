@@ -15,11 +15,14 @@ import com.example.project.database.dataclass.CustomerDetails
 import com.example.project.database.dataclass.ItemDetails
 import com.example.project.database.dataclass.MidtransPayload
 import com.example.project.database.dataclass.MidtransResponse
+import com.example.project.database.dataclass.Payment
 import com.example.project.database.dataclass.TransactionDetails
 import org.mindrot.jbcrypt.BCrypt
 import com.example.project.database.dataclass.Users
+import com.example.project.database.dataclass.Withdraws
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
@@ -41,6 +44,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.util.UUID
 
 class UserViewModel:ViewModel() {
     private val db = Firebase.firestore
@@ -57,6 +61,12 @@ class UserViewModel:ViewModel() {
 
     private val _withdrawResult = MutableLiveData<String>()
     val withdrawResult: LiveData<String> get() = _withdrawResult
+
+    private val _orderID = MutableLiveData<String>()
+    val orderID: LiveData<String> get() = _orderID
+
+    private val _amountTopup = MutableLiveData<Int>()
+    val amountTopup: LiveData<Int> get() = _amountTopup
 
     fun getCurrUser(email: String) {
         viewModelScope.launch {
@@ -228,18 +238,54 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    fun createMidtransTransaction(amount: Int, orderId: String, customerName: String, customerEmail: String) {
+    fun withdrawConfirmation(saldotarik:Int, pin:String, bank:String, accNumber:String){
         viewModelScope.launch {
             try {
+                val inputPIN = BCrypt.checkpw(pin,currUser.value?.pin)
+                val count = db.collection("Withdraws")
+                    .count()
+                    .get(AggregateSource.SERVER)
+                    .await()
+                    .count
+
+                if (inputPIN){
+                    db.runTransaction { transaction ->
+                         val wd = Withdraws(
+                            currUser.value?.user_id!!, saldotarik, bank, accNumber
+                        )
+                        transaction.set(db.collection("Withdraws").document("Withdraw-"+count.toString()), wd)
+                    }
+
+                    db.collection("Users").document(currUser.value?.user_id.toString()).update("balance", currUser.value?.balance?.minus(saldotarik))
+
+                    _resresponse.value = "Withdraw successful"
+                    getCurrUser(currUser.value?.email.toString())
+                }
+                else{
+                    _resresponse.value = "Incorrect PIN"
+                }
+            }catch (e: Exception) {
+                _resresponse.value = "Payment failed: ${e.message}"
+            }
+        }
+    }
+
+    fun createMidtransTransaction(amount: Int) {
+        viewModelScope.launch {
+            try {
+                val orderId = "ORDER-${System.currentTimeMillis()}-${UUID.randomUUID().toString().substring(0, 8)}"
+                val customerName = currUser.value?.name.toString()
+                val customerEmail = currUser.value?.email.toString()
+
                 val payload = MidtransPayload(
                     TransactionDetails(orderId, amount),
                     CustomerDetails(customerName, customerEmail),
-                    listOf(
-                        ItemDetails("item1", amount, 1, "Top Up")
-                    )
+                    listOf(ItemDetails("TOPUP-${orderId.takeLast(8)}", amount, 1, "Top Up"))
                 )
                 val response = App.api.createTransaction(payload)
 
+                _orderID.value = orderId
+                _amountTopup.value = amount
                 _snapRedirectToken.value = response.token
             } catch (e: Exception) {
                 _resresponse.value = "Payment failed: ${e.message}"
@@ -248,13 +294,31 @@ class UserViewModel:ViewModel() {
         }
     }
 
-        fun checkPaymentStatus(orderId: String) {
+    fun checkPaymentStatus(orderId: String) {
         viewModelScope.launch {
             try {
                 val status = App.api.checkStatus(orderId)
                 Log.d("MidtransStatus", "Status: ${status.transactionStatus}")
             } catch (e: Exception) {
                 Log.e("MidtransStatus", "Failed to check status: ${e.message}")
+            }
+        }
+    }
+
+    fun topupPayment(transactionId: String, paymentType: String, transactionStatus: String){
+        viewModelScope.launch {
+            try {
+                db.runTransaction { transaction ->
+                    val pays = Payment(transactionId, amountTopup.value.toString().toInt(), paymentType, transactionStatus, currUser.value?.email.toString())
+                    transaction.set(db.collection("Payments").document(orderID.value.toString()), pays)
+                }
+                db.collection("Users").document(currUser.value?.user_id.toString()).update("balance", currUser.value?.balance?.plus(amountTopup.value.toString().toInt()))
+
+                getCurrUser(currUser.value?.email.toString())
+                _resresponse.value = "Payment successful"
+            }catch (e: Exception) {
+                _resresponse.value = "Payment failed: ${e.message}"
+                Log.e("PaymentVM", "Error: ${e.message}", e)
             }
         }
     }

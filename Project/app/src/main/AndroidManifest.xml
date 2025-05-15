@@ -59,6 +59,9 @@
             android:name=".Landing2Activity"
             android:exported="false"/>
 
+        <activity android:name=".TopUp"
+            android:exported="false"/>
+
         <activity
             android:name=".LandingActivity"
             android:exported="true">
