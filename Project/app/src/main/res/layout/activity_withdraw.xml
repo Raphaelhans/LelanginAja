@@ -25,7 +25,7 @@
             app:srcCompat="@drawable/left" />
 
         <TextView
-            android:id="@+id/withdrawTitle"
+            android:id="@+id/profileTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Withdraw"
@@ -209,7 +209,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Tambah Rekening Baru -->
     <Button
         android:id="@+id/btnTambahRekening"
         style="@style/Widget.MaterialComponents.Button.TextButton"

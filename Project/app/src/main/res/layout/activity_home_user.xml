@@ -10,7 +10,7 @@
 
     <EditText
         android:id="@+id/etSearch"
-        android:layout_width="240dp"
+        android:layout_width="220dp"
         android:layout_height="45dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="16dp"
@@ -18,7 +18,7 @@
         android:ems="10"
         android:inputType="text"
         android:paddingStart="10dp"
-        android:text="Cari produk lelang"
+        android:text="Find product.."
         android:textSize="16sp"
         app:circularflow_radiusInDP="10dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,42 +29,41 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="20dp"
-        android:background="#FFFFFF"
-        android:padding="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-        app:layout_constraintStart_toEndOf="@+id/etSearch"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_search" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="31dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:background="#FFFFFF"
         android:padding="5dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/notif" />
+        app:layout_constraintVertical_bias="0.421"
+        app:srcCompat="@android:drawable/ic_menu_search" />
+
+    <Spinner
+        android:id="@+id/spinnerLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:background="#FFFFFF"
+        android:paddingStart="10dp"
+        android:textAlignment="viewStart"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/etSearch"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="380dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="4dp"
         android:background="#FFFFFF"
         android:padding="15dp"
         app:layout_constraintBottom_toTopOf="@+id/tabLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSearch">
+        app:layout_constraintTop_toBottomOf="@+id/spinnerLocation">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/userpfpHome"
@@ -83,40 +82,32 @@
             android:id="@+id/nameUserDis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Jasong Oweng"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/userpfpHome"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:fontFamily="@font/open_sans_semibold"
-            android:text="Saldo"
-            app:layout_constraintStart_toEndOf="@+id/userpfpHome"
-            app:layout_constraintTop_toBottomOf="@+id/nameUserDis" />
 
         <TextView
             android:id="@+id/saldouserDis"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="12dp"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Rp. 100.000"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/userpfpHome"
-            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+            app:layout_constraintTop_toBottomOf="@+id/nameUserDis" />
 
         <Button
             android:id="@+id/topupbtn"
             android:layout_width="97dp"
             android:layout_height="38dp"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="#3674B5"
+            android:backgroundTint="#33BA21"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Top Up"
             android:textColor="#EFE6E6"
@@ -128,7 +119,6 @@
             android:id="@+id/withdrawbtn"
             android:layout_width="116dp"
             android:layout_height="38dp"
-            android:layout_marginEnd="6dp"
             android:backgroundTint="#3674B5"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Withdraw"
@@ -140,11 +130,12 @@
             app:rippleColor="#E9E3E3" />
 
         <ImageView
-            android:id="@+id/showBalance"
+            android:id="@+id/imageView3"
             android:layout_width="20dp"
             android:layout_height="20dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintStart_toEndOf="@+id/saldouserDis"
-            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            app:layout_constraintTop_toBottomOf="@+id/nameUserDis"
             app:srcCompat="@drawable/visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -154,6 +145,7 @@
         android:layout_width="match_parent"
         android:layout_height="578dp"
         android:background="#FAF3E0"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/Botmenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
