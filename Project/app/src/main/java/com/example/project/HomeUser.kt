@@ -3,6 +3,7 @@ package com.example.project
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -25,6 +26,7 @@ class HomeUser : BaseClass() {
     private lateinit var binding: ActivityHomeUserBinding
     val viewModels by viewModels<UserViewModel>()
     val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
+    val cities = arrayOf("Surabaya", "Malang", "Sidoarjo", "Kediri", "Jember")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,11 @@ class HomeUser : BaseClass() {
         }.attach()
 
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+
+        val locadapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, cities)
+        locadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerLocation.adapter = locadapter
+        binding.spinnerLocation.setSelection(0)
 
         viewModels.currUser.observe(this) { user ->
             if (user != null) {

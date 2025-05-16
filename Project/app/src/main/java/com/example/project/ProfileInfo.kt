@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.project.databinding.ActivityProfileInfoBinding
 import com.example.project.databinding.PopUpMenuBinding
+import com.example.project.ui.profile.Profile
 
 class ProfileInfo : AppCompatActivity() {
     private lateinit var binding: ActivityProfileInfoBinding
@@ -29,7 +30,7 @@ class ProfileInfo : AppCompatActivity() {
             }
         }
 
-        binding.backbtn.setOnClickListener {
+        binding.backBtn.setOnClickListener {
             val intent = Intent(this, Profile::class.java)
             startActivity(intent)
             finish()
