@@ -93,7 +93,7 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    fun addBankAccount(bankAccount: BankAccount){
+    fun addBankAccount(bankName: String, accountHolder: String, accountNumber: String){
         viewModelScope.launch {
             try {
                 val count = (db.collection("BankAccounts")
@@ -102,20 +102,22 @@ class UserViewModel:ViewModel() {
                     .await()
                     .count + 1) ?: 1
 
-                val checkNumber = userBankAccount.value?.filter { it.accountNumber == bankAccount.accountNumber }
+                val exists = userBankAccount.value?.any { it.accountNumber == accountNumber } == true
 
-                if (checkNumber != null) {
-                    if (checkNumber.isEmpty()){
-                        db.runTransaction { transaction ->
-                            transaction.set(db.collection("BankAccounts").document("Bank-"+count.toString()), bankAccount)
-                        }
-                        getUserAccount()
-                        _resresponse.value = "Successfully added bank account"
+                if (!exists) {
+                    val id = "Bank-$count"
+                    val account = BankAccount(id, currUser.value?.user_id!!, bankName, accountHolder, accountNumber)
+
+                    db.runTransaction { transaction ->
+                        transaction.set(db.collection("BankAccounts").document(id), account)
                     }
-                    else{
-                        _resresponse.value = "Bank account already exists"
-                    }
+
+                    getUserAccount()
+                    _resresponse.value = "Successfully added bank account"
+                } else {
+                    _resresponse.value = "Bank account already exists"
                 }
+
             }catch (e: Exception){
                 Log.e("Firestore Error", "Error adding bank account: ${e.message}", e)
 
@@ -308,7 +310,7 @@ class UserViewModel:ViewModel() {
                 if (inputPIN){
                     db.runTransaction { transaction ->
                          val wd = Withdraws(
-                            currUser.value?.user_id!!, saldotarik, bank, accNumber, accHolder
+                             currUser.value?.user_id!!, saldotarik, bank, accNumber, accHolder
                         )
                         transaction.set(db.collection("Withdraws").document("Withdraw-"+count.toString()), wd)
                     }

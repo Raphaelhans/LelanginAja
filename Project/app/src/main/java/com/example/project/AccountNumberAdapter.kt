@@ -12,7 +12,7 @@ import com.example.project.databinding.AccountNumberLayoutBinding
 
 class AccountDiffUtil: DiffUtil.ItemCallback<BankAccount>(){
     override fun areItemsTheSame(oldItem: BankAccount, newItem: BankAccount): Boolean {
-        return oldItem.accountNumber == newItem.accountNumber
+        return oldItem.bank_id == newItem.bank_id
     }
 
     override fun areContentsTheSame(oldItem: BankAccount, newItem: BankAccount): Boolean {

@@ -76,6 +76,4 @@ class App: Application() {
             .build()
         api = retrofit.create(MidtransDao::class.java)
     }
-
-
 }

@@ -35,7 +35,10 @@ class AccountNumber : BaseClass() {
         Glide.with(this)
             .asGif()
             .load(R.drawable.bank)
-            .preload()
+            .into(binding.loadingBank)
+        binding.notfoundTxt.visibility = View.VISIBLE
+        binding.loadingBank.visibility = View.VISIBLE
+        binding.addedAccView.visibility = View.GONE
 
         val dropdown = findViewById<AutoCompleteTextView>(R.id.listBank)
 
@@ -58,7 +61,7 @@ class AccountNumber : BaseClass() {
                     val accNumber = binding.accnumberTxt.text.toString()
 
                     if (accName.isNotEmpty() && accNumber.isNotEmpty() && dropdown.text.isNotEmpty() && accNumber.length == 19){
-                        viewModel.addBankAccount(BankAccount(viewModel.currUser.value?.user_id!!, dropdown.text.toString(), accName, accNumber))
+                        viewModel.addBankAccount(dropdown.text.toString(), accName, accNumber)
                     }
                     else{
                         Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show()
@@ -71,7 +74,6 @@ class AccountNumber : BaseClass() {
                     startActivity(intent)
                     finish()
                 }
-
             }
         }
 
@@ -79,7 +81,9 @@ class AccountNumber : BaseClass() {
             if (!account.isNullOrEmpty()){
                 binding.loadingBank.visibility = View.GONE
                 binding.notfoundTxt.visibility = View.GONE
-                adapterRecycler.submitList(account.toList())
+                binding.addedAccView.visibility = View.VISIBLE
+                adapterRecycler.submitList(account)
+                Log.d("Account", account.toString())
             }
             else{
                 Glide.with(this)
@@ -90,6 +94,7 @@ class AccountNumber : BaseClass() {
                 binding.loadingBank.visibility = View.VISIBLE
                 binding.addedAccView.visibility = View.GONE
             }
+
         }
 
         viewModel.resresponse.observe(this){ response ->

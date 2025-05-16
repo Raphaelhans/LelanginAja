@@ -37,10 +37,15 @@ class Landing2Activity : AppCompatActivity() {
         Glide.with(this)
             .asGif()
             .load(R.drawable.loadingani)
-            .into(binding2.loadingGIf)
+            .preload()
 
         binding2.btnNext2.setOnClickListener {
             binding2.btnNext2.visibility = View.GONE
+
+            Glide.with(this)
+                .asGif()
+                .load(R.drawable.loadingani)
+                .into(binding2.loadingGIf)
             binding2.loadingGIf.visibility = View.VISIBLE
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
