@@ -5,5 +5,6 @@ data class Withdraws(
     val amountWd:Int = 0,
     val bank:String = "",
     val accHolder:String = "",
-    val accNumber:String = ""
+    val accNumber:String = "",
+    val date:String = ""
 )

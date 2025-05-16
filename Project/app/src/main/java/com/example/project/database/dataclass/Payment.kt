@@ -5,5 +5,6 @@ data class Payment (
     val amount: Int = 0,
     val payment_type: String = "",
     val transaction_status: String = "",
-    val emailUser: String = ""
+    val emailUser: String = "",
+    val date: String = ""
 )

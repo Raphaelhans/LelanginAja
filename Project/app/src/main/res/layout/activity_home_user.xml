@@ -130,7 +130,7 @@
             app:rippleColor="#E9E3E3" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/showBalance"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="12dp"

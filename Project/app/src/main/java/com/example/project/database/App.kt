@@ -32,7 +32,7 @@ class App: Application() {
             get() = if (isEmulator())
                 "http://10.0.2.2:8000/api/"
             else
-                "http://192.168.238.105:8000/api/"
+                "http://192.168.238.88:8000/api/"
 
         fun isEmulator(): Boolean {
             return Build.FINGERPRINT.contains("generic") ||

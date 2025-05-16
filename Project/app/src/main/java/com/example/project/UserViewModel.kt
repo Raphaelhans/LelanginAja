@@ -45,6 +45,9 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
 class UserViewModel:ViewModel() {
@@ -110,7 +113,7 @@ class UserViewModel:ViewModel() {
 
                     db.runTransaction { transaction ->
                         transaction.set(db.collection("BankAccounts").document(id), account)
-                    }
+                    }.await()
 
                     getUserAccount()
                     _resresponse.value = "Successfully added bank account"
@@ -308,9 +311,11 @@ class UserViewModel:ViewModel() {
                     .count
 
                 if (inputPIN){
+                    val formatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+                    val formattedDate = formatter.format(Date())
                     db.runTransaction { transaction ->
                          val wd = Withdraws(
-                             currUser.value?.user_id!!, saldotarik, bank, accNumber, accHolder
+                             currUser.value?.user_id!!, saldotarik, bank, accNumber, accHolder,formattedDate
                         )
                         transaction.set(db.collection("Withdraws").document("Withdraw-"+count.toString()), wd)
                     }
@@ -356,8 +361,10 @@ class UserViewModel:ViewModel() {
     fun topupPayment(transactionId: String, paymentType: String, transactionStatus: String){
         viewModelScope.launch {
             try {
+                val formatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+                val formattedDate = formatter.format(Date())
                 db.runTransaction { transaction ->
-                    val pays = Payment(transactionId, amountTopup.value.toString().toInt(), paymentType, transactionStatus, currUser.value?.email.toString())
+                    val pays = Payment(transactionId, amountTopup.value.toString().toInt(), paymentType, transactionStatus, currUser.value?.email.toString(), formattedDate)
                     transaction.set(db.collection("Payments").document(orderID.value.toString()), pays)
                 }
                 db.collection("Users").document(currUser.value?.user_id.toString()).update("balance", currUser.value?.balance?.plus(amountTopup.value.toString().toInt()))
