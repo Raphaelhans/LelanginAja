@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EDCB70"
+    android:background="#FAF3E0"
     tools:context=".ui.profile.Profile">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -69,13 +69,14 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/userpfpDis"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         app:layout_constraintBottom_toTopOf="@+id/profileInfoBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.37"
         app:layout_constraintVertical_chainStyle="packed"
         app:shapeAppearanceOverlay="@style/CircleImageView"
         app:srcCompat="@drawable/burger"
@@ -83,12 +84,12 @@
 
     <ImageView
         android:id="@+id/pfpchangeBtn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="120dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="70dp"
         app:layout_constraintBottom_toTopOf="@+id/profileInfoBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.678"
+        app:layout_constraintHorizontal_bias="0.65"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.88"
@@ -99,6 +100,7 @@
         android:layout_width="380dp"
         android:layout_height="66dp"
         android:layout_marginVertical="20dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/profilemenubox"
         app:layout_constraintBottom_toTopOf="@+id/accNumberBtn"
         app:layout_constraintEnd_toEndOf="parent"
@@ -115,14 +117,13 @@
             app:layout_constraintEnd_toStartOf="@+id/textView15"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.523"
             app:srcCompat="@drawable/usermenu" />
 
         <TextView
             android:id="@+id/textView15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="232dp"
+            android:layout_marginEnd="230dp"
             android:text="Profile Info"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -132,41 +133,53 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/logoutBtn"
         android:layout_width="380dp"
         android:layout_height="66dp"
-        android:background="@drawable/profilemenubox"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        app:cardBackgroundColor="#E92E2E"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
         app:layout_constraintBottom_toTopOf="@+id/Botmenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sellerBtn">
 
-        <ImageView
-            android:id="@+id/imageView11"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView16"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.523"
-            app:srcCompat="@drawable/logout" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-        <TextView
-            android:id="@+id/textView16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="264dp"
-            android:text="Logout"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.512" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/imageView11"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5"
+                app:srcCompat="@drawable/logout" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="LOGOUT"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView11"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/sellerBtn"
@@ -178,7 +191,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/accNumberBtn">
+        app:layout_constraintTop_toBottomOf="@+id/accHistoryBtn">
 
         <ImageView
             android:id="@+id/imageView12"
@@ -189,7 +202,6 @@
             app:layout_constraintEnd_toStartOf="@+id/textView17"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.523"
             app:srcCompat="@drawable/businessman" />
 
         <TextView
@@ -211,7 +223,7 @@
         android:layout_height="66dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/profilemenubox"
-        app:layout_constraintBottom_toTopOf="@+id/sellerBtn"
+        app:layout_constraintBottom_toTopOf="@+id/accHistoryBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -234,6 +246,41 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="136dp"
             android:text="Add Account Number"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/accHistoryBtn"
+        android:layout_width="380dp"
+        android:layout_height="66dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/profilemenubox"
+        app:layout_constraintBottom_toTopOf="@+id/sellerBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/accNumberBtn">
+
+        <ImageView
+            android:id="@+id/imageView17"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/transaction" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="155dp"
+            android:text="Transaction History"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
