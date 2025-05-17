@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAF3E0"
+    android:background="#F0E6C9"
     tools:context=".Withdraw">
 
     <androidx.appcompat.widget.Toolbar

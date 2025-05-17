@@ -5,14 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAF3E0"
+    android:background="#F0E6C9"
     tools:context=".ui.transaction.Transaction">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Botmenu"
         android:layout_width="match_parent"
         android:layout_height="63dp"
-        android:background="#F6F0F0"
+        android:background="#BC8B45"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
