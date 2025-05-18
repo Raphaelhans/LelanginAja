@@ -10,7 +10,9 @@ data class TransactionItem(
     val date: String,
     val status: String,
     val typeIconResId: Int,
-    val itemImageResId: Int
+    val itemImageResId: Int,
+    val lastBid: Int
+
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -18,6 +20,7 @@ data class TransactionItem(
         parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString().toString(),
+        parcel.readInt(),
         parcel.readInt(),
         parcel.readInt()
     )
@@ -31,6 +34,7 @@ data class TransactionItem(
         parcel.writeString(date)
         parcel.writeString(status)
         parcel.writeInt(typeIconResId)
+        parcel.writeInt(lastBid)
     }
 
     companion object CREATOR : Parcelable.Creator<TransactionItem> {
