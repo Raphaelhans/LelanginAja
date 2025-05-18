@@ -658,6 +658,10 @@
     array (
       'server_key' => 'SB-Mid-server-IdryfX9KUaGYE-5nCyl19NyQ',
     ),
+    'opencage' => 
+    array (
+      'key' => 'c9eb49b95b084812b7cc52bc522285dc',
+    ),
   ),
   'session' => 
   array (

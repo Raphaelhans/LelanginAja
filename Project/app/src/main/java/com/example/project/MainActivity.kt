@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -24,6 +26,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val layout = layoutInflater.inflate(R.layout.custom_toast, null)
+        val toastText = layout.findViewById<TextView>(R.id.toast_text)
+        val toastImage = layout.findViewById<ImageView>(R.id.toastimage)
+
         binding.RegisterBtn.setOnClickListener {
             val intent = Intent(this, Register::class.java)
             startActivity(intent)
@@ -35,12 +41,31 @@ class MainActivity : AppCompatActivity() {
             .load(R.drawable.rotate)
             .preload()
 
+        Glide.with(this)
+            .asGif()
+            .load(R.drawable.like)
+            .preload()
+
+        Glide.with(this)
+            .asGif()
+            .load(R.drawable.error)
+            .preload()
+
         binding.LoginBtn.setOnClickListener {
             val email = binding.editTextEmail.text.toString()
             val password = binding.editTextPassword.text.toString()
 
             if (email.isEmpty() || password.isEmpty() || !email.contains("@gmail.com")) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                toastText.text = "Invalid email or password"
+                Glide.with(this)
+                    .asGif()
+                    .load(R.drawable.error)
+                    .into(toastImage)
+                with (Toast(applicationContext)) {
+                    duration = Toast.LENGTH_LONG
+                    view = layout
+                    show()
+                }
             } else {
                 binding.LoginBtn.visibility = View.GONE
                 Glide.with(this)
@@ -53,14 +78,34 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModels.resresponse.observe(this){ response ->
-            Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+            toastText.text = response
+            if (viewModels.checkres.value == false){
+                Glide.with(this)
+                    .asGif()
+                    .load(R.drawable.error)
+                    .into(toastImage)
+            }
+            with (Toast(applicationContext)) {
+                duration = Toast.LENGTH_LONG
+                view = layout
+                show()
+            }
         }
 
         viewModels.checkres.observe(this) { success ->
             if (success) {
                 val intent = Intent(this, HomeUser::class.java)
                 intent.putExtra("email", binding.editTextEmail.text.toString())
-                Toast.makeText(getApplication(), "Login Success", Toast.LENGTH_SHORT).show()
+                toastText.text = "Login Success"
+                Glide.with(this)
+                    .asGif()
+                    .load(R.drawable.like)
+                    .into(toastImage)
+                with (Toast(applicationContext)) {
+                    duration = Toast.LENGTH_LONG
+                    view = layout
+                    show()
+                }
                 startActivity(intent)
                 finish()
             }

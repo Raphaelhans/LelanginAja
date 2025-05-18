@@ -37,5 +37,8 @@ return [
     'midtrans' => [
         'server_key' => env('MIDTRANS_SERVER_KEY'),
     ],
+    'opencage' => [
+        'key' => env('OPENCAGE_API_KEY'),
+    ],
 
 ];

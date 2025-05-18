@@ -12,7 +12,7 @@
         android:id="@+id/Botmenu"
         android:layout_width="match_parent"
         android:layout_height="63dp"
-        android:background="#BC8B45"
+        android:background="#FAF3E0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

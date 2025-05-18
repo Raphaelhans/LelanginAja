@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -27,6 +29,10 @@ class Register : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val layout = layoutInflater.inflate(com.example.project.R.layout.custom_toast, null)
+        val toastText = layout.findViewById<TextView>(com.example.project.R.id.toast_text)
+        val toastImage = layout.findViewById<ImageView>(com.example.project.R.id.toastimage)
+
         binding.LogBtn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -38,6 +44,16 @@ class Register : AppCompatActivity() {
             .load(com.example.project.R.drawable.rotate)
             .preload()
 
+        Glide.with(this)
+            .asGif()
+            .load(com.example.project.R.drawable.like)
+            .preload()
+
+        Glide.with(this)
+            .asGif()
+            .load(com.example.project.R.drawable.error)
+            .preload()
+
         binding.RegisBtn.setOnClickListener {
             val name = binding.Nametext.text.toString()
             val phone = binding.Numbertext.text.toString()
@@ -47,11 +63,23 @@ class Register : AppCompatActivity() {
             val location = binding.Lokasitxt.selectedItem.toString()
 
             if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || location.isEmpty()) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                toastText.text = "Please Fill All Fields"
+                Glide.with(this)
+                    .asGif()
+                    .load(com.example.project.R.drawable.error)
+                    .into(toastImage)
             } else if (password != confirmPassword) {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                toastText.text = "Password Do Not Match"
+                Glide.with(this)
+                    .asGif()
+                    .load(com.example.project.R.drawable.error)
+                    .into(toastImage)
             } else if (!email.contains("@gmail.com")) {
-                Toast.makeText(this, "Invalid email", Toast.LENGTH_SHORT).show()
+                toastText.text = "Invalid email"
+                Glide.with(this)
+                    .asGif()
+                    .load(com.example.project.R.drawable.error)
+                    .into(toastImage)
             } else {
                 binding.RegisBtn.visibility = View.GONE
                 binding.loadingGif.visibility = View.VISIBLE
@@ -60,6 +88,11 @@ class Register : AppCompatActivity() {
                     .load(com.example.project.R.drawable.rotate)
                     .into(binding.loadingGif)
                 viewModel.registerUser(name, phone, email, password, 0, 0, location)
+            }
+            with (Toast(applicationContext)) {
+                duration = Toast.LENGTH_LONG
+                view = layout
+                show()
             }
         }
 
@@ -70,7 +103,16 @@ class Register : AppCompatActivity() {
 
         viewModel.checkres.observe(this) { success ->
             if (success) {
-                Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show()
+                toastText.text = "Registration Successfull"
+                Glide.with(this)
+                    .asGif()
+                    .load(com.example.project.R.drawable.like)
+                    .into(toastImage)
+                with (Toast(applicationContext)) {
+                    duration = Toast.LENGTH_LONG
+                    view = layout
+                    show()
+                }
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -81,9 +123,20 @@ class Register : AppCompatActivity() {
         }
 
         viewModel.resresponse.observe(this) { response ->
-            Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+            toastText.text = "Invalid email or password"
+            if (viewModel.checkres.value == false){
+                Glide.with(this)
+                    .asGif()
+                    .load(com.example.project.R.drawable.error)
+                    .into(toastImage)
+            }
+            with (Toast(applicationContext)) {
+                duration = Toast.LENGTH_LONG
+                view = layout
+                show()
+            }
             binding.RegisBtn.text = "Register"
-//            binding.loadingRegis.visibility = View.GONE
+//            binding.loadingGif.visibility = View.GONE
         }
 
 
