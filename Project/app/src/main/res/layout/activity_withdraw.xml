@@ -31,7 +31,8 @@
             android:text="Withdraw"
             android:textColor="#333333"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_gravity="center"/>
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.cardview.widget.CardView
