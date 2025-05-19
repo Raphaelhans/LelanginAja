@@ -9,7 +9,7 @@
     tools:context=".History">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/newauctiontoolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:background="#E9DAB1"
@@ -49,6 +49,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/newauctiontoolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

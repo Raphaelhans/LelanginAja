@@ -96,7 +96,7 @@
                 app:layout_constraintTop_toTopOf="@+id/imageView7" />
 
             <TextView
-                android:id="@+id/hargaTxt"
+                android:id="@+id/lastBidTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"

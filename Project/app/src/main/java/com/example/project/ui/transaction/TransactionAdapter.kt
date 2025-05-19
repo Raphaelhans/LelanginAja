@@ -25,6 +25,8 @@ class TransactionAdapter(private val transactions: List<TransactionItem>) :
                 binding.Statustxt.text = transaction.status
                 binding.imageView7.setImageResource(transaction.itemImageResId)
                 binding.barangTxt.text = transaction.itemName
+                binding.lastBidTxt.text = "Last Bid: Rp ${transaction.lastBid}"
+
                 if (transaction.type != "Completed"){
                     binding.ratelayout.visibility = View.GONE
                 }
