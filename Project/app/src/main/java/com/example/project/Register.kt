@@ -60,9 +60,8 @@ class Register : AppCompatActivity() {
             val email = binding.editTextEmail.text.toString()
             val password = binding.PasswordText.text.toString()
             val confirmPassword = binding.editTextPassword.text.toString()
-            val location = binding.Lokasitxt.selectedItem.toString()
 
-            if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || location.isEmpty()) {
+            if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 toastText.text = "Please Fill All Fields"
                 Glide.with(this)
                     .asGif()
@@ -87,7 +86,7 @@ class Register : AppCompatActivity() {
                     .asGif()
                     .load(com.example.project.R.drawable.rotate)
                     .into(binding.loadingGif)
-                viewModel.registerUser(name, phone, email, password, 0, 0, location)
+                viewModel.registerUser(name, phone, email, password, 0, 0, "")
             }
             with (Toast(applicationContext)) {
                 duration = Toast.LENGTH_LONG
@@ -95,11 +94,6 @@ class Register : AppCompatActivity() {
                 show()
             }
         }
-
-        val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, cities)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.Lokasitxt.adapter = adapter
-        binding.Lokasitxt.setSelection(0)
 
         viewModel.checkres.observe(this) { success ->
             if (success) {

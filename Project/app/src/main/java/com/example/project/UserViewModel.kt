@@ -1,5 +1,6 @@
 package com.example.project
 
+import android.R
 import android.util.Log
 import android.content.ContentResolver
 import android.graphics.Bitmap
@@ -12,15 +13,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.database.App
 import com.example.project.database.dataclass.BankAccount
+import com.example.project.database.dataclass.Categories
 import com.example.project.database.dataclass.CustomerDetails
 import com.example.project.database.dataclass.ItemDetails
 import com.example.project.database.dataclass.MidtransPayload
 import com.example.project.database.dataclass.MidtransResponse
 import com.example.project.database.dataclass.Payment
+import com.example.project.database.dataclass.Products
 import com.example.project.database.dataclass.TransactionDetails
 import org.mindrot.jbcrypt.BCrypt
 import com.example.project.database.dataclass.Users
 import com.example.project.database.dataclass.Withdraws
+import com.example.project.ui.auction.AuctionItem
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.AggregateSource
@@ -40,6 +44,7 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.internal.wait
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -75,6 +80,12 @@ class UserViewModel:ViewModel() {
     private val _amountTopup = MutableLiveData<Int>()
     val amountTopup: LiveData<Int> get() = _amountTopup
 
+    private val _categories = MutableLiveData<List<Categories>>()
+    val categories: LiveData<List<Categories>> = _categories
+
+    private val _Items = MutableLiveData<List<Products>>()
+    val Items: LiveData<List<Products>> = _Items
+
     fun getCurrUser(email: String) {
         viewModelScope.launch {
             try {
@@ -92,6 +103,30 @@ class UserViewModel:ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.e("Firestore Error", "Error fetching user: ${e.message}", e)
+            }
+        }
+    }
+
+    fun loadCategories() {
+        viewModelScope.launch {
+            try {
+                val categories = db.collection("Categories").get().await()
+                val accList = categories.documents.mapNotNull { it.toObject(Categories::class.java) }
+                _categories.value = accList
+            }catch (e: Exception){
+                Log.e("Firestore Error", "Error loading categories: ${e.message}", e)
+            }
+        }
+    }
+
+    fun loadItemsForCategory(category: String) {
+        viewModelScope.launch {
+            try {
+                val tempItem = db.collection("Products").get().await()
+                val rawItem = tempItem.documents.mapNotNull { it.toObject(Products::class.java) }
+                _Items.value = rawItem.filter { it.category_id == category }
+            }catch (e: Exception){
+                Log.e("Firestore Error", "Error loading items: ${e.message}", e)
             }
         }
     }
@@ -150,7 +185,7 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    fun uploadImageToStorage(uri: Uri, contentResolver: ContentResolver) {
+    fun uploadImageToStorage(uri: Uri, contentResolver: ContentResolver, condition: String) {
         viewModelScope.launch {
             try {
                 val inputStream: InputStream? = contentResolver.openInputStream(uri)
@@ -187,7 +222,9 @@ class UserViewModel:ViewModel() {
                 val imageUrl = json.getJSONObject("data").getString("link")
                 Log.d("Imgur", "Uploaded URL: $imageUrl")
 
-                db.collection("Users").document(currUser.value?.user_id.toString()).update("profilePicturePath", imageUrl).await()
+                if (condition == "pfp"){
+                    db.collection("Users").document(currUser.value?.user_id.toString()).update("profilePicturePath", imageUrl).await()
+                }
 
                 _resresponse.value = "Successfully updated the profile picture on " + imageUrl
                 getCurrUser(currUser.value?.email.toString())
@@ -354,6 +391,19 @@ class UserViewModel:ViewModel() {
             } catch (e: Exception) {
                 _resresponse.value = "Payment failed: ${e.message}"
                 Log.e("PaymentVM", "Error: ${e.message}", e)
+            }
+        }
+    }
+
+    fun becomeSeller(){
+        viewModelScope.launch {
+            try {
+                db.collection("Users").document(currUser.value?.user_id.toString()).update("status", 1)
+
+                _resresponse.value = "Successfully become a seller"
+                getCurrUser(currUser.value?.email.toString())
+            }catch (e: Exception) {
+                _resresponse.value = "Changes to Seller Failed: ${e.message}"
             }
         }
     }

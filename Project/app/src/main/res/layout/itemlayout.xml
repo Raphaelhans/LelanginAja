@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="product"
+            type="com.example.project.database.dataclass.Products" />
+    </data>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainFrame"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -14,11 +20,11 @@
         android:layout_width="0dp"
         android:layout_height="180dp"
         android:layout_marginBottom="8dp"
-        android:scaleType="centerCrop"
         android:contentDescription="Auction item image"
-        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/itemName"
@@ -29,9 +35,9 @@
         android:text="Nama Barang"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/itemImage"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/itemImage" />
 
     <TextView
         android:id="@+id/itemBid"
@@ -40,11 +46,12 @@
         android:layout_marginTop="2dp"
         android:paddingStart="8dp"
         android:text="Bid Tertinggi: Rp 0"
-        android:textSize="14sp"
         android:textColor="#444444"
-        app:layout_constraintTop_toBottomOf="@id/itemName"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itemName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

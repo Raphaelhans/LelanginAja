@@ -1,115 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
-<!--    tools:context=".ui.AddBarangActivity">-->
+    android:background="#FAF3E0">
+    <!--    tools:context=".ui.AddBarangActivity">-->
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/Botmenu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="63dp"
+        android:background="#F6F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/homebtn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/transBtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/homent" />
+
+        <ImageView
+            android:id="@+id/transBtn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/addBid"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/homebtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/list" />
+
+        <ImageView
+            android:id="@+id/addBid"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/profilebtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/transBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/addclicked" />
+
+        <ImageView
+            android:id="@+id/profilebtn"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/addBid"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/user" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="800dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/Botmenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <ImageView
             android:id="@+id/imagePreview"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:scaleType="centerCrop"
             android:background="#CCCCCC"
             android:contentDescription="Foto Barang"
-            android:src="@drawable/imgplace" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/imgplace"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btnPilihFoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Add Photo"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintBottom_toTopOf="@+id/NamaBarang" />
 
 
         <EditText
             android:id="@+id/NamaBarang"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:hint="Product Name"
-            android:layout_marginTop="16dp" />
+            app:layout_constraintBottom_toTopOf="@+id/Deskripsi"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <EditText
             android:id="@+id/Deskripsi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="top"
             android:hint="Description"
             android:inputType="textMultiLine"
             android:minLines="3"
-            android:gravity="top"
-            android:layout_marginTop="12dp" />
+            app:layout_constraintBottom_toTopOf="@+id/Kota"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <EditText
             android:id="@+id/Kota"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:hint="City"
-            android:layout_marginTop="12dp" />
+            app:layout_constraintBottom_toTopOf="@+id/Alamat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <EditText
             android:id="@+id/Alamat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="top"
             android:hint="Full Address"
             android:inputType="textMultiLine"
             android:minLines="2"
-            android:gravity="top"
-            android:layout_marginTop="12dp" />
+            app:layout_constraintBottom_toTopOf="@+id/textView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <TextView
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Auction end date"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="271dp"
+            android:text="Auction start date"
             android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            app:layout_constraintBottom_toTopOf="@+id/Tanggal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
 
         <EditText
             android:id="@+id/Tanggal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Date"
-            android:focusable="false"
+            android:layout_marginBottom="24dp"
             android:clickable="true"
-            android:layout_marginTop="4dp" />
-
+            android:focusable="false"
+            android:hint="Date"
+            app:layout_constraintBottom_toTopOf="@+id/textView3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
+            android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="270dp"
             android:text="Auction end time"
             android:textStyle="bold"
-            android:layout_marginTop="12dp" />
+            app:layout_constraintBottom_toTopOf="@+id/Jam"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
 
         <EditText
             android:id="@+id/Jam"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Time"
-            android:focusable="false"
+            android:layout_marginBottom="24dp"
             android:clickable="true"
-            android:layout_marginTop="4dp" />
-
+            android:focusable="false"
+            android:hint="Time"
+            app:layout_constraintBottom_toTopOf="@+id/btnSubmitBarang"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/btnSubmitBarang"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add Product"
-            android:layout_marginTop="20dp"
             android:backgroundTint="#FF9800"
-            android:textColor="@android:color/white" />
+            android:text="Add Product"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    </LinearLayout>
-</ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

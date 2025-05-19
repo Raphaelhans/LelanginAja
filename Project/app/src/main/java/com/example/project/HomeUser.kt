@@ -3,6 +3,7 @@ package com.example.project
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -19,6 +20,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.midtrans.sdk.corekit.core.MidtransSDK
 import com.midtrans.sdk.corekit.core.TransactionRequest
 import com.midtrans.sdk.corekit.models.ItemDetails
+import okhttp3.internal.wait
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -28,34 +30,45 @@ class HomeUser : BaseClass() {
     val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
     var balanceDisplay = true
     val cities = arrayOf("Surabaya", "Malang", "Sidoarjo", "Kediri", "Jember")
+    lateinit var adapter: FragmentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityHomeUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        viewModels.loadCategories()
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
 
-        val adapter = FragmentAdapter(this)
-        viewPager.adapter = adapter
+        viewModels.categories.observe(this) { categories ->
+            if (::adapter.isInitialized.not()) {
 
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = AuctionData.categories[position]
-        }.attach()
+                adapter = FragmentAdapter(this, categories)
+                viewPager.adapter = adapter
 
-        tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+                TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                    tab.text = categories[position].name
+                }.attach()
 
-        val locadapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, cities)
-        locadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerLocation.adapter = locadapter
-        binding.spinnerLocation.setSelection(0)
+                tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+            }
+        }
 
         viewModels.currUser.observe(this) { user ->
             if (user != null) {
                 binding.nameUserDis.text = user.name
                 binding.saldouserDis.text = "Rp. **********"
+
+                if (user.status == 1){
+                    binding.addBid.visibility = View.VISIBLE
+                    binding.addBid.setOnClickListener {
+                        val intent = Intent(this, SellerAddBarang::class.java)
+                        intent.putExtra("email", viewModels.currUser.value?.email)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
 
                 binding.profilebtn.setOnClickListener {
                     val intent = Intent(this, Profile::class.java)

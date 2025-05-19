@@ -6,14 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.project.UserViewModel
 import com.example.project.databinding.FragmentAuctionBinding
 
 class Auction : Fragment() {
     private lateinit var binding: FragmentAuctionBinding
+    val viewModel: UserViewModel by activityViewModels()
+    lateinit var adapter: AuctionAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
@@ -26,19 +31,25 @@ class Auction : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.loadCategories()
 
-        val category = arguments?.getString(ARG_CATEGORY) ?: "Electronics"
-        val items = AuctionData.getItemsForCategory(category)
+        viewModel.categories.observe(viewLifecycleOwner) { categories ->
+            val category = arguments?.getString(ARG_CATEGORY) ?: return@observe
+            adapter = AuctionAdapter()
+            binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
+            binding.recyclerView.adapter = adapter
 
-        val adapter = AuctionAdapter(items)
-        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
-        binding.recyclerView.adapter = adapter
+            viewModel.loadItemsForCategory(category)
 
-        adapter.setOnItemClickListener { item ->
-            val intent = Intent(requireContext(), Auctiondetail::class.java).apply {
-                putExtra("auction_item", item)
+            viewModel.Items.observe(viewLifecycleOwner) { items ->
+                adapter.submitList(items)
             }
-            startActivity(intent)
+
+            adapter.onItemClickListener = { item ->
+                val intent = Intent(requireContext(), AuctionItem::class.java)
+                intent.putExtra("auction_item", item.items_id)
+                startActivity(intent)
+            }
         }
     }
 

@@ -16,7 +16,6 @@ interface MidtransDao {
 
     @GET("check-status/{orderId}")
     suspend fun checkStatus(@Path("orderId") orderId: String): MidtransResponse
-
 }
 
 

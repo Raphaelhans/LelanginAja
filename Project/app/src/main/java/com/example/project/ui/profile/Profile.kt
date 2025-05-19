@@ -68,9 +68,10 @@ class Profile : BaseClass() {
                 binding.userpfpDis.setImageResource(R.drawable.profile)
             }
 
+            if(user?.status == 0)
             binding.sellerBtn.setOnClickListener{
                 showOutsellDialog("Are you sure you want to become a seller?", "seller") { newValue ->
-
+                    viewModel.becomeSeller()
                 }
             }
 
@@ -166,7 +167,7 @@ class Profile : BaseClass() {
             selectedImageUri = data.data
             selectedImageUri?.let { uri ->
                 binding.userpfpDis.setImageURI(uri)
-                viewModel.uploadImageToStorage(uri, this.contentResolver)
+                viewModel.uploadImageToStorage(uri, this.contentResolver, "pfp")
             }
         }
     }
