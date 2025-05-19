@@ -34,54 +34,54 @@ class ProfileInfo : AppCompatActivity() {
             binding.userNumber.text = viewModel.currUser.value?.phone
             binding.UserPass.text = "*********"
             binding.userEmail.text = viewModel.currUser.value?.email
-            if (viewModel.currUser.value?.pin == ""){
-                binding.userPIN.text = "Set a PIN"
-            }
-            else{
-                binding.userPIN.text = "*********"
-            }
-
-            binding.editName.setOnClickListener{
-                showEditDialog("Name", viewModel.currUser.value?.name!!) { newValue ->
-                    if (newValue.isNotEmpty() && newValue != viewModel.currUser.value?.name){
-                        viewModel.editProfile("Name", newValue)
-                        binding.userName.text = viewModel.currUser.value?.name
-                    }
-                    else{
-                        Toast.makeText(this, "Invalid Name", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            binding.editNumber.setOnClickListener{
-                showEditDialog("Phone Number", viewModel.currUser.value?.phone!!) { newValue ->
-                    if (newValue.isNotEmpty() && newValue != viewModel.currUser.value?.name && newValue.isDigitsOnly()){
-                        viewModel.editProfile("Phone", newValue)
-                        binding.userName.text = viewModel.currUser.value?.name
-                    }
-                    else{
-                        Toast.makeText(this, "Invalid Phone Number", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            binding.editPass.setOnClickListener{
-                showPasswordChangeDialog()
-            }
-
-            binding.editPin.setOnClickListener {
-                if (viewModel.currUser.value?.pin == ""){
-                    showPINDialog(false)
-                }
-                else{
-                    showPINDialog(true)
-                }
-            }
-
-            binding.backBtn.setOnClickListener {
-                val intent = Intent(this, Profile::class.java)
-                intent.putExtra("email", viewModel.currUser.value?.email)
-                startActivity(intent)
-                finish()
-            }
+//            if (viewModel.currUser.value?.pin == ""){
+//                binding.userPIN.text = "Set a PIN"
+//            }
+//            else{
+//                binding.userPIN.text = "*********"
+//            }
+//
+//            binding.editName.setOnClickListener{
+//                showEditDialog("Name", viewModel.currUser.value?.name!!) { newValue ->
+//                    if (newValue.isNotEmpty() && newValue != viewModel.currUser.value?.name){
+//                        viewModel.editProfile("Name", newValue)
+//                        binding.userName.text = viewModel.currUser.value?.name
+//                    }
+//                    else{
+//                        Toast.makeText(this, "Invalid Name", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//            binding.editNumber.setOnClickListener{
+//                showEditDialog("Phone Number", viewModel.currUser.value?.phone!!) { newValue ->
+//                    if (newValue.isNotEmpty() && newValue != viewModel.currUser.value?.name && newValue.isDigitsOnly()){
+//                        viewModel.editProfile("Phone", newValue)
+//                        binding.userName.text = viewModel.currUser.value?.name
+//                    }
+//                    else{
+//                        Toast.makeText(this, "Invalid Phone Number", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//            binding.editPass.setOnClickListener{
+//                showPasswordChangeDialog()
+//            }
+//
+//            binding.editPin.setOnClickListener {
+//                if (viewModel.currUser.value?.pin == ""){
+//                    showPINDialog(false)
+//                }
+//                else{
+//                    showPINDialog(true)
+//                }
+//            }
+//
+//            binding.backBtn.setOnClickListener {
+//                val intent = Intent(this, Profile::class.java)
+//                intent.putExtra("email", viewModel.currUser.value?.email)
+//                startActivity(intent)
+//                finish()
+//            }
         }
 
         viewModel.resresponse.observe(this) { response ->

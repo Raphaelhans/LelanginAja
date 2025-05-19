@@ -1,5 +1,6 @@
 package com.example.project.ui.transaction
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,9 @@ class TransactionAdapter(private val transactions: List<TransactionItem>) :
                 binding.imageView5.setImageResource(transaction.typeIconResId)
                 binding.Statustxt.text = transaction.type
                 binding.tgltext.text = transaction.date
+                if (transaction.status == "Selesai"){
+                    binding.Statustxt.setTextColor(Color.parseColor("#33BA21"))
+                }
                 binding.Statustxt.text = transaction.status
                 binding.imageView7.setImageResource(transaction.itemImageResId)
                 binding.barangTxt.text = transaction.itemName
