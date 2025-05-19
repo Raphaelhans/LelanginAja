@@ -23,14 +23,14 @@ class ProfileInfo : AppCompatActivity() {
         binding = ActivityProfileInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.editName.setOnClickListener{
-            showEditDialog("Name", userName) { newValue ->
-                userName = newValue
-                binding.userName.text = newValue
-            }
-        }
+//        binding.editName.setOnClickListener{
+//            showEditDialog("Name", userName) { newValue ->
+//                userName = newValue
+//                binding.userName.text = newValue
+//            }
+//        }
 
-        binding.backBtn.setOnClickListener {
+        binding.backbtn.setOnClickListener {
             val intent = Intent(this, Profile::class.java)
             startActivity(intent)
             finish()
