@@ -107,26 +107,51 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    fun loadCategories() {
-        viewModelScope.launch {
-            try {
-                val categories = db.collection("Categories").get().await()
-                val accList = categories.documents.mapNotNull { it.toObject(Categories::class.java) }
-                _categories.value = accList
-            }catch (e: Exception){
-                Log.e("Firestore Error", "Error loading categories: ${e.message}", e)
-            }
+    suspend fun loadCategories(): List<Categories> {
+        return try {
+            val snapshot = db.collection("Categories").get().await()
+            val accList = snapshot.documents.mapNotNull { it.toObject(Categories::class.java) }
+            _categories.postValue(accList)
+            accList
+        } catch (e: Exception) {
+            _resresponse.postValue("Error loading categories: ${e.message}")
+            Log.e("Firestore Error", "Error loading categories: ${e.message}", e)
+            emptyList()
         }
     }
 
-    fun loadItemsForCategory(category: String) {
+
+    suspend fun loadItemsForCategory(category: String): List<Products> {
+        return try {
+            val result = db.collection("Products").get().await()
+            val final = result.documents.mapNotNull {
+                it.toObject(Products::class.java)
+            }.filter {
+                it.category_id == category
+            }
+            _Items.postValue(final)
+            final
+        } catch (e: Exception) {
+            Log.e("Firestore", "Failed loading items: ${e.message}")
+            emptyList()
+        }
+    }
+
+    fun addItems(name:String, description:String, city:String, address:String, start_bid:Int, start_date:String, end_date:String, category: String, image_url:Uri, ContentResolver:ContentResolver){
         viewModelScope.launch {
             try {
-                val tempItem = db.collection("Products").get().await()
-                val rawItem = tempItem.documents.mapNotNull { it.toObject(Products::class.java) }
-                _Items.value = rawItem.filter { it.category_id == category }
+                val collectionRef = db.collection("Products").document().id
+
+                val imgUrl = uploadImageToStorage(image_url, ContentResolver, "")
+
+                val item = Products(collectionRef, category, currUser.value?.user_id!!, 0, name, description, city, address, start_date, end_date, start_bid,0, imgUrl,0)
+                db.runTransaction { transaction ->
+                    transaction.set(db.collection("Products").document(collectionRef), item)
+                }.await()
+
+                _resresponse.value = "Successfully added item"
             }catch (e: Exception){
-                Log.e("Firestore Error", "Error loading items: ${e.message}", e)
+                Log.e("Firestore Error", "Error adding item: ${e.message}", e)
             }
         }
     }
@@ -185,13 +210,16 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    fun uploadImageToStorage(uri: Uri, contentResolver: ContentResolver, condition: String) {
-        viewModelScope.launch {
+    suspend fun uploadImageToStorage(uri: Uri, contentResolver: ContentResolver, condition: String): String {
+        return withContext(Dispatchers.IO) {
             try {
                 val inputStream: InputStream? = contentResolver.openInputStream(uri)
-                if (inputStream == null) throw Exception("Unable to open input stream")
+                    ?: throw Exception("Unable to open input stream")
+
                 val bitmap = BitmapFactory.decodeStream(inputStream)
-                inputStream.close()
+                if (inputStream != null) {
+                    inputStream.close()
+                }
 
                 if (bitmap == null) throw Exception("Failed to decode image from Uri")
 
@@ -212,9 +240,7 @@ class UserViewModel:ViewModel() {
                     .post(requestBody)
                     .build()
 
-                val response = withContext(Dispatchers.IO) {
-                    client.newCall(request).execute()
-                }
+                val response = client.newCall(request).execute()
 
                 if (!response.isSuccessful) throw Exception("Imgur upload failed: ${response.code} - ${response.message}")
 
@@ -222,18 +248,23 @@ class UserViewModel:ViewModel() {
                 val imageUrl = json.getJSONObject("data").getString("link")
                 Log.d("Imgur", "Uploaded URL: $imageUrl")
 
-                if (condition == "pfp"){
-                    db.collection("Users").document(currUser.value?.user_id.toString()).update("profilePicturePath", imageUrl).await()
+                if (condition == "pfp") {
+                    db.collection("Users").document(currUser.value?.user_id.toString())
+                        .update("profilePicturePath", imageUrl).await()
+                    _resresponse.postValue("Successfully updated the profile picture on $imageUrl")
                 }
 
-                _resresponse.value = "Successfully updated the profile picture on " + imageUrl
                 getCurrUser(currUser.value?.email.toString())
+
+                return@withContext imageUrl
             } catch (e: Exception) {
                 Log.e("Imgur Error", "Upload failed: ${e.message}", e)
-                _resresponse.value = e.message
+                _resresponse.postValue(e.message)
+                throw e
             }
         }
     }
+
 
     fun editProfile(condition: String, changes:String){
         viewModelScope.launch {

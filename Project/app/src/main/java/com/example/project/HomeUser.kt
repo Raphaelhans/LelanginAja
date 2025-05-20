@@ -1,26 +1,20 @@
 package com.example.project
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.project.databinding.ActivityHomeUserBinding
-import com.example.project.ui.auction.AuctionData
 import com.example.project.ui.profile.Profile
 import com.example.project.ui.transaction.Transaction
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.midtrans.sdk.corekit.core.MidtransSDK
-import com.midtrans.sdk.corekit.core.TransactionRequest
-import com.midtrans.sdk.corekit.models.ItemDetails
-import okhttp3.internal.wait
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -37,14 +31,15 @@ class HomeUser : BaseClass() {
         enableEdgeToEdge()
         binding = ActivityHomeUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModels.loadCategories()
+
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
 
-        viewModels.categories.observe(this) { categories ->
-            if (::adapter.isInitialized.not()) {
+        lifecycleScope.launch {
+            val categories = viewModels.loadCategories()
 
-                adapter = FragmentAdapter(this, categories)
+            if (categories.isNotEmpty()) {
+                adapter = FragmentAdapter(this@HomeUser, categories)
                 viewPager.adapter = adapter
 
                 TabLayoutMediator(tabLayout, viewPager) { tab, position ->
@@ -52,6 +47,8 @@ class HomeUser : BaseClass() {
                 }.attach()
 
                 tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+            } else {
+                Toast.makeText(this@HomeUser, "No categories found", Toast.LENGTH_SHORT).show()
             }
         }
 

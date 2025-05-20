@@ -5,16 +5,19 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.BaseAdapter
 import android.widget.GridView
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.project.AccountNumber
 import com.example.project.AuthViewModel
@@ -22,10 +25,12 @@ import com.example.project.BaseClass
 import com.example.project.HomeUser
 import com.example.project.MainActivity
 import com.example.project.R
+import com.example.project.SellerAddBarang
 import com.example.project.UserViewModel
 import com.example.project.databinding.ActivityProfileBinding
 import com.example.project.ui.transaction.Transaction
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.launch
 
 class Profile : BaseClass() {
     private lateinit var binding: ActivityProfileBinding
@@ -68,10 +73,21 @@ class Profile : BaseClass() {
                 binding.userpfpDis.setImageResource(R.drawable.profile)
             }
 
-            if(user?.status == 0)
-            binding.sellerBtn.setOnClickListener{
-                showOutsellDialog("Are you sure you want to become a seller?", "seller") { newValue ->
-                    viewModel.becomeSeller()
+            if(user?.status == 0){
+                binding.sellerBtn.visibility = View.VISIBLE
+                binding.sellerBtn.setOnClickListener{
+                    showOutsellDialog("Are you sure you want to become a seller?", "seller") { newValue ->
+
+                    }
+                }
+            }
+            else{
+                binding.sellerBtn.visibility = View.GONE
+                binding.addBid.visibility = View.VISIBLE
+                binding.addBid.setOnClickListener{
+                    val intent = Intent(this, SellerAddBarang::class.java)
+                    startActivity(intent)
+                    finish()
                 }
             }
 
@@ -125,6 +141,10 @@ class Profile : BaseClass() {
 
         }
 
+        viewModel.resresponse.observe(this){ res ->
+            Toast.makeText(this, res, Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     override fun onStart() {
@@ -138,7 +158,7 @@ class Profile : BaseClass() {
             AlertDialog.Builder(this)
                 .setTitle(custext)
                 .setPositiveButton("Yes") { _, _ ->
-
+                    viewModel.becomeSeller()
                 }
                 .setNegativeButton("No", null)
                 .show()
@@ -167,7 +187,13 @@ class Profile : BaseClass() {
             selectedImageUri = data.data
             selectedImageUri?.let { uri ->
                 binding.userpfpDis.setImageURI(uri)
-                viewModel.uploadImageToStorage(uri, this.contentResolver, "pfp")
+                lifecycleScope.launch {
+                    try {
+                        viewModel.uploadImageToStorage(uri, contentResolver, "pfp")
+                    } catch (e: Exception) {
+                        Log.e("Upload", "Failed to upload profile image", e)
+                    }
+                }
             }
         }
     }

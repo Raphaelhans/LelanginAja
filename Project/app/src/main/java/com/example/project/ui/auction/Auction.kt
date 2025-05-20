@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.project.UserViewModel
 import com.example.project.databinding.FragmentAuctionBinding
+import kotlinx.coroutines.launch
 
 class Auction : Fragment() {
     private lateinit var binding: FragmentAuctionBinding
@@ -31,27 +33,25 @@ class Auction : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.loadCategories()
 
-        viewModel.categories.observe(viewLifecycleOwner) { categories ->
-            val category = arguments?.getString(ARG_CATEGORY) ?: return@observe
-            adapter = AuctionAdapter()
-            binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
-            binding.recyclerView.adapter = adapter
+        val categoryId = arguments?.getString(ARG_CATEGORY) ?: return
 
-            viewModel.loadItemsForCategory(category)
+        adapter = AuctionAdapter()
+        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
+        binding.recyclerView.adapter = adapter
 
-            viewModel.Items.observe(viewLifecycleOwner) { items ->
-                adapter.submitList(items)
-            }
+        lifecycleScope.launch {
+            val items = viewModel.loadItemsForCategory(categoryId)
+            adapter.submitList(items)
+        }
 
-            adapter.onItemClickListener = { item ->
-                val intent = Intent(requireContext(), AuctionItem::class.java)
-                intent.putExtra("auction_item", item.items_id)
-                startActivity(intent)
-            }
+        adapter.onItemClickListener = { item ->
+            val intent = Intent(requireContext(), AuctionItem::class.java)
+            intent.putExtra("auction_item", item.items_id)
+            startActivity(intent)
         }
     }
+
 
     companion object {
         private const val ARG_CATEGORY = "category"

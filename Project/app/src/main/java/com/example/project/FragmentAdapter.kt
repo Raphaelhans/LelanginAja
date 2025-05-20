@@ -5,12 +5,13 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.project.database.dataclass.Categories
 import com.example.project.ui.auction.Auction
-import com.example.project.ui.auction.AuctionData
+import kotlinx.coroutines.CoroutineScope
 
 class FragmentAdapter(
     activity: AppCompatActivity,
     private val categories: List<Categories>
 ) : FragmentStateAdapter(activity) {
+
     override fun getItemCount(): Int = categories.size
 
     override fun createFragment(position: Int): Fragment {

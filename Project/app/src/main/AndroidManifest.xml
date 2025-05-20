@@ -31,10 +31,6 @@
             android:name=".AccountNumber"
             android:exported="false" />
         <activity
-            android:name=".ui.profile.AccNumber"
-            android:exported="false" />
-        tools:targetApi="31">
-        <activity
             android:name=".SellerAddBarang"
             android:exported="false" />
         <activity

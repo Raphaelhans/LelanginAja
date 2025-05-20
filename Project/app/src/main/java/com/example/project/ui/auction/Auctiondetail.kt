@@ -23,7 +23,7 @@ class Auctiondetail : AppCompatActivity() {
             binding.detailImage.setImageResource(it.imageResId)
             binding.detailName.text = it.name
             binding.detailBid.text = "Current Bid: $${it.currentBid}"
-            binding.detailCategory.text = "Category: ${it.category}"
+//            binding.detailCategory.text = "Category: ${it.category}"
 
 //            binding.bidButton.setOnClickListener {
 //                println("Bidding on ${it.name}")
@@ -38,7 +38,7 @@ class Auctiondetail : AppCompatActivity() {
                 binding.detailImage.setImageResource(it.imageResId)
                 binding.detailName.text = it.name
                 binding.detailBid.text = "Current Bid: $${it.currentBid}"
-                binding.detailCategory.text = "Category: ${it.category}"
+//                binding.detailCategory.text = "Category: ${it.category}"
 
 //                binding.bidButton.setOnClickListener {
 //                    println("Bidding on ${it.name}")

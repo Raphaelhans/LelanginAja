@@ -21,7 +21,6 @@ import com.example.project.databinding.ActivityRegisterBinding
 class Register : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     val viewModel by viewModels<AuthViewModel>()
-    val cities = arrayOf("Surabaya", "Malang", "Sidoarjo", "Kediri", "Jember")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

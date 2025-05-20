@@ -16,6 +16,8 @@ import com.example.project.database.dataclass.BankAccount
 import com.example.project.database.dataclass.Products
 import com.example.project.databinding.AccountNumberLayoutBinding
 import com.example.project.databinding.ItemlayoutBinding
+import java.text.NumberFormat
+import java.util.Locale
 
 class AccountDiffUtil: DiffUtil.ItemCallback<Products>(){
     override fun areItemsTheSame(oldItem: Products, newItem: Products): Boolean {
@@ -28,6 +30,7 @@ class AccountDiffUtil: DiffUtil.ItemCallback<Products>(){
 }
 
 val postDiffUtil = AccountDiffUtil()
+val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
 
 class AuctionAdapter(
     var onItemClickListener: ((Products) -> Unit)? = null
@@ -45,7 +48,10 @@ class AuctionAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.itemName.text = getItem(position).name
-        holder.binding.itemBid.text = "Highest Bid: Rp ${getItem(position).end_bid}"
+        if (getItem(position).end_bid == 0){
+            holder.binding.itemBid.text = "Highest Bid: Rp. ${formatter.format(getItem(position).start_bid)}"
+        }
+        holder.binding.itemBid.text = "Highest Bid: Rp ${formatter.format(getItem(position).end_bid)}"
         Glide.with(holder.itemView.context).load(getItem(position).image_url).into(holder.binding.itemImage)
         holder.itemView.setOnClickListener {
             onItemClickListener?.invoke(getItem(position))

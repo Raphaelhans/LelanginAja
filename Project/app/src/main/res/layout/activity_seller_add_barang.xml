@@ -4,16 +4,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FAF3E0">
     <!--    tools:context=".ui.AddBarangActivity">-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/Botmenu"
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:background="#F6F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/homebtn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/transBtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/homent" />
+
+        <ImageView
+            android:id="@+id/transBtn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/addBid"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/homebtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/list" />
+
+        <ImageView
+            android:id="@+id/addBid"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/profilebtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/transBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/addclicked" />
+
+        <ImageView
+            android:id="@+id/profilebtn"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/addBid"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/user" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/newauctiontoolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#FAF3E0"
+        android:layout_height="40dp"
+        android:background="#E9DAB1"
         android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -30,11 +91,9 @@
 
     <ImageView
         android:id="@+id/auctionitemimg"
-        android:layout_width="0dp"
-        android:layout_height="250dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
         android:autofillHints="imgAuctionItem"
         android:background="#CCCCCC"
         android:contentDescription="Foto Barang"
@@ -60,7 +119,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="600dp"
             android:padding="16dp">
 
             <EditText
@@ -79,7 +138,7 @@
                 android:id="@+id/Deskripsi"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:gravity="top"
                 android:hint="Description"
                 android:inputType="textMultiLine"
@@ -90,22 +149,10 @@
                 app:layout_constraintTop_toBottomOf="@id/NamaBarang" />
 
             <EditText
-                android:id="@+id/Kota"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="City"
-                android:inputType="textCapWords"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/Deskripsi" />
-
-            <EditText
                 android:id="@+id/Alamat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="16dp"
                 android:gravity="top"
                 android:hint="Full Address"
                 android:inputType="textMultiLine|textCapSentences"
@@ -113,17 +160,31 @@
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/Kota" />
+                app:layout_constraintTop_toBottomOf="@+id/cityList" />
+
+            <EditText
+                android:id="@+id/bidTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="top"
+                android:hint="Start Bid"
+                android:inputType="number"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Alamat" />
 
             <TextView
                 android:id="@+id/textTanggal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Auction end date"
+                android:layout_marginTop="10dp"
+                android:text="Auction start date"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/Alamat" />
+                app:layout_constraintTop_toBottomOf="@+id/categoryList" />
 
             <EditText
                 android:id="@+id/Tanggal"
@@ -132,7 +193,7 @@
                 android:layout_marginTop="4dp"
                 android:clickable="true"
                 android:focusable="false"
-                android:hint="Date"
+                android:hint="Start DateTime"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -155,7 +216,7 @@
                 android:layout_marginTop="4dp"
                 android:clickable="true"
                 android:focusable="false"
-                android:hint="Time"
+                android:hint="End DateTime"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -171,6 +232,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/Jam" />
 
@@ -182,6 +244,26 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/categoryList"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bidTxt" />
+
+            <Spinner
+                android:id="@+id/cityList"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Deskripsi" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
