@@ -152,7 +152,7 @@
                         android:textSize="15sp" />
 
                     <TextView
-                        android:id="@+id/auctionDetailCategory"
+                        android:id="@+id/detailCategory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
@@ -298,16 +298,17 @@
                         app:layout_constraintTop_toBottomOf="@id/sellerName" />
 
                     <Button
-                        android:id="@+id/contactButton"
+                        android:id="@+id/btnGroup"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Contact"
+                        android:text="Discussion"
                         android:textAllCaps="false"
                         android:textColor="#1976D2"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:strokeWidth="1dp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 

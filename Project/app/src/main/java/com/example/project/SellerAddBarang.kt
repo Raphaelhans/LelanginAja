@@ -24,7 +24,7 @@ class SellerAddBarang : AppCompatActivity() {
         binding = ActivitySellerAddBarangBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnPilihFoto.setOnClickListener {
+        binding.auctionitemimg.setOnClickListener {
             openGallery()
         }
 
@@ -37,12 +37,12 @@ class SellerAddBarang : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-            selectedImageUri = data.data
-            selectedImageUri?.let { uri ->
-                binding.imagePreview.setImageURI(uri)
-            }
-        }
+//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+//            selectedImageUri = data.data
+//            selectedImageUri?.let { uri ->
+//                binding.imagePreview.setImageURI(uri)
+//            }
+//        }
     }
 
 }
