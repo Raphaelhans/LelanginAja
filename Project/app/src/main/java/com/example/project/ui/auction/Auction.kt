@@ -35,11 +35,14 @@ class Auction : Fragment() {
         binding.recyclerView.adapter = adapter
 
         adapter.setOnItemClickListener { item ->
+            val email = activity?.intent?.getStringExtra("email")
             val intent = Intent(requireContext(), Auctiondetail::class.java).apply {
                 putExtra("auction_item", item)
+                putExtra("email", email)
             }
             startActivity(intent)
         }
+
     }
 
     companion object {

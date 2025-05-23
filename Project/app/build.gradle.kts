@@ -54,7 +54,6 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.storage.ktx)
-    implementation(libs.firebase.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,7 +62,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation (libs.github.glide)
     annotationProcessor (libs.compiler)
-    implementation (libs.midtrans.uikit)
+
 
     implementation("com.google.android.gms:play-services-maps:19.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
