@@ -44,6 +44,20 @@ class Auction : Fragment() {
             val items = viewModel.loadItemsForCategory(categoryId)
             adapter.submitList(items)
         }
+//        viewModel.filteredItems.observe(viewLifecycleOwner) { filtered ->
+//
+//            val currentCategory = arguments?.getString(ARG_CATEGORY)
+//            if (currentCategory == categoryId) {
+//                adapter.submitList(filtered)
+//            }
+//        }
+//        viewModel.filteredItems.observe(viewLifecycleOwner) { filtered ->
+//            val currentCategory = arguments?.getString(ARG_CATEGORY)
+//            if (filtered != null && currentCategory == categoryId) {
+//                adapter.submitList(filtered)
+//            }
+//        }
+
 
         adapter.onItemClickListener = { item ->
             val intent = Intent(requireContext(), AuctionItem::class.java)

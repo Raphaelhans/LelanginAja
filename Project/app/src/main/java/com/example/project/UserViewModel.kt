@@ -24,6 +24,7 @@ import com.example.project.database.dataclass.TransactionDetails
 import org.mindrot.jbcrypt.BCrypt
 import com.example.project.database.dataclass.Users
 import com.example.project.database.dataclass.Withdraws
+import com.example.project.database.local.Item
 import com.example.project.ui.auction.AuctionItem
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -86,6 +87,13 @@ class UserViewModel:ViewModel() {
     private val _Items = MutableLiveData<List<Products>>()
     val Items: LiveData<List<Products>> = _Items
 
+
+//private val _allItems = mutableMapOf<String, List<Products>>()  // key = categoryId
+//    private val _filteredItems = MutableLiveData<List<Products>>(emptyList())
+//    val filteredItems: LiveData<List<Products>> = _filteredItems
+
+
+
     fun getCurrUser(email: String) {
         viewModelScope.launch {
             try {
@@ -106,6 +114,22 @@ class UserViewModel:ViewModel() {
             }
         }
     }
+
+
+//    fun setItemsForCategory(categoryId: String, items: List<Products>) {
+//    _allItems[categoryId] = items
+//    _filteredItems.value = items
+//    }
+//
+//
+//    fun filterItems(query: String, categoryId: String) {
+//        val all = _allItems[categoryId] ?: emptyList()
+//        val filtered = all.filter { it.name.contains(query, ignoreCase = true) }
+//        _filteredItems.value = filtered
+//    }
+
+
+
 
     suspend fun loadCategories(): List<Categories> {
         return try {
