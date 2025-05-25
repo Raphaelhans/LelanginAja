@@ -48,10 +48,13 @@ class AuctionAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.itemName.text = getItem(position).name
+        holder.binding.itemTime.text = getItem(position).end_date
         if (getItem(position).end_bid == 0){
             holder.binding.itemBid.text = "Highest Bid: Rp. ${formatter.format(getItem(position).start_bid)}"
         }
-        holder.binding.itemBid.text = "Highest Bid: Rp ${formatter.format(getItem(position).end_bid)}"
+        else{
+            holder.binding.itemBid.text = "Highest Bid: Rp ${formatter.format(getItem(position).end_bid)}"
+        }
         Glide.with(holder.itemView.context).load(getItem(position).image_url).into(holder.binding.itemImage)
         holder.itemView.setOnClickListener {
             onItemClickListener?.invoke(getItem(position))

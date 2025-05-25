@@ -35,25 +35,26 @@ class HomeUser : BaseClass() {
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
 
-        lifecycleScope.launch {
-            val categories = viewModels.loadCategories()
-
-            if (categories.isNotEmpty()) {
-                adapter = FragmentAdapter(this@HomeUser, categories)
-                viewPager.adapter = adapter
-
-                TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                    tab.text = categories[position].name
-                }.attach()
-
-                tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
-            } else {
-                Toast.makeText(this@HomeUser, "No categories found", Toast.LENGTH_SHORT).show()
-            }
-        }
 
         viewModels.currUser.observe(this) { user ->
             if (user != null) {
+                lifecycleScope.launch {
+                    val categories = viewModels.loadCategories()
+
+                    if (categories.isNotEmpty()) {
+                        adapter = FragmentAdapter(this@HomeUser, categories, user.email)
+                        viewPager.adapter = adapter
+
+                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                            tab.text = categories[position].name
+                        }.attach()
+
+                        tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+                    } else {
+                        Toast.makeText(this@HomeUser, "No categories found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
                 binding.nameUserDis.text = user.name
                 binding.saldouserDis.text = "Rp. **********"
 

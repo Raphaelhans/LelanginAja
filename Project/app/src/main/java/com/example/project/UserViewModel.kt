@@ -20,6 +20,7 @@ import com.example.project.database.dataclass.MidtransPayload
 import com.example.project.database.dataclass.MidtransResponse
 import com.example.project.database.dataclass.Payment
 import com.example.project.database.dataclass.Products
+import com.example.project.database.dataclass.Ratings
 import com.example.project.database.dataclass.TransactionDetails
 import org.mindrot.jbcrypt.BCrypt
 import com.example.project.database.dataclass.Users
@@ -83,8 +84,17 @@ class UserViewModel:ViewModel() {
     private val _categories = MutableLiveData<List<Categories>>()
     val categories: LiveData<List<Categories>> = _categories
 
+    private val _currCategories = MutableLiveData<Categories?>()
+    val currCategories: LiveData<Categories?> = _currCategories
+
     private val _Items = MutableLiveData<List<Products>>()
     val Items: LiveData<List<Products>> = _Items
+
+    private val _currItems = MutableLiveData<Products?>()
+    val currItems: LiveData<Products?> = _currItems
+
+    private val _currRating = MutableLiveData<Ratings?>()
+    val currRating: LiveData<Ratings?> = _currRating
 
     fun getCurrUser(email: String) {
         viewModelScope.launch {
@@ -96,6 +106,9 @@ class UserViewModel:ViewModel() {
 
                 if (!curruser.isEmpty) {
                     val user = curruser.documents.first().toObject(Users::class.java)
+                    val currRate = db.collection("Ratings").whereEqualTo("seller_id", user?.user_id).get().await()
+                    val rate = currRate.documents.mapNotNull { it.toObject(Ratings::class.java) }
+                    _currRating.value = rate.firstOrNull()
                     _currUser.value = user
                     getUserAccount()
                 } else {
@@ -120,6 +133,21 @@ class UserViewModel:ViewModel() {
         }
     }
 
+    fun getCurrItem(itemIds: String) {
+        viewModelScope.launch {
+            try {
+                val currItem = db.collection("Products").document(itemIds).get().await()
+                val item = currItem.toObject(Products::class.java)
+                val currcate = db.collection("Categories").document(item?.category_id!!).get().await()
+                val cate = currcate.toObject(Categories::class.java)
+                _currCategories.value = cate
+                _currItems.value = item
+            } catch (e: Exception) {
+                Log.e("Firestore Error", "Error fetching item: ${e.message}", e)
+            }
+        }
+
+    }
 
     suspend fun loadItemsForCategory(category: String): List<Products> {
         return try {
@@ -127,7 +155,8 @@ class UserViewModel:ViewModel() {
             val final = result.documents.mapNotNull {
                 it.toObject(Products::class.java)
             }.filter {
-                it.category_id == category
+                it.category_id == category &&
+                it.status == 0
             }
             _Items.postValue(final)
             final
