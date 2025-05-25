@@ -10,6 +10,7 @@ import com.example.project.databinding.ActivityAuctiondetailBinding
 
 class Auctiondetail : AppCompatActivity() {
     private lateinit var binding: ActivityAuctiondetailBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -18,6 +19,7 @@ class Auctiondetail : AppCompatActivity() {
         setContentView(binding.root)
 
         val item = intent.getParcelableExtra<AuctionItem>("auction_item")
+
 
         item?.let {
             binding.detailImage.setImageResource(it.imageResId)
@@ -48,5 +50,7 @@ class Auctiondetail : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
     }
+
 }
