@@ -34,6 +34,18 @@ class HomeUser : BaseClass() {
 
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+        val etSearch = binding.etSearch
+        val btnSearch = binding.btnSearch
+
+        btnSearch.setOnClickListener {
+            val query = etSearch.text.toString().trim()
+            if (query.isNotEmpty()) {
+                viewModels.setSearchBrg(query)
+            } else {
+                Toast.makeText(this, "Enter Product Name!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
 
 
         viewModels.currUser.observe(this) { user ->

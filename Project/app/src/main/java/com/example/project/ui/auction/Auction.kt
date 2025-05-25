@@ -48,13 +48,6 @@ class Auction : Fragment() {
             adapter.submitList(items)
         }
 
-        viewModel.currUser.observe(viewLifecycleOwner){ user ->
-            adapter.onItemClickListener = { item ->
-                val intent = Intent(requireContext(), Auctiondetail::class.java)
-                intent.putExtra("auction_item", item.items_id)
-                intent.putExtra("email", user?.email)
-                startActivity(intent)
-            }
         viewModel.searchBrg.observe(viewLifecycleOwner) { query ->
             lifecycleScope.launch {
                 val items = viewModel.loadItemsForCategory(categoryId)
@@ -65,12 +58,13 @@ class Auction : Fragment() {
             }
         }
 
-
-
-        adapter.onItemClickListener = { item ->
-            val intent = Intent(requireContext(), AuctionItem::class.java)
-            intent.putExtra("auction_item", item.items_id)
-            startActivity(intent)
+        viewModel.currUser.observe(viewLifecycleOwner){ user ->
+            adapter.onItemClickListener = { item ->
+                val intent = Intent(requireContext(), Auctiondetail::class.java)
+                intent.putExtra("auction_item", item.items_id)
+                intent.putExtra("email", user?.email)
+                startActivity(intent)
+            }
         }
     }
 
