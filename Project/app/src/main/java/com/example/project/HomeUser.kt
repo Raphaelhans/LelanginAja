@@ -30,7 +30,7 @@ class HomeUser : BaseClass() {
     var balanceDisplay = true
     val cities = arrayOf("Surabaya", "Malang", "Sidoarjo", "Kediri", "Jember")
     lateinit var adapter: FragmentAdapter
-//    private lateinit var allCategories: List<Categories>
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,16 +44,16 @@ class HomeUser : BaseClass() {
         val etSearch = binding.etSearch
         val btnSearch = binding.btnSearch
 
-//        btnSearch.setOnClickListener {
-//            val query = etSearch.text.toString().trim()
-//            if (query.isNotEmpty()) {
-//                allCategories.forEach { category ->
-//                    viewModels.filterItems(query, category.id)
-//                }
-//            } else {
-//                Toast.makeText(this, "Find Product", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+        btnSearch.setOnClickListener {
+            val query = etSearch.text.toString().trim()
+            if (query.isNotEmpty()) {
+                viewModels.setSearchBrg(query)
+            } else {
+                Toast.makeText(this, "Enter Product Name!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
 
 
 

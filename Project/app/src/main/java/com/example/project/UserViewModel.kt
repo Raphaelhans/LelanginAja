@@ -87,12 +87,8 @@ class UserViewModel:ViewModel() {
     private val _Items = MutableLiveData<List<Products>>()
     val Items: LiveData<List<Products>> = _Items
 
-
-//private val _allItems = mutableMapOf<String, List<Products>>()  // key = categoryId
-//    private val _filteredItems = MutableLiveData<List<Products>>(emptyList())
-//    val filteredItems: LiveData<List<Products>> = _filteredItems
-
-
+    private val _search = MutableLiveData<String>()
+    val searchBrg: LiveData<String> = _search
 
     fun getCurrUser(email: String) {
         viewModelScope.launch {
@@ -116,17 +112,9 @@ class UserViewModel:ViewModel() {
     }
 
 
-//    fun setItemsForCategory(categoryId: String, items: List<Products>) {
-//    _allItems[categoryId] = items
-//    _filteredItems.value = items
-//    }
-//
-//
-//    fun filterItems(query: String, categoryId: String) {
-//        val all = _allItems[categoryId] ?: emptyList()
-//        val filtered = all.filter { it.name.contains(query, ignoreCase = true) }
-//        _filteredItems.value = filtered
-//    }
+    fun setSearchBrg(query: String) {
+        _search.value = query
+    }
 
 
 
