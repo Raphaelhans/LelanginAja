@@ -51,24 +51,24 @@ class Auctiondetail : AppCompatActivity() {
             else{
                 binding.detailBid.text = "Rp " + formatterRupiah.format(items?.end_bid.toString())
             }
-        val item = intent.getParcelableExtra<AuctionItem>("auction_item")
-
-        item?.let {
-            binding.detailImage.setImageResource(it.imageResId)
-            binding.detailName.text = it.name
-            binding.detailBid.text = "Current Bid: $${it.currentBid}"
-            binding.detailCategory.text = "Category: ${it.category}"
-
-//            binding.bidButton.setOnClickListener {
-//                println("Bidding on ${it.name}")
+//        val item = intent.getParcelableExtra<AuctionItem>("auction_item")
+//
+//        item?.let {
+//            binding.detailImage.setImageResource(it.imageResId)
+//            binding.detailName.text = it.name
+//            binding.detailBid.text = "Current Bid: $${it.currentBid}"
+//            binding.detailCategory.text = "Category: ${it.category}"
+//
+////            binding.bidButton.setOnClickListener {
+////                println("Bidding on ${it.name}")
+////            }
+//        }
+//
+//            viewModels.currCategories.observe(this) { cate ->
+//                binding.detailCategory.text = cate?.name
 //            }
-        }
-
-            viewModels.currCategories.observe(this) { cate ->
-                binding.detailCategory.text = cate?.name
-            }
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
             val dateTime = LocalDateTime.parse(items?.end_date, formatter)
             val newFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm")
@@ -76,7 +76,7 @@ class Auctiondetail : AppCompatActivity() {
             binding.auctionDetailTime.text = formatted
             binding.auctionDetailLocation.text = items?.city
             binding.descriptionText.text = items?.description
-            val item = intent.getParcelableExtra<AuctionItem>("auction_item")
+//            val item = intent.getParcelableExtra<AuctionItem>("auction_item")
 
         }
 
@@ -88,43 +88,49 @@ class Auctiondetail : AppCompatActivity() {
             }
             else{
                 binding.sellerRating.text = "No rating yet"
-            item?.let {
-                binding.detailImage.setImageResource(it.imageResId)
-                binding.detailName.text = it.name
-                binding.detailBid.text = "Current Bid: $${it.currentBid}"
-                binding.detailCategory.text = "Category: ${it.category}"
-                binding.bidButton.setOnClickListener {
-                    val bidText = binding.bidAmountInput.text.toString()
-                    if (bidText.isNotEmpty() && item != null) {
-                        val bidAmount = bidText.toDoubleOrNull()
-                        if (bidAmount != null) {
-                            placeBid(item, bidAmount)
-                        } else {
-                            Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Toast.makeText(this, "Please enter a bid amount", Toast.LENGTH_SHORT).show()
-                    }
-                }
+//            item?.let {
+//                binding.detailImage.setImageResource(it.imageResId)
+//                binding.detailName.text = it.name
+//                binding.detailBid.text = "Current Bid: $${it.currentBid}"
+//                binding.detailCategory.text = "Category: ${it.category}"
+//                binding.bidButton.setOnClickListener {
+//                    val bidText = binding.bidAmountInput.text.toString()
+//                    if (bidText.isNotEmpty() && item != null) {
+//                        val bidAmount = bidText.toDoubleOrNull()
+//                        if (bidAmount != null) {
+//                            placeBid(item, bidAmount)
+//                        } else {
+//                            Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show()
+//                        }
+//                    } else {
+//                        Toast.makeText(this, "Please enter a bid amount", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
             }
-
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+//            insets
         }
     }
 
     override fun onStart() {
         super.onStart()
         val item = intent.getStringExtra("auction_item")
-    private fun placeBid(item: AuctionItem, bidAmount: Double) {
-        val db = FirebaseFirestore.getInstance()
-        val bidId = db.collection("Bids").document().id
         val email = intent.getStringExtra("email")
         if (email != null && item != null) {
             viewModels.getCurrUser(email)
             viewModels.getCurrItem(item)
         }
     }
+
+//    private fun placeBid(item: AuctionItem, bidAmount: Double) {
+//        val db = FirebaseFirestore.getInstance()
+//        val bidId = db.collection("Bids").document().id
+//        val email = intent.getStringExtra("email")
+//        if (email != null && item != null) {
+//            viewModels.getCurrUser(email)
+//            viewModels.getCurrItem(item)
+//        }
+//    }
 
     fun startAuctionCountdown(endDateString: String) {
         val endDateTime = LocalDateTime.parse(endDateString, formatter)
@@ -137,10 +143,6 @@ class Auctiondetail : AppCompatActivity() {
                     binding.timeRemainingText.text = "Auction Ended"
                     break
                 }
-        if (email == null) {
-            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
-            return
-        }
 
                 val duration = Duration.between(now, endDateTime)
                 val days = duration.toDays()
@@ -150,23 +152,52 @@ class Auctiondetail : AppCompatActivity() {
                 binding.timeRemainingText.text = String.format(
                     "%02dd : %02dh : %02dm", days, hours, minutes
                 )
-        val bid = hashMapOf(
-            "bidId" to bidId,
-            "auctionItemId" to item.id,
-            "userEmail" to email,
-            "amount" to bidAmount,
-            "timestamp" to System.currentTimeMillis()
-        )
 
                 delay(60_000) // update every 1 minute
-        db.collection("Bids").document(bidId).set(bid)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Bid placed successfully!", Toast.LENGTH_SHORT).show()
             }
         }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Failed to place bid: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
     }
 
+//    fun startAuctionCountdown(endDateString: String) {
+//        val endDateTime = LocalDateTime.parse(endDateString, formatter)
+//
+//        countdownJob?.cancel()
+//        countdownJob = lifecycleScope.launch {
+//            while (isActive) {
+//                val now = LocalDateTime.now()
+//                if (now.isAfter(endDateTime)) {
+//                    binding.timeRemainingText.text = "Auction Ended"
+//                    break
+//                }
+//        if (email == null) {
+//            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+//
+//                val duration = Duration.between(now, endDateTime)
+//                val days = duration.toDays()
+//                val hours = duration.toHours() % 24
+//                val minutes = duration.toMinutes() % 60
+//
+//                binding.timeRemainingText.text = String.format(
+//                    "%02dd : %02dh : %02dm", days, hours, minutes
+//                )
+//        val bid = hashMapOf(
+//            "bidId" to bidId,
+//            "auctionItemId" to item.id,
+//            "userEmail" to email,
+//            "amount" to bidAmount,
+//            "timestamp" to System.currentTimeMillis()
+//        )
+//
+//                delay(60_000) // update every 1 minute
+//        db.collection("Bids").document(bidId).set(bid)
+//            .addOnSuccessListener {
+//                Toast.makeText(this, "Bid placed successfully!", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//            .addOnFailureListener { e ->
+//                Toast.makeText(this, "Failed to place bid: ${e.message}", Toast.LENGTH_SHORT).show()
+//            }
+//    }
 }

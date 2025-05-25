@@ -131,12 +131,11 @@ class MainActivity : AppCompatActivity() {
                         finish()
                     }
                 }
-            } else {
-                binding.LoginBtn.text = "Login"
-                binding.loadingGif.visibility = View.GONE
             }
+//            else {
+//                binding.LoginBtn.text = "Login"
+//                binding.loadingGif.visibility = View.GONE
+//            }
         }
-
-
     }
 }

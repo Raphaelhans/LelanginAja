@@ -53,4 +53,8 @@ class AuctionAdapter(
             onItemClickListener?.invoke(getItem(position))
         }
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        TODO("Not yet implemented")
+    }
 }

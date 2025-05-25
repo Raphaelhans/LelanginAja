@@ -21,7 +21,6 @@ import com.example.project.databinding.ActivityRegisterBinding
 class Register : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     val viewModel by viewModels<AuthViewModel>()
-    val viewModel by viewModels<AuthViewModel>()
     val cities = arrayOf("Surabaya", "Malang", "Sidoarjo", "Kediri", "Jember")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,50 +97,48 @@ class Register : AppCompatActivity() {
         }
 
         viewModel.checkres.observe(this) { success ->
-        val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, cities)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.Lokasitxt.adapter = adapter
-        binding.Lokasitxt.setSelection(0)
+            val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, cities)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//        binding.Lokasitxt.adapter = adapter
+//        binding.Lokasitxt.setSelection(0)
 
-        viewModel.checkres.observe(this) { success ->
-            if (success) {
-                toastText.text = "Registration Successfull"
-                Glide.with(this)
-                    .asGif()
-                    .load(com.example.project.R.drawable.like)
-                    .into(toastImage)
-                with (Toast(applicationContext)) {
+            viewModel.checkres.observe(this) { success ->
+                if (success) {
+                    toastText.text = "Registration Successfull"
+                    Glide.with(this)
+                        .asGif()
+                        .load(com.example.project.R.drawable.like)
+                        .into(toastImage)
+                    with(Toast(applicationContext)) {
+                        duration = Toast.LENGTH_LONG
+                        view = layout
+                        show()
+                    }
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    binding.RegisBtn.visibility = View.VISIBLE
+                    binding.loadingGif.visibility = View.GONE
+                }
+            }
+
+            viewModel.resresponse.observe(this) { response ->
+                toastText.text = "Invalid email or password"
+                if (viewModel.checkres.value == false) {
+                    Glide.with(this)
+                        .asGif()
+                        .load(com.example.project.R.drawable.error)
+                        .into(toastImage)
+                }
+                with(Toast(applicationContext)) {
                     duration = Toast.LENGTH_LONG
                     view = layout
                     show()
                 }
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            } else {
-                binding.RegisBtn.visibility = View.VISIBLE
-                binding.loadingGif.visibility = View.GONE
-            }
-        }
-
-        viewModel.resresponse.observe(this) { response ->
-            toastText.text = "Invalid email or password"
-            if (viewModel.checkres.value == false){
-                Glide.with(this)
-                    .asGif()
-                    .load(com.example.project.R.drawable.error)
-                    .into(toastImage)
-            }
-            with (Toast(applicationContext)) {
-                duration = Toast.LENGTH_LONG
-                view = layout
-                show()
-            }
-            binding.RegisBtn.text = "Register"
+                binding.RegisBtn.text = "Register"
 //            binding.loadingGif.visibility = View.GONE
+            }
         }
-
-
-
     }
 }
