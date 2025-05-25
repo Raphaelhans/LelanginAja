@@ -2,6 +2,7 @@ package com.example.project.ui.auction
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,8 @@ class Auction : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val categoryId = arguments?.getString(ARG_CATEGORY) ?: return
+        val email = arguments?.getString(ARG_CATEGORY) ?: return
+        viewModel.getCurrUser(email)
 
         adapter = AuctionAdapter()
         binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
@@ -45,6 +48,13 @@ class Auction : Fragment() {
             adapter.submitList(items)
         }
 
+        viewModel.currUser.observe(viewLifecycleOwner){ user ->
+            adapter.onItemClickListener = { item ->
+                val intent = Intent(requireContext(), Auctiondetail::class.java)
+                intent.putExtra("auction_item", item.items_id)
+                intent.putExtra("email", user?.email)
+                startActivity(intent)
+            }
         viewModel.searchBrg.observe(viewLifecycleOwner) { query ->
             lifecycleScope.launch {
                 val items = viewModel.loadItemsForCategory(categoryId)
@@ -67,11 +77,13 @@ class Auction : Fragment() {
 
     companion object {
         private const val ARG_CATEGORY = "category"
+        private const val ARG_EMAIL = "email"
 
-        fun newInstance(category: String): Auction {
+        fun newInstance(category: String, email: String): Auction {
             return Auction().apply {
                 arguments = Bundle().apply {
                     putString(ARG_CATEGORY, category)
+                    putString(ARG_EMAIL, email)
                 }
             }
         }

@@ -8,6 +8,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -18,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.project.databinding.ActivitySellerAddBarangBinding
 import com.example.project.ui.profile.Profile
 import com.example.project.ui.transaction.Transaction
+import java.text.NumberFormat
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -32,6 +35,7 @@ class SellerAddBarang : BaseClass() {
     val calendar = Calendar.getInstance()
     val category = arrayOf("Select a category","Household Appliances", "Toy & Hobby", "Fashion")
     val cities = arrayOf("Select a city","Surabaya", "Malang", "Sidoarjo", "Kediri", "Jember")
+    val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
 
     var startDateTime: LocalDateTime? = null
     var endDateTime: LocalDateTime? = null
@@ -108,7 +112,7 @@ class SellerAddBarang : BaseClass() {
                     val description = binding.Deskripsi.text.toString()
                     var city = binding.cityList.selectedItem.toString()
                     val address = binding.Alamat.text.toString()
-                    val bid = binding.bidTxt.text.toString().toInt()
+                    val bid = binding.bidTxt.text.toString().replace(".", "").toInt()
                     val dateStart = binding.Tanggal.text.toString()
                     val dateEnd = binding.Jam.text.toString()
                     var category = binding.categoryList.selectedItem.toString()
@@ -118,7 +122,7 @@ class SellerAddBarang : BaseClass() {
                     else if (selectedImageUri == null) {
                         Toast.makeText(this, "Please select an image", Toast.LENGTH_LONG).show()
                     }
-                    else if (bid > 10000){
+                    else if (bid < 10000){
                         Toast.makeText(this, "Minimum start bid is IDR 10.000", Toast.LENGTH_LONG).show()
                     }
                     else{
@@ -179,6 +183,40 @@ class SellerAddBarang : BaseClass() {
                     startActivity(intent)
                     finish()
                 }
+
+                binding.bidTxt.addTextChangedListener(object : TextWatcher{
+                    private var current = ""
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable?) {
+                        binding.bidTxt.removeTextChangedListener(this)
+                        val rawInput = s.toString().replace("[^0-9]".toRegex(), "")
+
+                        if (rawInput.isNotEmpty()) {
+                            try {
+                                val number = rawInput.toLong()
+
+                                formatter.minimumFractionDigits = 0
+                                formatter.maximumFractionDigits = 0
+                                val formatted = formatter.format(number)
+
+                                if (formatted != current) {
+                                    current = formatted
+                                    binding.bidTxt.setText(formatted)
+                                    binding.bidTxt.setSelection(formatted.length)
+                                }
+                            } catch (e: NumberFormatException) {
+                                binding.bidTxt.setText(current)
+                            }
+                        } else {
+                            current = ""
+                            binding.bidTxt.setText("")
+                        }
+
+                        binding.bidTxt.addTextChangedListener(this)
+                    }
+
+                })
             }
         }
 

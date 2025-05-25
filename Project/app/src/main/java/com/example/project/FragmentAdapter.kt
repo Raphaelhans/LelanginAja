@@ -9,13 +9,14 @@ import kotlinx.coroutines.CoroutineScope
 
 class FragmentAdapter(
     activity: AppCompatActivity,
-    private val categories: List<Categories>
+    private val categories: List<Categories>,
+    private val email: String
 ) : FragmentStateAdapter(activity) {
 
     override fun getItemCount(): Int = categories.size
 
     override fun createFragment(position: Int): Fragment {
         val category = categories[position]
-        return Auction.newInstance(category.id)
+        return Auction.newInstance(category.id, email)
     }
 }
