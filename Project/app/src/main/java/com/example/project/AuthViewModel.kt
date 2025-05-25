@@ -18,6 +18,8 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import org.mindrot.jbcrypt.BCrypt
+import kotlinx.coroutines.tasks.await
+import org.mindrot.jbcrypt.BCrypt
 
 data class Staff(
     val id_staff: Int = 0,
@@ -39,8 +41,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     val currUser: LiveData<User?> get() = _currUser
     private val _resresponse = MutableLiveData<String>()
     val resresponse: LiveData<String> get() = _resresponse
-    private val _loginDestination = MutableLiveData<String>()
-    val loginDestination: LiveData<String> get() = _loginDestination
+//    private val _loginDestination = MutableLiveData<String>()
+//    val loginDestination: LiveData<String> get() = _loginDestination
 
     var checkres = MutableLiveData<Boolean>(false)
 
@@ -81,11 +83,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         balance = balance,
                         status = status,
                         location = lokasi,
-                        profilePicturePath = ""
+                        profilePicturePath = "",
+                        pin = ""
                     )
                     transaction.set(db.collection("Users").document(highestId.toString()), user)
                 }
 
+                _resresponse.value = "Successfully registered"
                 checkres.value = true
             } catch (e: Exception) {
                 Log.d("Firestore Error", "Error adding user: ${e.message}", e)
@@ -96,6 +100,31 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loginUser(email: String, password: String) {
         viewModelScope.launch {
+            try {
+                val query = db.collection("Users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .await()
+
+                if (query.isEmpty) {
+                    _resresponse.value = "Invalid username"
+                    return@launch
+                }
+
+                val user = query.documents.first().toObject(Users::class.java)
+                val storedHash = user?.password ?: throw Exception("Invalid user data")
+
+                val isPasswordCorrect = BCrypt.checkpw(password, storedHash)
+
+                if (isPasswordCorrect) {
+                    checkres.value = true
+                } else {
+                    _resresponse.value = "Incorrect password"
+                    checkres.value = false
+                }
+            } catch (e: Exception) {
+                _resresponse.value = e.message
+                checkres.value = false
             try {
                 val userQuery = db.collection("Users")
                     .whereEqualTo("email", email)
@@ -160,7 +189,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getcurrUser(email: String) {
+    fun getcurrUser(email: String){
         viewModelScope.launch {
             val user = App.db.userDao().getUserByEmail(email)
             _currUser.value = user
@@ -168,10 +197,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getAllItems() {
+    fun getAllItems(){
         viewModelScope.launch {
             val items = App.db.itemDao().getItems()
             _items.value = items
         }
     }
+
 }

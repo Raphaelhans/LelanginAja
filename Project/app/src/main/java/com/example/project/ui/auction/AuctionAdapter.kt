@@ -1,44 +1,56 @@
 package com.example.project.ui.auction
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.project.AccountNumberAdapter
 import com.example.project.R
+import com.example.project.database.dataclass.BankAccount
+import com.example.project.database.dataclass.Products
+import com.example.project.databinding.AccountNumberLayoutBinding
+import com.example.project.databinding.ItemlayoutBinding
+import java.text.NumberFormat
+import java.util.Locale
 
-class AuctionAdapter(private val items: List<AuctionItem>) :
-    RecyclerView.Adapter<AuctionAdapter.AuctionViewHolder>() {
-        private var onItemClick: ((AuctionItem) -> Unit)? = null
+class AccountDiffUtil: DiffUtil.ItemCallback<Products>(){
+    override fun areItemsTheSame(oldItem: Products, newItem: Products): Boolean {
+        return oldItem.items_id == newItem.items_id
+    }
 
-        class AuctionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val nameText: TextView = itemView.findViewById(R.id.itemName)
-            val bidText: TextView = itemView.findViewById(R.id.itemBid)
-            val imageView: ImageView = itemView.findViewById(R.id.itemImage)
+    override fun areContentsTheSame(oldItem: Products, newItem: Products): Boolean {
+        return oldItem == newItem
+    }
+}
 
-            fun bind(item: AuctionItem, onClick: ((AuctionItem) -> Unit)?) {
-                nameText.text = item.name
-                bidText.text = "Current Bid: $${item.currentBid}"
-                imageView.setImageResource(item.imageResId)
-                itemView.setOnClickListener { onClick?.invoke(item) }
-            }
+val postDiffUtil = AccountDiffUtil()
+val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
+
+class AuctionAdapter(
+    var onItemClickListener: ((Products) -> Unit)? = null
+) : ListAdapter<Products, AuctionAdapter.ViewHolder>(postDiffUtil) {
+    class ViewHolder(val binding: ItemlayoutBinding)
+        :RecyclerView.ViewHolder(binding.root)
+
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.itemName.text = getItem(position).name
+        holder.binding.itemTime.text = getItem(position).end_date
+        if (getItem(position).end_bid == 0){
+            holder.binding.itemBid.text = "Highest Bid: Rp. ${formatter.format(getItem(position).start_bid)}"
         }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AuctionViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.itemlayout, parent, false)
-            return AuctionViewHolder(view)
+        else{
+            holder.binding.itemBid.text = "Highest Bid: Rp ${formatter.format(getItem(position).end_bid)}"
         }
-
-        override fun onBindViewHolder(holder: AuctionViewHolder, position: Int) {
-            val item = items[position]
-            holder.bind(item, onItemClick)
-        }
-
-            override fun getItemCount(): Int = items.size
-
-        fun setOnItemClickListener(listener: (AuctionItem) -> Unit) {
-            onItemClick = listener
+        Glide.with(holder.itemView.context).load(getItem(position).image_url).into(holder.binding.itemImage)
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.invoke(getItem(position))
         }
     }
+}
