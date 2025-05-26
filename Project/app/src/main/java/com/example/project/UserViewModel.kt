@@ -107,6 +107,10 @@ class UserViewModel:ViewModel() {
         }
     }
 
+    fun getCurrentUserId(): String {
+        return _currUser.value?.user_id?.toString() ?: "0"
+    }
+
     suspend fun loadCategories(): List<Categories> {
         return try {
             val snapshot = db.collection("Categories").get().await()

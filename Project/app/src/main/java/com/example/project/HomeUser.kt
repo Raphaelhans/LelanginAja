@@ -2,6 +2,7 @@ package com.example.project
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -37,6 +38,7 @@ class HomeUser : BaseClass() {
 
         lifecycleScope.launch {
             val categories = viewModels.loadCategories()
+            Log.e("homeUser", categories.toString())
 
             if (categories.isNotEmpty()) {
                 adapter = FragmentAdapter(this@HomeUser, categories)

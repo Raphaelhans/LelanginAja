@@ -2,6 +2,7 @@ package com.example.project.ui.auction
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,16 +43,27 @@ class Auction : Fragment() {
 
         lifecycleScope.launch {
             val items = viewModel.loadItemsForCategory(categoryId)
+            Log.e("viewmodel", items.toString())
             adapter.submitList(items)
         }
 
         adapter.onItemClickListener = { item ->
-            val intent = Intent(requireContext(), AuctionItem::class.java)
-            intent.putExtra("auction_item", item.items_id)
+            val auctionItem = AuctionItem(
+                id = item.items_id,
+                name = item.name,
+                category = item.category_id,
+                currentBid = item.start_bid.toDouble(),
+                imageResId = item.image_url.toInt(),
+                sellerId =  item.seller_id
+            )
+
+            val intent = Intent(requireContext(), Auctiondetail::class.java).apply {
+                putExtra("auction_item", auctionItem)
+                putExtra("current_userId", viewModel.getCurrentUserId())
+            }
             startActivity(intent)
         }
     }
-
 
     companion object {
         private const val ARG_CATEGORY = "category"
