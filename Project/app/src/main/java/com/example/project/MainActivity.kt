@@ -94,9 +94,21 @@ class MainActivity : AppCompatActivity() {
 
         viewModels.checkres.observe(this) { success ->
             if (success) {
-                val intent = Intent(this, HomeUser::class.java)
-                intent.putExtra("email", binding.editTextEmail.text.toString())
-                toastText.text = "Login Success"
+                val email = binding.editTextEmail.text.toString()
+                viewModels.loginDestination.observe(this) { destination ->
+                    val intent = when (destination) {
+                        "HomeUser" -> Intent(this, HomeUser::class.java)
+                        "HomeManager" -> Intent(this, HomeManager::class.java)
+                        "HomeStaffs" -> Intent(this, HomeStaffs::class.java)
+                        else -> null
+                    }
+                    intent?.putExtra("email", email)
+                    Toast.makeText(application, "Login Success", Toast.LENGTH_SHORT).show()
+                    intent?.let {
+                        startActivity(it)
+                        finish()
+                    }
+                }
                 Glide.with(this)
                     .asGif()
                     .load(R.drawable.like)
