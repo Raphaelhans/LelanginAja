@@ -11,5 +11,6 @@ data class Users(
     val location: String = "",
     val profilePicturePath: String = "",
     val pin: String = "",
+    val seller_rating: Int = 0,
     val suspended: Boolean = false
 )

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/currentPinEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Current PIN"
+        android:inputType="number|numberPassword"
+        android:maxLength="4"
+        app:layout_constraintBottom_toTopOf="@+id/newPinEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/newPinEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="New PIN (4 digits)"
+        android:inputType="number|numberPassword"
+        android:maxLength="4"
+        app:layout_constraintBottom_toTopOf="@+id/confirmPinEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentPinEditText" />
+
+    <EditText
+        android:id="@+id/confirmPinEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm New PIN"
+        android:inputType="number|numberPassword"
+        android:maxLength="4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newPinEditText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
