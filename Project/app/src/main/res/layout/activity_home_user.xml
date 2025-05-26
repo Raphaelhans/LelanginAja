@@ -8,136 +8,141 @@
     android:background="#FAF3E0"
     tools:context=".HomeUser">
 
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="220dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="16dp"
+        android:background="#FFFFFF"
+        android:ems="10"
+        android:inputType="text"
+        android:paddingStart="10dp"
+        android:text="Find product.."
+        android:textSize="16sp"
+        app:circularflow_radiusInDP="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="40dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:background="#FFFFFF"
+        android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_search" />
+
+    <Spinner
+        android:id="@+id/spinnerLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:background="#FFFFFF"
+        android:paddingStart="10dp"
+        android:textAlignment="viewStart"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/etSearch"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
-        android:layout_width="410dp"
-        android:layout_height="94dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/profilebox"
+        android:layout_width="380dp"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:padding="15dp"
         app:layout_constraintBottom_toTopOf="@+id/tabLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etSearch">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageView4"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:id="@+id/userpfpHome"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:padding="5dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/CircleImageView"
-            app:srcCompat="@drawable/burger"
+            app:srcCompat="@drawable/user"
             tools:src="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/nameUserDis"
-            android:layout_width="160dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Jasong Oweng"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView6"
-            app:layout_constraintEnd_toStartOf="@+id/topupbtn"
-            app:layout_constraintHorizontal_bias="0.727"
-            app:layout_constraintStart_toEndOf="@+id/imageView4"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.588" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="132dp"
-            android:fontFamily="@font/open_sans_semibold"
-            android:text="Saldo"
-            app:layout_constraintBottom_toTopOf="@+id/saldouserDis"
-            app:layout_constraintEnd_toStartOf="@+id/topupbtn" />
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/userpfpHome"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/saldouserDis"
-            android:layout_width="160dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="12dp"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Rp. 100.000"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/topupbtn"
-            app:layout_constraintHorizontal_bias="0.714"
-            app:layout_constraintStart_toEndOf="@+id/imageView4" />
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/userpfpHome"
+            app:layout_constraintTop_toBottomOf="@+id/nameUserDis" />
 
         <Button
             android:id="@+id/topupbtn"
             android:layout_width="97dp"
             android:layout_height="38dp"
-            android:layout_marginEnd="32dp"
-            android:backgroundTint="#3674B5"
+            android:backgroundTint="#33BA21"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Top Up"
             android:textColor="#EFE6E6"
-            android:textColorHighlight="#EFE8E8"
-            android:textColorLink="#EDE1E1"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.178"
             app:rippleColor="#E9E3E3" />
 
         <Button
             android:id="@+id/withdrawbtn"
             android:layout_width="116dp"
-            android:layout_height="37dp"
-            android:layout_marginEnd="22dp"
+            android:layout_height="38dp"
             android:backgroundTint="#3674B5"
             android:fontFamily="@font/open_sans_semibold"
             android:text="Withdraw"
             android:textColor="#EFE6E6"
-            android:textColorHighlight="#EFE8E8"
-            android:textColorLink="#EDE1E1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/saldouserDis"
             app:layout_constraintTop_toBottomOf="@+id/topupbtn"
             app:layout_constraintVertical_bias="0.0"
             app:rippleColor="#E9E3E3" />
 
+        <ImageView
+            android:id="@+id/showBalance"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toEndOf="@+id/saldouserDis"
+            app:layout_constraintTop_toBottomOf="@+id/nameUserDis"
+            app:srcCompat="@drawable/visible" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="169dp"
-        android:layout_height="70dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logocopy"
-        tools:srcCompat="@drawable/logocopy" />
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#F6F0F0"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/viewPager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:tabGravity="center"
-        app:tabMode="fixed" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="517dp"
-        android:layout_below="@id/tabLayout"
-        android:background="#EDCB70"
+        android:layout_height="578dp"
+        android:background="#FAF3E0"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/Botmenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -160,18 +165,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"
             app:srcCompat="@drawable/home" />
-
-        <ImageView
-            android:id="@+id/profilebtn"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/addBid"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-            app:srcCompat="@drawable/user" />
 
         <ImageView
             android:id="@+id/transBtn"
@@ -197,7 +190,30 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"
             app:srcCompat="@drawable/add" />
+
+        <ImageView
+            android:id="@+id/profilebtn"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/addBid"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/user" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F6F0F0"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/viewPager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabGravity="center"
+        app:tabMode="fixed" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

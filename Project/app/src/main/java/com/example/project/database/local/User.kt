@@ -11,5 +11,6 @@ data class User(
     val email: String,
     val password: String,
     var balance: Int,
-    var isSeller:Boolean
+    var isSeller:Boolean,
+    val pin: String,
 )

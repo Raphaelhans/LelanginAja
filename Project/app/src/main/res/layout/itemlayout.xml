@@ -1,42 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/auctionitem"
+    android:padding="15dp">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/itemImage"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginTop="5dp"
+        android:contentDescription="Auction item image"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@+id/itemName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemlocation" />
+
+    <TextView
+        android:id="@+id/itemlocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_input"
+        android:padding="10dp"
+        android:text="Surabaya"
+        android:textColor="#CCCCCC"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/itemName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="1"
-        android:background="@drawable/auctionitem"
-        android:orientation="vertical"
-        android:paddingStart="8dp">
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itemImage" />
 
-        <ImageView
-            android:id="@+id/itemImage"
-            android:layout_width="210dp"
-            android:layout_height="180dp"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="Auction item image" />
+    <TextView
+        android:id="@+id/itemTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="10 Mei 2025 | 14:30 WIB"
+        android:textColor="?attr/colorSecondaryVariant"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itemName" />
 
-        <TextView
-            android:id="@+id/itemName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="start|center_horizontal"
-            android:paddingStart="16dp"
-            android:textSize="16sp" />
+    <TextView
+        android:id="@+id/itemBid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itemTime" />
 
-        <TextView
-            android:id="@+id/itemBid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="start|center_horizontal"
-            android:paddingStart="16dp"
-            android:textSize="14sp" />
-    </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

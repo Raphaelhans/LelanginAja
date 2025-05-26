@@ -9,7 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.HomeUser
-import com.example.project.Profile
+import com.example.project.ui.profile.Profile
 import com.example.project.R
 import com.example.project.databinding.ActivityTransactionBinding
 

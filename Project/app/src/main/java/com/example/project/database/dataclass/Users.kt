@@ -8,5 +8,9 @@ data class Users(
     val password: String = "",
     val balance: Int = 0,
     val status: Int = 0,
-    val lokasi: String = ""
+    val location: String = "",
+    val profilePicturePath: String = "",
+    val pin: String = "",
+    val seller_rating: Int = 0,
+    val suspended: Boolean = false
 )
