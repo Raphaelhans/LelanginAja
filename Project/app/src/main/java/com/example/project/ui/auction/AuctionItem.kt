@@ -11,7 +11,7 @@ data class AuctionItem(
     val name: String,
     val category: String,
     val currentBid: Double,
-    val imageResId: Int,
+    val imageResId: String,
     val sellerId: Int,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -19,7 +19,7 @@ data class AuctionItem(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readDouble(),
-        parcel.readInt(),
+        parcel.readString() ?: "",
         parcel.readInt()
     )
 
@@ -28,7 +28,7 @@ data class AuctionItem(
         parcel.writeString(name)
         parcel.writeString(category)
         parcel.writeDouble(currentBid)
-        parcel.writeInt(imageResId)
+        parcel.writeString(imageResId)
         parcel.writeInt(sellerId)
     }
 

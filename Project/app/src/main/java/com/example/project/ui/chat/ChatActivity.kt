@@ -18,60 +18,41 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var viewModel: ChatViewModel
     private lateinit var chatAdapter: ChatAdapter
 
-    private var currentUserId: Int = 0
-    private var friendUserId: Int = 0
+    private var currentUserId: String = ""
     private var productId: String = ""
-    private var productName: String = ""
+    private var sellerId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        currentUserId = intent.getStringExtra("current_userId")?.toIntOrNull() ?: 0
-        friendUserId = intent.getStringExtra("FRIEND_USER_ID")?.toIntOrNull() ?: 0
         productId = intent.getStringExtra("auction_item") ?: ""
-        productName = intent.getStringExtra("item_name") ?: "Chat"
+        currentUserId = intent.getStringExtra("current_userId") ?: ""
+        sellerId = intent.getStringExtra("sellerId") ?: ""
+        val itemName = intent.getStringExtra("item_name") ?: ""
 
-        binding.chatProductName.text = productName
-
-        viewModel = ViewModelProvider(this)[ChatViewModel::class.java]
-        chatAdapter = ChatAdapter(currentUserId, friendUserId)
-
+        chatAdapter = ChatAdapter(currentUserId)
         binding.chatRV.apply {
-            layoutManager = LinearLayoutManager(this@ChatActivity).apply {
-                stackFromEnd = true
-            }
             adapter = chatAdapter
+            layoutManager = LinearLayoutManager(this@ChatActivity)
         }
 
-        setupObservers()
-        setupClickListeners()
-
-        loadChatMessages()
-        viewModel.setupChatListener(currentUserId, friendUserId, productId)
-    }
-
-    private fun setupObservers() {
-        viewModel.chatList.observe(this) { chatList ->
-            chatAdapter.submitList(chatList.toMutableList())
-            if (chatList.isNotEmpty()) {
-                binding.chatRV.smoothScrollToPosition(chatList.size - 1)
+        viewModel.chatList.observe(this) { chats ->
+            chatAdapter.submitList(chats)
+            if (chats.isNotEmpty()) {
+                binding.chatRV.scrollToPosition(chats.size - 1)
             }
         }
 
-        viewModel.error.observe(this) { errorMsg ->
-            errorMsg?.let {
+        viewModel.error.observe(this) { error ->
+            error?.let {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             }
         }
 
-        viewModel.messageStatus.observe(this) { status ->
-            Log.d("ChatActivity", "Message status: $status")
-        }
-    }
+        viewModel.setupChatListener(currentUserId, sellerId, productId)
 
-    private fun setupClickListeners() {
         binding.backButton.setOnClickListener {
             finish()
         }
@@ -79,18 +60,12 @@ class ChatActivity : AppCompatActivity() {
         binding.sendButton.setOnClickListener {
             val message = binding.etMessage.text.toString().trim()
             if (message.isNotEmpty()) {
-                sendMessage(message)
+                viewModel.sendMessageTo(currentUserId, sellerId, message, productId)
                 binding.etMessage.text.clear()
             }
         }
-    }
 
-    private fun loadChatMessages() {
-        viewModel.getChatWith(currentUserId, friendUserId, productId)
-    }
-
-    private fun sendMessage(message: String) {
-        viewModel.sendMessageTo(currentUserId, friendUserId, message, productId)
+        supportActionBar?.title = "Chat - $itemName"
     }
 }
 

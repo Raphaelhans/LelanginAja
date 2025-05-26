@@ -17,6 +17,6 @@ class FragmentAdapter(
 
     override fun createFragment(position: Int): Fragment {
         val category = categories[position]
-        return Auction.newInstance(category.id, email)
+        return Auction.newInstance(category.id)
     }
 }

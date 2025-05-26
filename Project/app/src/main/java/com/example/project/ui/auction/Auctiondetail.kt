@@ -1,10 +1,13 @@
 package com.example.project.ui.auction
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.example.project.R
 import com.example.project.UserViewModel
 import com.example.project.databinding.ActivityAuctiondetailBinding
+import com.example.project.ui.chat.ChatActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -36,6 +40,9 @@ class Auctiondetail : AppCompatActivity() {
         binding = ActivityAuctiondetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val item = intent.getParcelableExtra<AuctionItem>("auction_item")
+        val user = intent.getStringExtra("current_userId")
+
         viewModels.currItems.observe(this) { items ->
             startAuctionCountdown(items?.end_date.toString())
             Glide.with(this).load(items?.image_url).into(binding.detailImage)
@@ -57,6 +64,18 @@ class Auctiondetail : AppCompatActivity() {
             binding.auctionDetailTime.text = formatted
             binding.auctionDetailLocation.text = items?.city
             binding.descriptionText.text = items?.description
+            binding.btnGroup.setOnClickListener {
+                Toast.makeText(baseContext, "Button clicked!", Toast.LENGTH_SHORT).show()
+
+                Log.e("btn", "btn")
+                val intent = Intent(this, ChatActivity::class.java).apply {
+                    putExtra("auction_item", items?.items_id)
+                    putExtra("current_userId", user)
+                    putExtra("sellerId", items?.seller_id)
+                    putExtra("item_name", items?.name)
+                }
+                startActivity(intent)
+            }
 
         }
 

@@ -21,7 +21,6 @@ class Auction : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -53,8 +52,8 @@ class Auction : Fragment() {
                 name = item.name,
                 category = item.category_id,
                 currentBid = item.start_bid.toDouble(),
-                imageResId = item.image_url.toInt(),
-                sellerId =  item.seller_id
+                imageResId = item.image_url,
+                sellerId = item.seller_id
             )
 
             val intent = Intent(requireContext(), Auctiondetail::class.java).apply {

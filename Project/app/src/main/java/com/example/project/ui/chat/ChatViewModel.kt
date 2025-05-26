@@ -22,8 +22,8 @@ class ChatViewModel : ViewModel() {
     val error: LiveData<String?> = _error
 
     fun getChatWith(
-        currentUserId: Int,
-        friendUserId: Int,
+        currentUserId: String,
+        sellerId: String,
         productId: String
     ) {
         viewModelScope.launch {
@@ -31,19 +31,15 @@ class ChatViewModel : ViewModel() {
                 val chatsSnapshot = db.collection("chats")
                     .document(productId)
                     .collection("messages")
-                    .whereIn("from", listOf(currentUserId, friendUserId))
-                    .whereIn("to", listOf(currentUserId, friendUserId))
-                    .orderBy("timestamp", Query.Direction.ASCENDING)
+                    .whereEqualTo("id_barang", productId)
+                    .whereIn("id_user", listOf(currentUserId, sellerId))
+                    .orderBy("time", Query.Direction.ASCENDING)
                     .get()
                     .await()
 
                 val chatMessages = chatsSnapshot.documents.mapNotNull { doc ->
                     val chat = doc.toObject(Chat::class.java)
-                    if (chat != null &&
-                        ((chat.from == currentUserId && chat.to == friendUserId) ||
-                                (chat.from == friendUserId && chat.to == currentUserId))) {
-                        chat.copy(id = doc.id)
-                    } else null
+                    chat?.copy(id_chat = doc.id)
                 }
 
                 _chatList.value = chatMessages
@@ -56,19 +52,20 @@ class ChatViewModel : ViewModel() {
     }
 
     fun sendMessageTo(
-        currentUserId: Int,
-        friendUserId: Int,
+        currentUserId: String,
+        sellerId: String,
         message: String,
         productId: String
     ) {
         viewModelScope.launch {
             try {
                 val chatMessage = Chat(
-                    from = currentUserId,
-                    to = friendUserId,
-                    content = message,
-                    timestamp = Timestamp.now(),
-                    productId = productId
+                    id_chat = "",
+                    id_user = currentUserId,
+                    id_barang = productId,
+                    chat = message,
+                    time = Timestamp.now(),
+                    id_seller = sellerId
                 )
 
                 db.collection("chats")
@@ -79,7 +76,7 @@ class ChatViewModel : ViewModel() {
 
                 _messageStatus.value = "Message sent successfully"
 
-                getChatWith(currentUserId, friendUserId, productId)
+                getChatWith(currentUserId, sellerId, productId)
 
             } catch (e: Exception) {
                 Log.e("ChatViewModel", "Error sending message: ${e.message}", e)
@@ -89,16 +86,15 @@ class ChatViewModel : ViewModel() {
     }
 
     fun setupChatListener(
-        currentUserId: Int,
-        friendUserId: Int,
+        currentUserId: String,
+        sellerId: String,
         productId: String
     ) {
         db.collection("chats")
             .document(productId)
             .collection("messages")
-            .whereIn("from", listOf(currentUserId, friendUserId))
-            .whereIn("to", listOf(currentUserId, friendUserId))
-            .orderBy("timestamp", Query.Direction.ASCENDING)
+            .whereEqualTo("id_barang", productId)
+            .orderBy("time", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.e("ChatViewModel", "Listen failed: ${e.message}")
@@ -109,11 +105,7 @@ class ChatViewModel : ViewModel() {
                 if (snapshot != null) {
                     val chatMessages = snapshot.documents.mapNotNull { doc ->
                         val chat = doc.toObject(Chat::class.java)
-                        if (chat != null &&
-                            ((chat.from == currentUserId && chat.to == friendUserId) ||
-                                    (chat.from == friendUserId && chat.to == currentUserId))) {
-                            chat.copy(id = doc.id)
-                        } else null
+                        chat?.copy(id_chat = doc.id)
                     }
 
                     _chatList.value = chatMessages
