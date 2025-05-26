@@ -38,6 +38,12 @@ class AuctionAdapter(
     class ViewHolder(val binding: ItemlayoutBinding)
         :RecyclerView.ViewHolder(binding.root)
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemlayoutBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        return ViewHolder(binding)
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.itemName.text = getItem(position).name
@@ -52,9 +58,5 @@ class AuctionAdapter(
         holder.itemView.setOnClickListener {
             onItemClickListener?.invoke(getItem(position))
         }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        TODO("Not yet implemented")
     }
 }

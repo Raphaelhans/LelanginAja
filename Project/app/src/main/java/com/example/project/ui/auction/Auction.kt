@@ -58,12 +58,18 @@ class Auction : Fragment() {
             }
         }
 
-        viewModel.currUser.observe(viewLifecycleOwner){ user ->
-            adapter.onItemClickListener = { item ->
-                val intent = Intent(requireContext(), Auctiondetail::class.java)
-                intent.putExtra("auction_item", item.items_id)
-                intent.putExtra("email", user?.email)
-                startActivity(intent)
+        viewModel.currUser.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                adapter.onItemClickListener = { item ->
+                    val intent = Intent(requireContext(), Auctiondetail::class.java).apply {
+                        putExtra("produk_id", item.items_id)
+                        putExtra("seller_id", item.seller_id.toString())
+                        putExtra("user_id", user.user_id.toString())
+                        putExtra("email", user.email)
+                        putExtra("auction_item", item.items_id)
+                    }
+                    startActivity(intent)
+                }
             }
         }
     }
