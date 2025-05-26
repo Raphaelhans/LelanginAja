@@ -166,6 +166,7 @@
                 android:id="@+id/bidTxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
                 android:layout_marginTop="12dp"
                 android:gravity="top"
                 android:hint="Start Bid"
@@ -263,6 +264,17 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Deskripsi" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/categoryList"
+                app:layout_constraintEnd_toStartOf="@+id/bidTxt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Alamat" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

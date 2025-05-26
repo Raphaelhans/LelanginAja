@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FAF3E0"
     android:padding="16dp">
 
     <com.google.android.material.card.MaterialCardView
@@ -13,9 +13,9 @@
         android:layout_width="0dp"
         android:layout_height="250dp"
         app:cardElevation="0dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/detailImage"
@@ -23,20 +23,21 @@
             android:layout_height="match_parent"
             android:contentDescription="Auction item image"
             android:scaleType="centerCrop" />
+
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/contentCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="10dp"
         android:background="#FFFFFF"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
-        app:layout_constraintTop_toBottomOf="@id/imageContainer"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/imageContainer">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -51,21 +52,21 @@
                 android:textColor="#333333"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/bidInfoCard"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:cardBackgroundColor="#F0FFF0"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
-                app:layout_constraintTop_toBottomOf="@id/detailName"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/detailName">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -79,8 +80,8 @@
                         android:text="Highest Bid:"
                         android:textColor="#555555"
                         android:textSize="15sp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/detailBid"
@@ -91,25 +92,25 @@
                         android:textColor="#2E7D32"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="@id/textHighestBid"
                         app:layout_constraintBottom_toBottomOf="@id/textHighestBid"
-                        app:layout_constraintStart_toEndOf="@id/textHighestBid" />
+                        app:layout_constraintStart_toEndOf="@id/textHighestBid"
+                        app:layout_constraintTop_toTopOf="@id/textHighestBid" />
 
                     <LinearLayout
                         android:id="@+id/timerContainer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        app:layout_constraintTop_toBottomOf="@id/textHighestBid"
-                        app:layout_constraintStart_toStartOf="parent">
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/textHighestBid">
 
                         <ImageView
                             android:layout_width="18dp"
                             android:layout_height="18dp"
-                            android:src="@drawable/timer"
                             android:contentDescription="Time remaining"
+                            android:src="@drawable/timer"
                             app:tint="#FF5722" />
 
                         <TextView
@@ -126,27 +127,29 @@
 
             <LinearLayout
                 android:id="@+id/detailsContainer"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/bidInfoCard"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/bidInfoCard">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:text="Category:"
                         android:textColor="#666666"
-                        android:textSize="15sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/detailCategory"
@@ -163,15 +166,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:text="End:"
                         android:textColor="#666666"
-                        android:textSize="15sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/auctionDetailTime"
@@ -187,15 +192,17 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/textView7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:text="Location:"
                         android:textColor="#666666"
-                        android:textSize="15sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/auctionDetailLocation"
@@ -209,7 +216,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Description -->
+            <!-- Description Title -->
             <TextView
                 android:id="@+id/descriptionTitle"
                 android:layout_width="wrap_content"
@@ -219,52 +226,51 @@
                 android:textColor="#333333"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/detailsContainer"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/detailsContainer" />
 
+            <!-- Description Text -->
             <TextView
                 android:id="@+id/descriptionText"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
                 android:text="This is a high-quality product available for auction. Don't miss this opportunity to place your bid and win this amazing item."
                 android:textColor="#555555"
-                app:layout_constraintTop_toBottomOf="@id/descriptionTitle"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/descriptionTitle" />
 
-            <!-- Seller Info -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/sellerCard"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#E0E0E0"
-                app:strokeWidth="1dp"
-                app:layout_constraintTop_toBottomOf="@id/descriptionText"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/descriptionText"
+                app:strokeColor="#E0E0E0"
+                app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/sellerAvatar"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/circle_bg"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:contentDescription="Seller profile"
                         android:padding="6dp"
                         android:src="@drawable/businessman"
-                        android:contentDescription="Seller profile"
-                        app:tint="#666666"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/CircleImageView" />
 
                     <TextView
                         android:id="@+id/sellerName"
@@ -275,20 +281,20 @@
                         android:textColor="#333333"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="@id/sellerAvatar"
-                        app:layout_constraintStart_toEndOf="@id/sellerAvatar" />
+                        app:layout_constraintStart_toEndOf="@id/sellerAvatar"
+                        app:layout_constraintTop_toTopOf="@id/sellerAvatar" />
 
                     <TextView
                         android:id="@+id/sellerRating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawablePadding="4dp"
                         android:text="4.9 ★★★★★"
                         android:textColor="#FFA000"
                         android:textSize="14sp"
-                        android:drawablePadding="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/sellerAvatar"
                         app:layout_constraintStart_toStartOf="@id/sellerName"
-                        app:layout_constraintTop_toBottomOf="@id/sellerName"
-                        app:layout_constraintBottom_toBottomOf="@id/sellerAvatar" />
+                        app:layout_constraintTop_toBottomOf="@id/sellerName" />
 
                     <Button
                         android:id="@+id/btnGroup"
@@ -296,14 +302,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Discussion"
+                        android:textAllCaps="false"
                         android:textColor="#1976D2"
-                        app:strokeWidth="2dp"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
-
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:strokeWidth="1dp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- Bid History Button -->
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

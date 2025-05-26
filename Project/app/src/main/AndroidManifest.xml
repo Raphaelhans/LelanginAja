@@ -55,7 +55,16 @@
             android:name=".HomeUser"
             android:exported="false" />
         <activity
+            android:name=".HomeStaffs"
+            android:exported="false" />
+        <activity
+            android:name=".HomeManager"
+            android:exported="false" />
+        <activity
             android:name=".Register"
+            android:exported="false" />
+        <activity
+            android:name=".AddPegawaiActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
