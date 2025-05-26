@@ -85,6 +85,12 @@ class MainActivity : AppCompatActivity() {
                     .load(R.drawable.error)
                     .into(toastImage)
             }
+            else{
+                Glide.with(this)
+                    .asGif()
+                    .load(R.drawable.like)
+                    .into(toastImage)
+            }
             with (Toast(applicationContext)) {
                 duration = Toast.LENGTH_LONG
                 view = layout
@@ -94,6 +100,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModels.checkres.observe(this) { success ->
             if (success) {
+                toastText.text = "Login successful"
                 val email = binding.editTextEmail.text.toString()
                 viewModels.loginDestination.observe(this) { destination ->
                     val intent = when (destination) {
@@ -103,21 +110,21 @@ class MainActivity : AppCompatActivity() {
                         else -> null
                     }
                     intent?.putExtra("email", email)
-                    Toast.makeText(application, "Login Success", Toast.LENGTH_SHORT).show()
+                    Glide.with(this)
+                        .asGif()
+                        .load(R.drawable.like)
+                        .into(toastImage)
+                    with (Toast(applicationContext)) {
+                        duration = Toast.LENGTH_LONG
+                        view = layout
+                        show()
+                    }
                     intent?.let {
                         startActivity(it)
                         finish()
                     }
                 }
-                Glide.with(this)
-                    .asGif()
-                    .load(R.drawable.like)
-                    .into(toastImage)
-                with (Toast(applicationContext)) {
-                    duration = Toast.LENGTH_LONG
-                    view = layout
-                    show()
-                }
+
                 startActivity(intent)
                 finish()
             }
