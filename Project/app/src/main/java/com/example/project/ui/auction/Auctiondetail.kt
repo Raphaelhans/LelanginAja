@@ -37,15 +37,14 @@ class Auctiondetail : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModels.currItems.observe(this) { items ->
-            Log.d("Auctiondetail", "onCreate: $items")
             startAuctionCountdown(items?.end_date.toString())
             Glide.with(this).load(items?.image_url).into(binding.detailImage)
             binding.detailName.text = items?.name
             if (items?.end_bid == 0){
-                binding.detailBid.text = "Rp " + formatterRupiah.format(items?.start_bid.toString())
+                binding.detailBid.text = "Rp " + formatterRupiah.format(items?.start_bid)
             }
             else{
-                binding.detailBid.text = "Rp " + formatterRupiah.format(items?.end_bid.toString())
+                binding.detailBid.text = "Rp " + formatterRupiah.format(items?.end_bid)
             }
 
             viewModels.currCategories.observe(this) { cate ->
@@ -104,7 +103,7 @@ class Auctiondetail : AppCompatActivity() {
                     "%02dd : %02dh : %02dm", days, hours, minutes
                 )
 
-                delay(60_000) // update every 1 minute
+                delay(60_000)
             }
         }
     }
