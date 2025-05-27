@@ -167,6 +167,7 @@ class Profile : BaseClass() {
             AlertDialog.Builder(this)
                 .setTitle(custext)
                 .setPositiveButton("Yes") { _, _ ->
+                    viewModel.logout()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
