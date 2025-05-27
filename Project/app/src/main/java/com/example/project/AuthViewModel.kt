@@ -83,8 +83,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         location = lokasi,
                         profilePicturePath = "",
                         pin = "",
-                        0,
-                        false
+                        seller_rating = 0,
+                        suspended = false
                     )
                     transaction.set(db.collection("Users").document(highestId.toString()), user)
                 }

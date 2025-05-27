@@ -397,6 +397,18 @@ class UserViewModel:ViewModel() {
         }
     }
 
+    fun logout(){
+        try {
+            _currUser.value = null
+            _resresponse.value = ""
+            _snapRedirectToken.value = ""
+            _withdrawResult.value = ""
+            _userBankAccount.value = emptyList()
+        }catch (e: Exception){
+            Log.e("Logout", "Error: ${e.message}", e)
+        }
+    }
+
     fun withdrawConfirmation(saldotarik:Int, pin:String, bank:String, accNumber:String, accHolder: String){
         viewModelScope.launch {
             try {
