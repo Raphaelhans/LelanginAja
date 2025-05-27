@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.project.database.dataclass.Users
+import com.example.project.database.dataclass.Products
 import com.example.project.databinding.ActivityHomeStaffsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,11 +22,14 @@ class HomeStaffs : AppCompatActivity() {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
     private lateinit var userAdapter: UserAdapter
+    private lateinit var productAdapter: ProductAdapter
     private val userList = mutableListOf<Users>()
     private val filteredUserList = mutableListOf<Users>()
+    private val productList = mutableListOf<Products>()
     private var currentFilter = "All"
     private var currentSearchQuery = ""
     private var currentUser: Staff? = null
+    private var isShowingProducts = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +52,8 @@ class HomeStaffs : AppCompatActivity() {
                     showHome()
                     true
                 }
-                R.id.nav_placeholder -> {
+                R.id.nav_products -> {
+                    showProducts()
                     true
                 }
                 else -> false
@@ -66,6 +71,9 @@ class HomeStaffs : AppCompatActivity() {
     private fun setupRecyclerView() {
         userAdapter = UserAdapter(filteredUserList) { user ->
             toggleSuspendStatus(user)
+        }
+        productAdapter = ProductAdapter(productList) { product ->
+            toggleProductSuspendStatus(product)
         }
         binding.recyclerViewUsers.layoutManager = LinearLayoutManager(this)
         binding.recyclerViewUsers.adapter = userAdapter
@@ -111,6 +119,21 @@ class HomeStaffs : AppCompatActivity() {
             }
     }
 
+    private fun fetchProductList() {
+        db.collection("Products")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val products = querySnapshot.documents.mapNotNull { it.toObject(Products::class.java) }
+                productList.clear()
+                productList.addAll(products)
+                productAdapter.notifyDataSetChanged()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this@HomeStaffs, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("FirestoreError", "Fetch product list failed: ${e.message}", e)
+            }
+    }
+
     private fun applyFilters() {
         filteredUserList.clear()
         val filtered = userList.filter { user ->
@@ -153,6 +176,32 @@ class HomeStaffs : AppCompatActivity() {
             }
     }
 
+    private fun toggleProductSuspendStatus(product: Products) {
+        val newStatus = if (product.status == 2) 1 else 2
+        db.collection("Products")
+            .whereEqualTo("items_id", product.items_id)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val document = querySnapshot.documents.firstOrNull()
+                if (document != null) {
+                    db.collection("Products").document(document.id)
+                        .update("status", newStatus)
+                        .addOnSuccessListener {
+                            fetchProductList()
+                            Toast.makeText(this@HomeStaffs, "Product status updated", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this@HomeStaffs, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this@HomeStaffs, "Product not found", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this@HomeStaffs, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
     private fun loadCurrentUser() {
         val email = auth.currentUser?.email ?: return
         db.collection("Staffs")
@@ -171,6 +220,7 @@ class HomeStaffs : AppCompatActivity() {
             Toast.makeText(this, "Staff data not loaded", Toast.LENGTH_SHORT).show()
             return
         }
+        isShowingProducts = false
         binding.recyclerViewUsers.visibility = View.GONE
         binding.editTextSearch.visibility = View.GONE
         binding.spinnerFilter.visibility = View.GONE
@@ -181,18 +231,35 @@ class HomeStaffs : AppCompatActivity() {
             Phone: ${currentUser?.phone}
             Email: ${currentUser?.email}
         """.trimIndent()
+        binding.recyclerViewUsers.adapter = userAdapter
     }
 
     private fun showHome() {
+        isShowingProducts = false
         binding.recyclerViewUsers.visibility = View.VISIBLE
         binding.editTextSearch.visibility = View.VISIBLE
         binding.spinnerFilter.visibility = View.VISIBLE
         binding.textViewTitle.text = "LELANGINAJA"
+        binding.recyclerViewUsers.adapter = userAdapter
         fetchUserList()
+    }
+
+    private fun showProducts() {
+        isShowingProducts = true
+        binding.recyclerViewUsers.visibility = View.VISIBLE
+        binding.editTextSearch.visibility = View.GONE
+        binding.spinnerFilter.visibility = View.GONE
+        binding.textViewTitle.text = "Products"
+        binding.recyclerViewUsers.adapter = productAdapter
+        fetchProductList()
     }
 
     override fun onResume() {
         super.onResume()
-        showHome()
+        if (!isShowingProducts) {
+            showHome()
+        } else {
+            showProducts()
+        }
     }
 }
