@@ -73,7 +73,8 @@ class MainActivity : AppCompatActivity() {
                     .load(R.drawable.rotate)
                     .into(binding.loadingLogin)
                 binding.loadingLogin.visibility = View.VISIBLE
-                viewModels.loginUser(email, password)
+                val remember = binding.rememberCheck.isChecked
+                viewModels.loginUser(email, password, remember)
             }
         }
 

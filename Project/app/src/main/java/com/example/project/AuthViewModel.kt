@@ -9,8 +9,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.project.database.App
 import com.example.project.database.dataclass.Users
-import com.example.project.database.local.Item
-import com.example.project.database.local.User
+import com.example.project.database.dataclass.Products
+import com.example.project.database.local.UserSession
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
@@ -33,10 +33,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
 
-    private val _items = MutableLiveData<List<Item>>()
-    val items: LiveData<List<Item>> get() = _items
-    private val _currUser = MutableLiveData<User?>()
-    val currUser: LiveData<User?> get() = _currUser
+    private val _items = MutableLiveData<List<Products>>()
+    val items: LiveData<List<Products>> get() = _items
+    private val _currUser = MutableLiveData<Users?>()
+    val currUser: LiveData<Users?> get() = _currUser
     private val _resresponse = MutableLiveData<String>()
     val resresponse: LiveData<String> get() = _resresponse
     private val _loginDestination = MutableLiveData<String>()
@@ -98,7 +98,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun loginUser(email: String, password: String) {
+    fun loginUser(email: String, password: String, remember:Boolean) {
         viewModelScope.launch {
             try {
                 val userQuery = db.collection("Users")
@@ -109,7 +109,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 if (!userQuery.isEmpty) {
                     val user = userQuery.documents.first().toObject(Users::class.java)
                     val storedHash = user?.password ?: throw Exception("Invalid user data")
-                    Log.d("LoginDebug", "User password hash: $storedHash")
 
                     if (user.suspended) {
                         _resresponse.value = "Account suspended"
@@ -123,6 +122,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                             _resresponse.value = "Login successful"
                             checkres.value = true
                             _loginDestination.value = "HomeUser"
+                            if (remember){
+                                val session = UserSession(user.user_id.toString(), user.email, user.name, user.status)
+                                App.db.userSessionDao().saveSession(session)
+                            }
                         } else {
                             _resresponse.value = "Incorrect password"
                             checkres.value = false
@@ -173,19 +176,19 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getcurrUser(email: String) {
-        viewModelScope.launch {
-            val user = App.db.userDao().getUserByEmail(email)
-            _currUser.value = user
-            Log.d("cekbtrg", currUser.value?.name.toString())
-        }
-    }
-
-    fun getAllItems() {
-        viewModelScope.launch {
-            val items = App.db.itemDao().getItems()
-            _items.value = items
-        }
-    }
+//    fun getcurrUser(email: String) {
+//        viewModelScope.launch {
+//            val user = App.db.userDao().getUserByEmail(email)
+//            _currUser.value = user
+//            Log.d("cekbtrg", currUser.value?.name.toString())
+//        }
+//    }
+//
+//    fun getAllItems() {
+//        viewModelScope.launch {
+//            val items = App.db.itemDao().getItems()
+//            _items.value = items
+//        }
+//    }
 
 }

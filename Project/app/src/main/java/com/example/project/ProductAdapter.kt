@@ -3,6 +3,7 @@ package com.example.project
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.project.database.dataclass.Products
 import com.example.project.databinding.ItemProductStaffBinding
 
@@ -21,6 +22,7 @@ class ProductAdapter(
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = productList[position]
         with(holder.binding) {
+            Glide.with(holder.itemView.context).load(product.image_url).into(productImg)
             itemName.text = product.name
             itemEndDate.text = product.end_date
             buttonSuspend.text = if (product.status == 2) "Unsuspend" else "Suspend"
