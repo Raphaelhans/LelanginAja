@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class Auctiondetail : AppCompatActivity() {
+
     private lateinit var binding: ActivityAuctiondetailBinding
     private val viewModels by viewModels<UserViewModel>()
     private var countdownJob: Job? = null
@@ -105,28 +106,56 @@ class Auctiondetail : AppCompatActivity() {
         bidAmount: Double
     ) {
         val db = FirebaseFirestore.getInstance()
-        val transaksiId = db.collection("Transaksi").document().id
+        val produkRef = db.collection("Produk").document(produkId)
+        val userRef = db.collection("User").document(buyerId)
 
-        val transaksi = hashMapOf(
-            "transaksiId" to transaksiId,
-            "produk_id" to produkId,
-            "buyer_id" to buyerId,
-            "seller_id" to sellerId,
-            "bidAmount" to bidAmount,
-            "bidTime" to System.currentTimeMillis(),
-            "status" to "pending"
-        )
+        db.runTransaction { transaction ->
+            val produk2 = transaction.get(produkRef)
+            val user2 = transaction.get(userRef)
 
-        db.collection("Transaksi").document(transaksiId).set(transaksi)
-            .addOnSuccessListener {
-                val formattedAmount = "Rp " + formatterRupiah.format(bidAmount)
-                Toast.makeText(this, "Penawaran sebesar $formattedAmount berhasil dikirim!", Toast.LENGTH_SHORT).show()
-                binding.bidAmountInput.text.clear()
+            val currEndBid = produk2.getDouble("end_bid") ?: 0.0
+            val startBid = produk2.getDouble("start_bid") ?: 0.0
+            val userBalance = user2.getDouble("balance") ?: 0.0
+
+            val highestBid = if (currEndBid == 0.0) startBid else currEndBid
+
+            if (bidAmount <= highestBid) {
+                throw Exception("Penawaran harus lebih tinggi dari bid saat ini")
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Gagal menyimpan penawaran", Toast.LENGTH_SHORT).show()
+            if (userBalance < bidAmount) {
+                throw Exception("Saldo tidak cukup")
             }
+
+            val transaksiId = db.collection("Transaksi").document().id
+            val transaksi = hashMapOf(
+                "transaksiId" to transaksiId,
+                "produk_id" to produkId,
+                "buyer_id" to buyerId,
+                "seller_id" to produk2.getString("user_id").orEmpty(),
+                "bid" to bidAmount,
+                "time_bid" to System.currentTimeMillis(),
+                "status" to "pending"
+            )
+
+            transaction.set(db.collection("Transaksi").document(transaksiId), transaksi)
+            transaction.update(produkRef, mapOf(
+                "end_bid" to bidAmount,
+                "buyer_id" to buyerId
+            ))
+            transaction.update(userRef, "balance", userBalance - bidAmount)
+
+            transaction.set(db.collection("Transaksi").document(transaksiId), transaksi)
+            transaction.update(produkRef, "end_bid", bidAmount)
+            transaction.update(produkRef, "buyer_id", buyerId)
+            transaction.update(userRef, "balance", userBalance - bidAmount)
+        }.addOnSuccessListener {
+            Toast.makeText(this, "Bid berhasil dikirim", Toast.LENGTH_SHORT).show()
+            binding.bidAmountInput.text.clear()
+        }.addOnFailureListener { e ->
+            Toast.makeText(this, "Gagal: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
+
 
     private fun startAuctionCountdown(endDateString: String) {
         val endDateTime = LocalDateTime.parse(endDateString, formatter)
