@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
+import com.example.project.R
 import com.example.project.UserViewModel
 import com.example.project.databinding.FragmentAuctionBinding
 import kotlinx.coroutines.launch
@@ -36,7 +38,7 @@ class Auction : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val categoryId = arguments?.getString(ARG_CATEGORY) ?: return
-        val email = arguments?.getString(ARG_CATEGORY) ?: return
+        val email = arguments?.getString(ARG_EMAIL) ?: return
         viewModel.getCurrUser(email)
 
         adapter = AuctionAdapter()
@@ -48,12 +50,28 @@ class Auction : Fragment() {
             adapter.submitList(items)
         }
 
-        viewModel.currUser.observe(viewLifecycleOwner){ user ->
-            adapter.onItemClickListener = { item ->
-                val intent = Intent(requireContext(), Auctiondetail::class.java)
-                intent.putExtra("auction_item", item.items_id)
-                intent.putExtra("email", user?.email)
-                startActivity(intent)
+        viewModel.searchBrg.observe(viewLifecycleOwner) { query ->
+            lifecycleScope.launch {
+                val items = viewModel.loadItemsForCategory(categoryId)
+                val filtered = items.filter {
+                    it.name.contains(query, ignoreCase = true)
+                }
+                adapter.submitList(filtered)
+            }
+        }
+
+        viewModel.currUser.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                adapter.onItemClickListener = { item ->
+                    val intent = Intent(requireContext(), Auctiondetail::class.java).apply {
+                        putExtra("produk_id", item.items_id)
+                        putExtra("seller_id", item.seller_id.toString())
+                        putExtra("user_id", user.user_id.toString())
+                        putExtra("email", user.email)
+                        putExtra("auction_item", item.items_id)
+                    }
+                    startActivity(intent)
+                }
             }
         }
     }
