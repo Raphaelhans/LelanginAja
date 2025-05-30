@@ -4,39 +4,8 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dce9306f-15fa-45ea-81e2-fcf8d7f48e8a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/TopUpHistory.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/WithdrawHistory.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Transaksi.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/profile/AccNumber.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/drawable/item_withdraw.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/drawable/plus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/drawable/rounded_white.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_acc_number.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_additem_seller.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_top_up_history.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_withdraw_history.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/item_topup.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/item_withdraw.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/pfp_layout.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/FragmentAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/FragmentAdapter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/HomeUser.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/HomeUser.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ProfileInfo.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/Register.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/Register.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/UserViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/UserViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auction.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/AuctionAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/AuctionAdapter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auctiondetail.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auctiondetail.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/Transaction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/Transaction.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_auctiondetail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_auctiondetail.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_home_user.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_home_user.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/gradle/libs.versions.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Project/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+    <list default="true" id="dce9306f-15fa-45ea-81e2-fcf8d7f48e8a" name="Changes" comment="merge branc aniefa into jason on auction detail">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,6 +30,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;JasonOwen0114&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Raphaelhans/LelanginAja.git&quot;,
+    &quot;accountId&quot;: &quot;3757edc1-43c6-45ab-ae54-af4b6f9f3e8d&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 5
@@ -78,9 +59,9 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Merging jason",
+    "git-widget-placeholder": "#11 on jason",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/PROYEK/LelanginAja/Project"
+    "last_opened_file_path": "C:/(A) Sem 6/LelanginAja-main/Project"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -92,6 +73,19 @@
       <option name="presentableId" value="Default" />
       <updated>1746909804928</updated>
     </task>
+    <task id="LOCAL-00001" summary="merge branc aniefa into jason on auction detail">
+      <option name="closed" value="true" />
+      <created>1748581532791</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1748581532791</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="merge branc aniefa into jason on auction detail" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge branc aniefa into jason on auction detail" />
   </component>
 </project>
