@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
+import com.example.project.R
 import com.example.project.UserViewModel
 import com.example.project.databinding.FragmentAuctionBinding
 import kotlinx.coroutines.launch
@@ -36,7 +38,7 @@ class Auction : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val categoryId = arguments?.getString(ARG_CATEGORY) ?: return
-        val email = arguments?.getString(ARG_CATEGORY) ?: return
+        val email = arguments?.getString(ARG_EMAIL) ?: return
         viewModel.getCurrUser(email)
 
         adapter = AuctionAdapter()

@@ -52,6 +52,8 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
@@ -62,6 +64,9 @@ class UserViewModel:ViewModel() {
 
     private val _currUser = MutableLiveData<Users?>()
     val currUser: LiveData<Users?> get() = _currUser
+
+    private val _currSeller = MutableLiveData<Users?>()
+    val currSeller: LiveData<Users?> get() = _currSeller
 
     private val _userBankAccount = MutableLiveData<List<BankAccount>>()
     val userBankAccount: MutableLiveData<List<BankAccount>> get() = _userBankAccount
@@ -96,6 +101,9 @@ class UserViewModel:ViewModel() {
     private val _currRating = MutableLiveData<Ratings?>()
     val currRating: LiveData<Ratings?> = _currRating
 
+    private val _currRatingSeller = MutableLiveData<Ratings?>()
+    val currRatingSeller: LiveData<Ratings?> = _currRatingSeller
+
     private val _search = MutableLiveData<String>()
     val searchBrg: LiveData<String> = _search
 
@@ -128,6 +136,30 @@ class UserViewModel:ViewModel() {
         }
     }
 
+    fun getCurrSeller(user_id: String) {
+        viewModelScope.launch {
+            try {
+                val curruser = db.collection("Users")
+                    .whereEqualTo("user_id", user_id.toInt())
+                    .get()
+                    .await()
+
+                if (!curruser.isEmpty) {
+                    val user = curruser.documents.first().toObject(Users::class.java)
+                    val currRate = db.collection("Ratings").whereEqualTo("seller_id", user?.user_id).get().await()
+                    val rate = currRate.documents.mapNotNull { it.toObject(Ratings::class.java) }
+                    _currRatingSeller.value = rate.firstOrNull()
+                    _currSeller.value = user
+                    getUserAccount()
+                } else {
+                    Log.d("Firestore", "No user found with ID: $user_id")
+                }
+            } catch (e: Exception) {
+                Log.e("Firestore Error", "Error fetching user: ${e.message}", e)
+            }
+        }
+    }
+
     suspend fun loadCategories(): List<Categories> {
         return try {
             val snapshot = db.collection("Categories").get().await()
@@ -148,13 +180,35 @@ class UserViewModel:ViewModel() {
                 val item = currItem.toObject(Products::class.java)
                 val currcate = db.collection("Categories").document(item?.category_id!!).get().await()
                 val cate = currcate.toObject(Categories::class.java)
+                Log.d("Firestore", "Current item: $item")
                 _currCategories.value = cate
                 _currItems.value = item
             } catch (e: Exception) {
                 Log.e("Firestore Error", "Error fetching item: ${e.message}", e)
             }
         }
+    }
 
+    suspend fun checkItemValidity() {
+        val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy | HH:mm", Locale.ENGLISH)
+        try {
+            val now = LocalDateTime.now()
+            val productSnapshot = db.collection("Products").get().await()
+            val expiredItems = productSnapshot.documents.mapNotNull { doc ->
+                val product = doc.toObject(Products::class.java)
+                if (product != null && LocalDateTime.parse(product.end_date, formatter) < now && product.status != 1) {
+                    Pair(doc.id, product)
+                } else null
+            }
+
+            for ((docId, _) in expiredItems) {
+                db.collection("Products").document(docId).update("status", 1).await()
+            }
+
+            Log.d("Item Check", "${expiredItems.size} items updated as expired")
+        } catch (e: Exception) {
+            Log.e("Firestore Error", "Error updating expired items: ${e.message}", e)
+        }
     }
 
     suspend fun loadItemsForCategory(category: String): List<Products> {
@@ -166,6 +220,7 @@ class UserViewModel:ViewModel() {
                 it.category_id == category &&
                 it.status == 0
             }
+            Log.d("Firestore", "Loaded items: $final")
             _Items.postValue(final)
             final
         } catch (e: Exception) {

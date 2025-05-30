@@ -34,6 +34,11 @@ class HomeUser : BaseClass() {
         binding = ActivityHomeUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Glide.with(this)
+            .asGif()
+            .load(R.drawable.nodata)
+            .preload()
+
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
         val etSearch = binding.etSearch
@@ -48,7 +53,9 @@ class HomeUser : BaseClass() {
             }
         }
 
-
+        lifecycleScope.launch {
+            viewModels.checkItemValidity()
+        }
 
         viewModels.currUser.observe(this) { user ->
             if (user != null) {
@@ -56,19 +63,21 @@ class HomeUser : BaseClass() {
                     val categories = viewModels.loadCategories()
 
                     if (categories.isNotEmpty()) {
-                        adapter = FragmentAdapter(this@HomeUser, categories, user.email)
-                        viewPager.adapter = adapter
+                        if (::adapter.isInitialized.not()) {
+                            adapter = FragmentAdapter(this@HomeUser, categories, user.email)
+                            viewPager.adapter = adapter
 
-                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                            tab.text = categories[position].name
-                        }.attach()
+                            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                                tab.text = categories[position].name
+                            }.attach()
 
-                        tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+                            tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+                        }
                     } else {
-                        Toast.makeText(this@HomeUser, "No categories found", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@HomeUser, "No categories found", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
-
                 binding.nameUserDis.text = user.name
                 binding.saldouserDis.text = "Rp. **********"
 
