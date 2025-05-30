@@ -96,6 +96,14 @@ class UserViewModel:ViewModel() {
     private val _currRating = MutableLiveData<Ratings?>()
     val currRating: LiveData<Ratings?> = _currRating
 
+    private val _search = MutableLiveData<String>()
+    val searchBrg: LiveData<String> = _search
+
+    fun setSearchBrg(query: String) {
+        _search.value = query
+    }
+
+
     fun getCurrUser(email: String) {
         viewModelScope.launch {
             try {

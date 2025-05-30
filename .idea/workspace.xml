@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="dce9306f-15fa-45ea-81e2-fcf8d7f48e8a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/TopUpHistory.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/WithdrawHistory.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Transaksi.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/profile/AccNumber.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/drawable/item_withdraw.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/drawable/plus.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/drawable/rounded_white.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_acc_number.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_additem_seller.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_top_up_history.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_withdraw_history.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/item_topup.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/item_withdraw.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/pfp_layout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/FragmentAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/FragmentAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/HomeUser.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/HomeUser.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ProfileInfo.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/Register.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/Register.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/UserViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/UserViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auction.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/AuctionAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/AuctionAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auctiondetail.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auctiondetail.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/Transaction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/Transaction.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_auctiondetail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_auctiondetail.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_home_user.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_home_user.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Project/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2wv6fiAXAypcOer0PPSQeQ6BcuT" />
+  <component name="ProjectViewState">
+    <option name="foldersAlwaysOnTop" value="false" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "Merging jason",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/xampp/htdocs/PROYEK/LelanginAja/Project"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dce9306f-15fa-45ea-81e2-fcf8d7f48e8a" name="Changes" comment="" />
+      <created>1746909804928</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1746909804928</updated>
+    </task>
+    <servers />
+  </component>
+</project>
