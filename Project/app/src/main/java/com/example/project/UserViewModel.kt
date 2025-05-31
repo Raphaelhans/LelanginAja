@@ -1,12 +1,11 @@
 package com.example.project
 
-import android.R
 import android.util.Log
 import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.Rating
 import android.net.Uri
-import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,7 +16,6 @@ import com.example.project.database.dataclass.Categories
 import com.example.project.database.dataclass.CustomerDetails
 import com.example.project.database.dataclass.ItemDetails
 import com.example.project.database.dataclass.MidtransPayload
-import com.example.project.database.dataclass.MidtransResponse
 import com.example.project.database.dataclass.Payment
 import com.example.project.database.dataclass.Products
 import com.example.project.database.dataclass.Ratings
@@ -25,31 +23,20 @@ import com.example.project.database.dataclass.TransactionDetails
 import org.mindrot.jbcrypt.BCrypt
 import com.example.project.database.dataclass.Users
 import com.example.project.database.dataclass.Withdraws
-import com.example.project.ui.auction.AuctionItem
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.AggregateSource
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
-import okhttp3.internal.wait
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -106,9 +93,22 @@ class UserViewModel:ViewModel() {
 
                 if (!curruser.isEmpty) {
                     val user = curruser.documents.first().toObject(Users::class.java)
-                    val currRate = db.collection("Ratings").whereEqualTo("seller_id", user?.user_id).get().await()
-                    val rate = currRate.documents.mapNotNull { it.toObject(Ratings::class.java) }
-                    _currRating.value = rate.firstOrNull()
+                    val sellerId = user?.user_id
+
+                    val allRatingsSnapshot = db.collection("Ratings").get().await()
+                    val allRatings = allRatingsSnapshot.documents.mapNotNull { it.toObject(Ratings::class.java) }
+                    val globalAvg = allRatings.map { it.rating }.average()
+
+                    val sellerRatings = allRatings.filter { it.seller_id == sellerId }
+
+                    val bayesian = calculateBayesianRating(sellerRatings, globalAvg)
+
+                    _currRating.value = Ratings(
+                        rating_id = "",
+                        seller_id = 0,
+                        rating = bayesian.toDouble()
+                    )
+
                     _currUser.value = user
                     getUserAccount()
                 } else {
@@ -150,7 +150,63 @@ class UserViewModel:ViewModel() {
                 Log.e("Firestore Error", "Error fetching item: ${e.message}", e)
             }
         }
+    }
 
+    fun getCategoryById(categoryId: String) {
+        db.collection("Categories")
+            .document(categoryId)
+            .get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    val category = doc.toObject(Categories::class.java)
+                    _currCategories.postValue(category)
+                } else {
+                    _currCategories.postValue(null)
+                }
+            }
+            .addOnFailureListener {
+                _currCategories.postValue(null)
+            }
+    }
+
+    fun getAverageRating(sellerId: Int) {
+        db.collection("Ratings")
+            .whereEqualTo("seller_id", sellerId)
+            .get()
+            .addOnSuccessListener { result ->
+                val ratings = result.mapNotNull { it.getDouble("rating") }
+                if (ratings.isNotEmpty()) {
+                    val average = ratings.average()
+                    _currRating.postValue(Ratings(seller_id = sellerId, rating = average))
+                } else {
+                    _currRating.postValue(null)
+                }
+            }
+            .addOnFailureListener {
+                _currRating.postValue(null)
+            }
+    }
+
+    fun giveRating(sellerId: Int, ratingValue: Int) {
+        val currentUserId = getCurrentUserId()
+
+        viewModelScope.launch {
+            val existing = db.collection("Ratings")
+                .whereEqualTo("seller_id", sellerId)
+                .whereEqualTo("buyer_id", currentUserId)
+                .get()
+                .await()
+
+            if (existing.isEmpty) {
+                val rating = hashMapOf(
+                    "seller_id" to sellerId,
+                    "buyer_id" to currentUserId,
+                    "rating" to ratingValue,
+                    "timestamp" to FieldValue.serverTimestamp()
+                )
+                db.collection("Ratings").add(rating)
+            }
+        }
     }
 
     suspend fun loadItemsForCategory(category: String): List<Products> {
@@ -160,7 +216,7 @@ class UserViewModel:ViewModel() {
                 it.toObject(Products::class.java)
             }.filter {
                 it.category_id == category &&
-                it.status == 0
+                        it.status == 0
             }
             _Items.postValue(final)
             final
@@ -491,4 +547,14 @@ class UserViewModel:ViewModel() {
             }
         }
     }
+
+    private fun calculateBayesianRating(userRatings: List<Ratings>, globalAvg: Double, threshold: Int = 5): Double {
+        val v = userRatings.size
+        val R = if (v > 0) userRatings.map { it.rating }.average() else 0.0
+        val m = threshold
+        val C = globalAvg
+
+        return ((v.toDouble() / (v + m)) * R) + ((m.toDouble() / (v + m)) * C)
+    }
+
 }

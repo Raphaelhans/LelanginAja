@@ -20,7 +20,7 @@ data class AuctionItem(
         parcel.readString() ?: "",
         parcel.readDouble(),
         parcel.readString() ?: "",
-        parcel.readInt()
+        parcel.readInt(),
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.project.UserViewModel
+import com.example.project.database.dataclass.Products
 import com.example.project.databinding.FragmentAuctionBinding
 import kotlinx.coroutines.launch
 
@@ -18,10 +19,6 @@ class Auction : Fragment() {
     private lateinit var binding: FragmentAuctionBinding
     val viewModel: UserViewModel by activityViewModels()
     lateinit var adapter: AuctionAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +39,7 @@ class Auction : Fragment() {
 
         lifecycleScope.launch {
             val items = viewModel.loadItemsForCategory(categoryId)
-            Log.e("viewmodel", items.toString())
+            Log.d("Auction", "Items: $items")
             adapter.submitList(items)
         }
 
@@ -59,6 +56,10 @@ class Auction : Fragment() {
             val intent = Intent(requireContext(), Auctiondetail::class.java).apply {
                 putExtra("auction_item", auctionItem)
                 putExtra("current_userId", viewModel.getCurrentUserId())
+
+                if (item is Products) {
+                    putExtra("product", item)
+                }
             }
             startActivity(intent)
         }
