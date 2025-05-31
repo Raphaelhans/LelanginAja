@@ -54,7 +54,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"
-            app:srcCompat="@drawable/home" />
+            app:srcCompat="@drawable/homent" />
 
         <ImageView
             android:id="@+id/profilebtn"
@@ -78,7 +78,7 @@
             app:layout_constraintStart_toEndOf="@+id/homebtn"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"
-            app:srcCompat="@drawable/list" />
+            app:srcCompat="@drawable/listclik" />
 
         <ImageView
             android:id="@+id/addBid"

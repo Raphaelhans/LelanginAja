@@ -71,6 +71,7 @@ class Auction : Fragment() {
                         putExtra("auction_item", item.items_id)
                     }
                     startActivity(intent)
+
                 }
             }
         }

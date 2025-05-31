@@ -34,11 +34,6 @@ class HomeUser : BaseClass() {
         binding = ActivityHomeUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        Glide.with(this)
-            .asGif()
-            .load(R.drawable.nodata)
-            .preload()
-
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
         val etSearch = binding.etSearch
@@ -111,8 +106,10 @@ class HomeUser : BaseClass() {
                 }
 
                 binding.transBtn.setOnClickListener {
-                    val intent = Intent(this, Transaction::class.java)
-                    intent.putExtra("email", viewModels.currUser.value?.email)
+                    val intent = Intent(this, Transaction::class.java).apply {
+                       putExtra("email", viewModels.currUser.value?.email)
+                       putExtra("user_id", viewModels.currUser.value?.user_id.toString())
+                    }
                     startActivity(intent)
                     finish()
                 }

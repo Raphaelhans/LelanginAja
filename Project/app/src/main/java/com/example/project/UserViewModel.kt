@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Base64
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,6 +23,8 @@ import com.example.project.database.dataclass.Payment
 import com.example.project.database.dataclass.Products
 import com.example.project.database.dataclass.Ratings
 import com.example.project.database.dataclass.TransactionDetails
+import com.example.project.database.dataclass.Transactions
+import com.example.project.database.dataclass.TransactionwithProduct
 import org.mindrot.jbcrypt.BCrypt
 import com.example.project.database.dataclass.Users
 import com.example.project.database.dataclass.Withdraws
@@ -29,6 +32,7 @@ import com.example.project.ui.auction.AuctionItem
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.AggregateSource
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
@@ -64,6 +68,9 @@ class UserViewModel:ViewModel() {
 
     private val _currUser = MutableLiveData<Users?>()
     val currUser: LiveData<Users?> get() = _currUser
+
+    private val _currUserTransaction = MutableLiveData<List<TransactionwithProduct>>()
+    val currUserTransaction: LiveData<List<TransactionwithProduct>> get() = _currUserTransaction
 
     private val _currSeller = MutableLiveData<Users?>()
     val currSeller: LiveData<Users?> get() = _currSeller
@@ -185,6 +192,37 @@ class UserViewModel:ViewModel() {
                 _currItems.value = item
             } catch (e: Exception) {
                 Log.e("Firestore Error", "Error fetching item: ${e.message}", e)
+            }
+        }
+    }
+
+    fun getUserTrans(userid: String) {
+        viewModelScope.launch {
+            try {
+                val rawTrans = db.collection("Transaksi")
+                    .whereEqualTo("buyer_id", userid)
+                    .get().await()
+
+                val transactions = rawTrans.documents.mapNotNull {
+                    it.toObject(Transactions::class.java)
+                }
+                Log.d("Firestore", "Loaded transactions: $transactions")
+
+                val transactionWithProductList = transactions.map { transaction ->
+                    val productSnapshot = db.collection("Products")
+                        .document(transaction.produk_id)
+                        .get().await()
+
+                    val product = productSnapshot.toObject(Products::class.java)
+
+                    TransactionwithProduct(transaction, product)
+                }
+                Log.d("Firestore", "Transaction with product list: $transactionWithProductList")
+
+                _currUserTransaction.value = transactionWithProductList
+            } catch (e: Exception) {
+                Log.e("Firestore Error", "Failed to load transactions: ${e.message}", e)
+                _currUserTransaction.value = emptyList()
             }
         }
     }
@@ -486,7 +524,7 @@ class UserViewModel:ViewModel() {
                     .count
 
                 if (inputPIN){
-                    val formatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+                    val formatter = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
                     val formattedDate = formatter.format(Date())
                     db.runTransaction { transaction ->
                          val wd = Withdraws(
@@ -562,6 +600,90 @@ class UserViewModel:ViewModel() {
             }catch (e: Exception) {
                 _resresponse.value = "Payment failed: ${e.message}"
                 Log.e("PaymentVM", "Error: ${e.message}", e)
+            }
+        }
+    }
+
+    fun placingBids(produkId: String, buyerId: String, sellerId: String, bidAmount: Double){
+        viewModelScope.launch {
+            try {
+                val produkRef = db.collection("Products").document(produkId)
+                val userRef = db.collection("Users").document(buyerId)
+                Log.d("BID_DEBUG1", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
+                val formatter = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
+                val formattedDate = formatter.format(Date())
+
+                val existingBidQuery = db.collection("Transaksi")
+                    .whereEqualTo("produk_id", produkId)
+                    .whereEqualTo("buyer_id", buyerId)
+                    .limit(1)
+                    .get()
+                    .await()
+
+                db.runTransaction { transaction ->
+                    val produk2 = transaction.get(produkRef)
+                    val user2 = transaction.get(userRef)
+
+                    val currEndBid = produk2.getDouble("end_bid") ?: 0.0
+                    val startBid = produk2.getDouble("start_bid") ?: 0.0
+                    var userBalance = user2.getDouble("balance") ?: 0.0
+                    Log.d("BID_DEBUG2", "currEndBid: $currEndBid, startBid: $startBid, userBalance: $userBalance")
+
+                    val highestBid = if (currEndBid == 0.0) startBid else currEndBid
+
+                    if (bidAmount <= highestBid) {
+                        throw Exception("Penawaran harus lebih tinggi dari bid saat ini")
+                    }
+                    if (userBalance < bidAmount) {
+                        throw Exception("Saldo tidak cukup")
+                    }
+
+                    if (!existingBidQuery.isEmpty) {
+                        val existingDoc = existingBidQuery.documents[0]
+                        val oldBid = existingDoc.getDouble("bid") ?: 0.0
+
+                        userBalance += oldBid
+
+                        if (userBalance < bidAmount) {
+                            throw Exception("Saldo tidak cukup setelah pengembalian bid sebelumnya")
+                        }
+
+                        userBalance -= bidAmount
+                        transaction.update(existingDoc.reference, mapOf(
+                            "bid" to bidAmount,
+                            "time_bid" to formattedDate,
+                            "status" to "Pending"
+                        ))
+                    } else {
+                        userBalance -= bidAmount
+                        val transaksiId = db.collection("Transaksi").document().id
+                        val transaksi = hashMapOf(
+                            "transaksiId" to transaksiId,
+                            "produk_id" to produkId,
+                            "buyer_id" to buyerId,
+                            "seller_id" to produk2.getString("user_id").orEmpty(),
+                            "bid" to bidAmount,
+                            "time_bid" to formattedDate,
+                            "status" to "Pending"
+                        )
+                        transaction.set(db.collection("Transaksi").document(transaksiId), transaksi)
+                    }
+
+                    transaction.update(
+                        produkRef, mapOf(
+                            "end_bid" to bidAmount,
+                            "buyer_id" to buyerId.toInt()
+                        )
+                    )
+                    transaction.update(userRef, "balance", userBalance)
+                    getCurrItem(produkId)
+                }.addOnSuccessListener {
+                    _resresponse.value = "Bid berhasil dikirim"
+                }.addOnFailureListener { e ->
+                    _resresponse.value = "Gagal Bid: ${e.message}"
+                }
+            }catch (e: Exception){
+                _resresponse.value = "Gagal: ${e.message}"
             }
         }
     }

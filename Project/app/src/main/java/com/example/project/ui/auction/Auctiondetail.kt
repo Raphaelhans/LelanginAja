@@ -96,13 +96,17 @@ class Auctiondetail : AppCompatActivity() {
                     Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT)
                         .show()
                 } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
-                    placeBid(produkId, buyerId, sellerId, bidAmount)
+                    viewModels.placingBids(produkId, buyerId, sellerId, bidAmount)
+                    binding.bidAmountInput.text.clear()
                 } else {
                     Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
+        viewModels.resresponse.observe(this){ response ->
+            Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onStart() {
@@ -118,68 +122,6 @@ class Auctiondetail : AppCompatActivity() {
             viewModels.getCurrSeller(sellerId)
         }
     }
-
-    private fun placeBid(
-        produkId: String,
-        buyerId: String,
-        sellerId: String,
-        bidAmount: Double
-    ) {
-        val db = FirebaseFirestore.getInstance()
-        val produkRef = db.collection("Products").document(produkId)
-        val userRef = db.collection("Users").document(buyerId)
-        Log.d("BID_DEBUG1", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
-
-        db.runTransaction { transaction ->
-            val produk2 = transaction.get(produkRef)
-            val user2 = transaction.get(userRef)
-
-            val currEndBid = produk2.getDouble("end_bid") ?: 0.0
-            val startBid = produk2.getDouble("start_bid") ?: 0.0
-            val userBalance = user2.getDouble("balance") ?: 0.0
-            Log.d("BID_DEBUG2", "currEndBid: $currEndBid, startBid: $startBid, userBalance: $userBalance")
-
-            val highestBid = if (currEndBid == 0.0) startBid else currEndBid
-
-            if (bidAmount <= highestBid) {
-                throw Exception("Penawaran harus lebih tinggi dari bid saat ini")
-            }
-            if (userBalance < bidAmount) {
-                throw Exception("Saldo tidak cukup")
-            }
-
-            val transaksiId = db.collection("Transaksi").document().id
-            val transaksi = hashMapOf(
-                "transaksiId" to transaksiId,
-                "produk_id" to produkId,
-                "buyer_id" to buyerId,
-                "seller_id" to produk2.getString("user_id").orEmpty(),
-                "bid" to bidAmount,
-                "time_bid" to System.currentTimeMillis(),
-                "status" to "pending"
-            )
-
-            transaction.set(db.collection("Transaksi").document(transaksiId), transaksi)
-            transaction.update(
-                produkRef, mapOf(
-                    "end_bid" to bidAmount,
-                    "buyer_id" to buyerId.toInt()
-                )
-            )
-            transaction.update(userRef, "balance", userBalance - bidAmount)
-
-            transaction.set(db.collection("Transaksi").document(transaksiId), transaksi)
-            transaction.update(produkRef, "end_bid", bidAmount)
-            transaction.update(produkRef, "buyer_id", buyerId)
-            transaction.update(userRef, "balance", userBalance - bidAmount)
-        }.addOnSuccessListener {
-            Toast.makeText(this, "Bid berhasil dikirim", Toast.LENGTH_SHORT).show()
-            binding.bidAmountInput.text.clear()
-        }.addOnFailureListener { e ->
-            Toast.makeText(this, "Gagal: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
 
     private fun startAuctionCountdown(endDateString: String) {
         val endDateTime = LocalDateTime.parse(endDateString, formatter)
