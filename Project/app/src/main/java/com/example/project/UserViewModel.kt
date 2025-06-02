@@ -587,7 +587,7 @@ class UserViewModel:ViewModel() {
     fun topupPayment(transactionId: String, paymentType: String, transactionStatus: String){
         viewModelScope.launch {
             try {
-                val formatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+                val formatter = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
                 val formattedDate = formatter.format(Date())
                 db.runTransaction { transaction ->
                     val pays = Payment(transactionId, amountTopup.value.toString().toInt(), paymentType, transactionStatus, currUser.value?.email.toString(), formattedDate)
