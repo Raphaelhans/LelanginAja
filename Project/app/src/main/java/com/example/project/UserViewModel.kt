@@ -5,9 +5,9 @@ import android.util.Log
 import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.Rating
 import android.net.Uri
 import android.util.Base64
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -129,9 +130,22 @@ class UserViewModel:ViewModel() {
 
                 if (!curruser.isEmpty) {
                     val user = curruser.documents.first().toObject(Users::class.java)
-                    val currRate = db.collection("Ratings").whereEqualTo("seller_id", user?.user_id).get().await()
-                    val rate = currRate.documents.mapNotNull { it.toObject(Ratings::class.java) }
-                    _currRating.value = rate.firstOrNull()
+                    val sellerId = user?.user_id
+
+                    val allRatingsSnapshot = db.collection("Ratings").get().await()
+                    val allRatings = allRatingsSnapshot.documents.mapNotNull { it.toObject(Ratings::class.java) }
+                    val globalAvg = allRatings.map { it.rating }.average()
+
+                    val sellerRatings = allRatings.filter { it.seller_id == sellerId }
+
+                    val bayesian = calculateBayesianRating(sellerRatings, globalAvg)
+
+                    _currRating.value = Ratings(
+                        rating_id = "",
+                        seller_id = 0,
+                        rating = bayesian.toDouble()
+                    )
+
                     _currUser.value = user
                     getUserAccount()
                 } else {
@@ -167,6 +181,10 @@ class UserViewModel:ViewModel() {
         }
     }
 
+    fun getCurrentUserId(): String {
+        return _currUser.value?.user_id?.toString() ?: "0"
+    }
+
     suspend fun loadCategories(): List<Categories> {
         return try {
             val snapshot = db.collection("Categories").get().await()
@@ -192,6 +210,62 @@ class UserViewModel:ViewModel() {
                 _currItems.value = item
             } catch (e: Exception) {
                 Log.e("Firestore Error", "Error fetching item: ${e.message}", e)
+            }
+        }
+    }
+
+    fun getCategoryById(categoryId: String) {
+        db.collection("Categories")
+            .document(categoryId)
+            .get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    val category = doc.toObject(Categories::class.java)
+                    _currCategories.postValue(category)
+                } else {
+                    _currCategories.postValue(null)
+                }
+            }
+            .addOnFailureListener {
+                _currCategories.postValue(null)
+            }
+    }
+
+    fun getAverageRating(sellerId: Int) {
+        db.collection("Ratings")
+            .whereEqualTo("seller_id", sellerId)
+            .get()
+            .addOnSuccessListener { result ->
+                val ratings = result.mapNotNull { it.getDouble("rating") }
+                if (ratings.isNotEmpty()) {
+                    val average = ratings.average()
+                    _currRating.postValue(Ratings(seller_id = sellerId, rating = average))
+                } else {
+                    _currRating.postValue(null)
+                }
+            }
+            .addOnFailureListener {
+                _currRating.postValue(null)
+            }
+    }
+
+    fun giveRating(sellerId: Int, ratingValue: Int) {
+        val currentUserId = getCurrentUserId()
+        viewModelScope.launch {
+            val existing = db.collection("Ratings")
+                .whereEqualTo("seller_id", sellerId)
+                .whereEqualTo("buyer_id", currentUserId)
+                .get()
+                .await()
+
+            if (existing.isEmpty) {
+                val rating = hashMapOf(
+                    "seller_id" to sellerId,
+                    "buyer_id" to currentUserId,
+                    "rating" to ratingValue,
+                    "timestamp" to FieldValue.serverTimestamp()
+                )
+                db.collection("Ratings").add(rating)
             }
         }
     }
@@ -238,7 +312,6 @@ class UserViewModel:ViewModel() {
                     Pair(doc.id, product)
                 } else null
             }
-
             for ((docId, _) in expiredItems) {
                 db.collection("Products").document(docId).update("status", 1).await()
             }
@@ -258,7 +331,6 @@ class UserViewModel:ViewModel() {
                 it.category_id == category &&
                 it.status == 0
             }
-            Log.d("Firestore", "Loaded items: $final")
             _Items.postValue(final)
             final
         } catch (e: Exception) {
@@ -687,4 +759,14 @@ class UserViewModel:ViewModel() {
             }
         }
     }
+
+    private fun calculateBayesianRating(userRatings: List<Ratings>, globalAvg: Double, threshold: Int = 5): Double {
+        val v = userRatings.size
+        val R = if (v > 0) userRatings.map { it.rating }.average() else 0.0
+        val m = threshold
+        val C = globalAvg
+
+        return ((v.toDouble() / (v + m)) * R) + ((m.toDouble() / (v + m)) * C)
+    }
+
 }

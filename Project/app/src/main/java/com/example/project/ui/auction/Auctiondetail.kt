@@ -1,19 +1,27 @@
 package com.example.project.ui.auction
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import android.view.View
+import android.widget.RatingBar
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.project.R
 import com.example.project.UserViewModel
+import com.example.project.database.dataclass.Products
 import com.example.project.databinding.ActivityAuctiondetailBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import com.example.project.ui.chat.ChatActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -25,7 +33,6 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class Auctiondetail : AppCompatActivity() {
-
     private lateinit var binding: ActivityAuctiondetailBinding
     private val viewModels by viewModels<UserViewModel>()
     private var countdownJob: Job? = null
@@ -47,65 +54,62 @@ class Auctiondetail : AppCompatActivity() {
             startAuctionCountdown(items?.end_date.toString())
             Glide.with(this).load(items?.image_url).into(binding.detailImage)
             binding.detailName.text = items?.name
-            if (items?.end_bid == 0) {
+            if (items?.end_bid == 0){
                 binding.detailBid.text = "Rp " + formatterRupiah.format(items?.start_bid)
-            } else {
+            }
+            else{
                 binding.detailBid.text = "Rp " + formatterRupiah.format(items?.end_bid)
             }
 
-            viewModels.currItems.observe(this) { item ->
-                Log.d("Auctiondetail", "onCreate: $item")
-                item?.let {
-                    startAuctionCountdown(it.end_date)
-
-                    Glide.with(this).load(it.image_url).into(binding.detailImage)
-                    binding.detailName.text = it.name
-                    binding.detailBid.text = "Rp " + formatterRupiah.format(
-                        if (it.end_bid == 0) it.start_bid else it.end_bid
-                    )
-
-                    val dateTime = LocalDateTime.parse(it.end_date, formatter)
-                    val newFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm")
-                    binding.auctionDetailTime.text = dateTime.format(newFormatter)
-                    binding.auctionDetailLocation.text = it.city
-                    binding.descriptionText.text = it.description
-                }
+            viewModels.currCategories.observe(this) { cate ->
+                binding.detailCategory.text = cate?.name
             }
 
-            viewModels.currSeller.observe(this) { user ->
-                user?.let {
-                    binding.sellerName.text = it.name
+            val dateTime = LocalDateTime.parse(items?.end_date, formatter)
+            val newFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm")
+            val formatted = dateTime.format(newFormatter)
+            binding.auctionDetailTime.text = formatted
+            binding.auctionDetailLocation.text = items?.city
+            binding.descriptionText.text = items?.description
 
-                    if (user.profilePicturePath.isNotEmpty()) {
-                        Glide.with(this).load(user.profilePicturePath).into(binding.sellerAvatar)
-                    } else {
-                        binding.sellerAvatar.setImageResource(R.drawable.profile)
-                    }
-
-                } ?: run {
-                    binding.sellerRating.text = "No rating yet"
-                }
+            viewModels.getCategoryById(product.category_id)
+            viewModels.currCategories.observe(this) { cate ->
+                binding.detailCategory.text = cate?.name ?: "-"
             }
 
-            binding.bidButton.setOnClickListener {
-                val bidText = binding.bidAmountInput.text.toString()
-                val bidAmount = bidText.toDoubleOrNull()
-                Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
-
-                if (bidAmount == null || bidAmount <= 0) {
-                    Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT)
-                        .show()
-                } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
-                    viewModels.placingBids(produkId, buyerId, sellerId, bidAmount)
-                    binding.bidAmountInput.text.clear()
-                } else {
-                    Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
+            binding.btnGroup.setOnClickListener {
+                val intent = Intent(this, ChatActivity::class.java).apply {
+                    putExtra("auction_item", product.items_id)
+                    putExtra("current_userId", userId)
+                    putExtra("sellerId", product.seller_id)
+                    putExtra("item_name", product.name)
                 }
+                startActivity(intent)
+            }
+
+            product.seller_id?.let { sellerId ->
+                viewModels.getAverageRating(sellerId)
             }
         }
 
-        viewModels.resresponse.observe(this){ response ->
-            Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+        viewModels.currRating.observe(this) { rating ->
+            if (rating != null) {
+                val formattedRating = String.format("%.2f", rating.rating)
+                binding.sellerRating.text = "⭐ $formattedRating"
+            } else {
+                binding.sellerRating.text = "No rating yet"
+            }
+        }
+
+        viewModels.currUser.observe(this){ user ->
+            binding.sellerName.text = user?.name
+            Glide.with(this).load(user?.profilePicturePath).into(binding.sellerAvatar)
+            if (viewModels.currRating.value != null){
+
+            }
+            else{
+                binding.sellerRating.text = "No rating yet"
+            }
         }
     }
 
@@ -123,7 +127,7 @@ class Auctiondetail : AppCompatActivity() {
         }
     }
 
-    private fun startAuctionCountdown(endDateString: String) {
+    fun startAuctionCountdown(endDateString: String) {
         val endDateTime = LocalDateTime.parse(endDateString, formatter)
 
         countdownJob?.cancel()
@@ -140,8 +144,9 @@ class Auctiondetail : AppCompatActivity() {
                 val hours = duration.toHours() % 24
                 val minutes = duration.toMinutes() % 60
 
-                binding.timeRemainingText.text =
-                    String.format("%02dd : %02dh : %02dm", days, hours, minutes)
+                binding.timeRemainingText.text = String.format(
+                    "%02dd : %02dh : %02dm", days, hours, minutes
+                )
 
                 delay(60_000)
             }
