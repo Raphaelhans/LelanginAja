@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EDCB70">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvAddItemTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New Item"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp" />
+
+    <!-- Upload Image -->
+    <ImageView
+        android:id="@+id/imgPreview"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/profilemenubox"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toBottomOf="@id/tvAddItemTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnUploadImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload Gambar"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/imgPreview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Nama Produk -->
+    <EditText
+        android:id="@+id/etNamaItem"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:hint="Nama Produk"
+        android:background="@drawable/profilemenubox"
+        android:paddingStart="16dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/btnUploadImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="20dp" />
+
+    <!-- Harga -->
+    <EditText
+        android:id="@+id/etHargaItem"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:hint="Harga (Rp)"
+        android:inputType="number"
+        android:background="@drawable/profilemenubox"
+        android:paddingStart="16dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/etNamaItem"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="20dp" />
+
+    <!-- Deskripsi -->
+    <EditText
+        android:id="@+id/etDeskripsiItem"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:hint="Deskripsi Produk"
+        android:gravity="top|start"
+        android:background="@drawable/profilemenubox"
+        android:padding="16dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/etHargaItem"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="20dp" />
+
+    <!-- Tombol Simpan -->
+    <Button
+        android:id="@+id/btnSimpanItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simpan"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#F57C00"
+        app:layout_constraintTop_toBottomOf="@id/etDeskripsiItem"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp" />
+
+    <!-- Bottom Navigation -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/Botmenu"
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:background="#F6F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/homebtn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/transBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/homent" />
+
+        <ImageView
+            android:id="@+id/transBtn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/addBid"
+            app:layout_constraintStart_toEndOf="@+id/homebtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/list" />
+
+        <ImageView
+            android:id="@+id/addBid"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/profilebtn"
+            app:layout_constraintStart_toEndOf="@+id/transBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/add" />
+
+        <ImageView
+            android:id="@+id/profilebtn"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/addBid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/profileuser" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
