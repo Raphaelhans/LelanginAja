@@ -43,7 +43,7 @@ class HomeManager : AppCompatActivity() {
                     true
                 }
                 R.id.nav_certificate -> {
-                    Toast.makeText(this, "Certificate clicked", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, LaporanManager::class.java))
                     true
                 }
                 else -> false

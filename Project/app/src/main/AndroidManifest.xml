@@ -82,6 +82,9 @@
             android:name=".TopUp"
             android:exported="false" />
         <activity
+            android:name=".LaporanManager"
+            android:exported="false" />
+        <activity
             android:name=".LandingActivity"
             android:exported="true">
 

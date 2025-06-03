@@ -34,10 +34,7 @@ class HomeUser : BaseClass() {
         binding = ActivityHomeUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        Glide.with(this)
-            .asGif()
-            .load(R.drawable.nodata)
-            .preload()
+
 
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
