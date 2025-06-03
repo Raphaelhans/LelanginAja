@@ -97,8 +97,7 @@ class Auction : Fragment() {
             startActivity(intent)
         }
     }
-
-
+    }
     companion object {
         private const val ARG_CATEGORY = "category"
         private const val ARG_EMAIL = "email"

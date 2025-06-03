@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.Toast
 import android.view.View
 import android.widget.RatingBar
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -72,22 +71,24 @@ class Auctiondetail : AppCompatActivity() {
             binding.auctionDetailLocation.text = items?.city
             binding.descriptionText.text = items?.description
 
-            viewModels.getCategoryById(product.category_id)
+            viewModels.getCategoryById(items?.category_id.toString())
             viewModels.currCategories.observe(this) { cate ->
                 binding.detailCategory.text = cate?.name ?: "-"
             }
 
-            binding.btnGroup.setOnClickListener {
-                val intent = Intent(this, ChatActivity::class.java).apply {
-                    putExtra("auction_item", product.items_id)
-                    putExtra("current_userId", userId)
-                    putExtra("sellerId", product.seller_id)
-                    putExtra("item_name", product.name)
+            viewModels.currUser.observe(this) { user ->
+                binding.btnGroup.setOnClickListener {
+                    val intent = Intent(this, ChatActivity::class.java).apply {
+                        putExtra("auction_item", items?.items_id)
+                        putExtra("current_userId", user?.user_id.toString())
+                        putExtra("sellerId", items?.seller_id)
+                        putExtra("item_name", items?.name)
+                    }
+                    startActivity(intent)
                 }
-                startActivity(intent)
             }
 
-            product.seller_id?.let { sellerId ->
+            items?.seller_id?.let { sellerId ->
                 viewModels.getAverageRating(sellerId)
             }
         }
@@ -101,16 +102,6 @@ class Auctiondetail : AppCompatActivity() {
             }
         }
 
-        viewModels.currUser.observe(this){ user ->
-            binding.sellerName.text = user?.name
-            Glide.with(this).load(user?.profilePicturePath).into(binding.sellerAvatar)
-            if (viewModels.currRating.value != null){
-
-            }
-            else{
-                binding.sellerRating.text = "No rating yet"
-            }
-        }
     }
 
     override fun onStart() {
