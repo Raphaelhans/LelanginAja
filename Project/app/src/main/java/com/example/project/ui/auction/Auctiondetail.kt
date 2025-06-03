@@ -6,14 +6,12 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.example.project.R
 import com.example.project.UserViewModel
 import com.example.project.databinding.ActivityAuctiondetailBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -46,27 +44,25 @@ class Auctiondetail : AppCompatActivity() {
         sellerId = intent.getStringExtra("seller_id") ?: ""
 
         viewModels.currItems.observe(this) { item ->
-            Log.d("Auctiondetail", "onCreate: $item")
             item?.let {
                 startAuctionCountdown(it.end_date)
+                checkAuctionAndSetWinner(it.items_id, it.end_date, it.status)
 
                 Glide.with(this).load(it.image_url).into(binding.detailImage)
-                binding.detailName.text = it.name
-                binding.detailBid.text = "Rp " + formatterRupiah.format(
-                    if (it.end_bid == 0) it.start_bid else it.end_bid
-                )
+                binding.detailName.text = "Nama Produk: ${it.name}"
+                binding.detailBid.text = "Harga Tertinggi: Rp ${formatterRupiah.format(if (it.end_bid == 0) it.start_bid else it.end_bid)}"
 
                 val dateTime = LocalDateTime.parse(it.end_date, formatter)
                 val newFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm")
-                binding.auctionDetailTime.text = dateTime.format(newFormatter)
-                binding.auctionDetailLocation.text = it.city
-                binding.descriptionText.text = it.description
+                binding.auctionDetailTime.text = "Berakhir: ${dateTime.format(newFormatter)}"
+                binding.auctionDetailLocation.text = "Lokasi: ${it.city}"
+                binding.descriptionText.text = "Deskripsi: ${it.description}"
             }
         }
 
         viewModels.currUser.observe(this) { user ->
             user?.let {
-                binding.sellerName.text = it.name
+                binding.sellerName.text = "Penjual: ${it.name}"
                 Glide.with(this).load(it.profilePicturePath).into(binding.sellerAvatar)
             } ?: run {
                 binding.sellerRating.text = "No rating yet"
@@ -76,7 +72,6 @@ class Auctiondetail : AppCompatActivity() {
         binding.bidButton.setOnClickListener {
             val bidText = binding.bidAmountInput.text.toString()
             val bidAmount = bidText.toDoubleOrNull()
-            Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
 
             if (bidAmount == null || bidAmount <= 0) {
                 Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT).show()
@@ -85,6 +80,23 @@ class Auctiondetail : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.completeButton.setOnClickListener {
+            val db = FirebaseFirestore.getInstance()
+            db.collection("Transaksi")
+                .whereEqualTo("produk_id", produkId)
+                .whereEqualTo("status", "menang")
+                .limit(1)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    if (!snapshot.isEmpty) {
+                        val transaksiId = snapshot.documents[0].id
+                        completeTransaction(transaksiId)
+                    } else {
+                        Toast.makeText(this, "Tidak ada transaksi menang ditemukan", Toast.LENGTH_SHORT).show()
+                    }
+                }
         }
     }
 
@@ -125,6 +137,42 @@ class Auctiondetail : AppCompatActivity() {
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Gagal menyimpan penawaran", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun checkAuctionAndSetWinner(itemId: String, endDateString: String, status: Int) {
+        val endDateTime = LocalDateTime.parse(endDateString, formatter)
+        val now = LocalDateTime.now()
+
+        if (now.isAfter(endDateTime) && status == 0) {
+            val db = FirebaseFirestore.getInstance()
+            db.collection("Products").document(itemId).update("status", 1)
+
+            db.collection("Transaksi")
+                .whereEqualTo("produk_id", itemId)
+                .orderBy("bidAmount", Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    if (!snapshot.isEmpty) {
+                        val winnerId = snapshot.documents[0].id
+                        db.collection("Transaksi").document(winnerId)
+                            .update("status", "menang")
+                    }
+                }
+        }
+    }
+
+    private fun completeTransaction(transaksiId: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("Transaksi").document(transaksiId)
+            .update("status", "complete")
+            .addOnSuccessListener {
+                Toast.makeText(this, "Transaksi berhasil diselesaikan!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Gagal menyelesaikan transaksi", Toast.LENGTH_SHORT).show()
             }
     }
 

@@ -343,7 +343,14 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:strokeWidth="1dp" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/completeButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Selesaikan Transaksi"
+                    tools:layout_editor_absoluteY="51dp" />
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Bid History Button -->
