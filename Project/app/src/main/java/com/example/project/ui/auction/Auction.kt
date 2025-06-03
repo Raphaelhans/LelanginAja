@@ -76,27 +76,20 @@ class Auction : Fragment() {
 
                 }
             }
-        adapter.onItemClickListener = { item ->
-            val auctionItem = AuctionItem(
-                id = item.items_id,
-                name = item.name,
-                category = item.category_id,
-                currentBid = item.start_bid.toDouble(),
-                imageResId = item.image_url,
-                sellerId = item.seller_id
-            )
+            adapter.onItemClickListener = { item ->
+                val intent = Intent(requireContext(), Auctiondetail::class.java).apply {
+                    putExtra("items_id", item.items_id)
+                    putExtra("email", user?.email)
+                    putExtra("seller_id", item.seller_id.toString())
+                    putExtra("current_userId", user?.user_id.toString())
 
-            val intent = Intent(requireContext(), Auctiondetail::class.java).apply {
-                putExtra("auction_item", auctionItem)
-                putExtra("current_userId", viewModel.getCurrentUserId())
-
-                if (item is Products) {
-                    putExtra("product", item)
+                    if (item is Products) {
+                        putExtra("product", item)
+                    }
                 }
+                startActivity(intent)
             }
-            startActivity(intent)
         }
-    }
     }
     companion object {
         private const val ARG_CATEGORY = "category"

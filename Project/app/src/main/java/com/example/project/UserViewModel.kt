@@ -306,17 +306,24 @@ class UserViewModel:ViewModel() {
         try {
             val now = LocalDateTime.now()
             val productSnapshot = db.collection("Products").get().await()
-            val expiredItems = productSnapshot.documents.mapNotNull { doc ->
-                val product = doc.toObject(Products::class.java)
-                if (product != null && LocalDateTime.parse(product.end_date, formatter) < now && product.status != 1) {
-                    Pair(doc.id, product)
-                } else null
-            }
-            for ((docId, _) in expiredItems) {
-                db.collection("Products").document(docId).update("status", 1).await()
+            for (doc in productSnapshot.documents) {
+                val product = doc.toObject(Products::class.java) ?: continue
+
+                val startDate = LocalDateTime.parse(product.start_date, formatter)
+                val endDate = LocalDateTime.parse(product.end_date, formatter)
+
+                val newStatus = when {
+                    now.isAfter(endDate) -> 1
+                    now.isBefore(startDate) -> 2
+                    now.isAfter(startDate) && now.isBefore(endDate) -> 0
+                    else -> product.status
+                }
+
+                if (newStatus != product.status) {
+                    db.collection("Products").document(doc.id).update("status", newStatus).await()
+                }
             }
 
-            Log.d("Item Check", "${expiredItems.size} items updated as expired")
         } catch (e: Exception) {
             Log.e("Firestore Error", "Error updating expired items: ${e.message}", e)
         }

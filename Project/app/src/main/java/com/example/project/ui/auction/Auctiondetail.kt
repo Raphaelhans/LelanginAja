@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.project.HomeUser
 import com.example.project.R
 import com.example.project.UserViewModel
 import com.example.project.database.dataclass.Products
@@ -77,6 +78,15 @@ class Auctiondetail : AppCompatActivity() {
             }
 
             viewModels.currUser.observe(this) { user ->
+                if (user?.user_id == items?.seller_id) {
+                    binding.bidButton.visibility = View.GONE
+                    binding.bidAmountInput.visibility = View.GONE
+                }
+                else{
+                    binding.bidButton.visibility = View.VISIBLE
+                    binding.bidAmountInput.visibility = View.VISIBLE
+                }
+
                 binding.btnGroup.setOnClickListener {
                     val intent = Intent(this, ChatActivity::class.java).apply {
                         putExtra("auction_item", items?.items_id)
@@ -86,10 +96,46 @@ class Auctiondetail : AppCompatActivity() {
                     }
                     startActivity(intent)
                 }
+                binding.bidButton.setOnClickListener {
+                    val bidText = binding.bidAmountInput.text.toString()
+                    val bidAmount = bidText.toDoubleOrNull()
+                    Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
+
+                    if (bidAmount == null || bidAmount <= 0) {
+                        Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
+                        viewModels.placingBids(produkId, user?.user_id.toString(), sellerId, bidAmount)
+                        binding.bidAmountInput.text.clear()
+                    } else {
+                        Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                binding.backBtn.setOnClickListener {
+                    val intent = Intent(this, HomeUser::class.java)
+                    intent.putExtra("email", user?.email)
+                    startActivity(intent)
+                    finish()
+                }
             }
+
 
             items?.seller_id?.let { sellerId ->
                 viewModels.getAverageRating(sellerId)
+            }
+        }
+
+        viewModels.currSeller.observe(this) { user ->
+            user?.let {
+                binding.sellerName.text = it.name
+
+                if (user.profilePicturePath.isNotEmpty()) {
+                    Glide.with(this).load(user.profilePicturePath).into(binding.sellerAvatar)
+                } else {
+                    binding.sellerAvatar.setImageResource(R.drawable.profile)
+                }
+
             }
         }
 
@@ -106,9 +152,9 @@ class Auctiondetail : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val itemId = intent.getStringExtra("auction_item")
+        val itemId = intent.getStringExtra("items_id")
         val email = intent.getStringExtra("email")
-        produkId = intent.getStringExtra("produk_id") ?: ""
+        produkId = intent.getStringExtra("items_id") ?: ""
         buyerId = intent.getStringExtra("user_id") ?: ""
         sellerId = intent.getStringExtra("seller_id") ?: ""
         if (!email.isNullOrEmpty() && !itemId.isNullOrEmpty() && sellerId.isNotEmpty()) {
