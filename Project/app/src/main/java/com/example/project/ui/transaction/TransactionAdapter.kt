@@ -1,11 +1,13 @@
 package com.example.project.ui.transaction
 
+import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.databinding.TranslayoutBinding
+import com.example.project.ui.auction.TransaksiDetailActivity
 
 class TransactionAdapter(private val transactions: List<TransactionItem>) :
     RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
@@ -31,7 +33,19 @@ class TransactionAdapter(private val transactions: List<TransactionItem>) :
                     binding.ratelayout.visibility = View.GONE
                 }
 
-                binding.root.setOnClickListener { onClick?.invoke(transaction) }
+                binding.root.setOnClickListener {
+                    val intent = Intent(binding.root.context, TransaksiDetailActivity::class.java).apply {
+                        putExtra("transaksi_id", transaction.id)
+                        putExtra("itemName", transaction.itemName)
+                        putExtra("lastBid", transaction.lastBid)
+                        putExtra("status", transaction.status)
+                        putExtra("sellerName", "John Doe")
+                        putExtra("sellerAddress", "Jl. Mawar No.10, Surabaya")
+                    }
+                    binding.root.context.startActivity(intent)
+                }
+
+//                binding.root.setOnClickListener { onClick?.invoke(transaction) }
             }
         }
 
@@ -51,7 +65,7 @@ class TransactionAdapter(private val transactions: List<TransactionItem>) :
 
         override fun getItemCount(): Int = transactions.size
 
-        fun setOnItemClickListener(listener: (TransactionItem) -> Unit) {
-            onItemClick = listener
-        }
+//        fun setOnItemClickListener(listener: (TransactionItem) -> Unit) {
+//            onItemClick = listener
+//        }
     }

@@ -1,5 +1,6 @@
 package com.example.project.ui.auction
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -50,13 +51,13 @@ class Auctiondetail : AppCompatActivity() {
 
                 Glide.with(this).load(it.image_url).into(binding.detailImage)
                 binding.detailName.text = "Nama Produk: ${it.name}"
-                binding.detailBid.text = "Harga Tertinggi: Rp ${formatterRupiah.format(if (it.end_bid == 0) it.start_bid else it.end_bid)}"
+                binding.detailBid.text = "Rp ${formatterRupiah.format(if (it.end_bid == 0) it.start_bid else it.end_bid)}"
 
                 val dateTime = LocalDateTime.parse(it.end_date, formatter)
                 val newFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm")
-                binding.auctionDetailTime.text = "Berakhir: ${dateTime.format(newFormatter)}"
-                binding.auctionDetailLocation.text = "Lokasi: ${it.city}"
-                binding.descriptionText.text = "Deskripsi: ${it.description}"
+                binding.auctionDetailTime.text = "${dateTime.format(newFormatter)}"
+                binding.auctionDetailLocation.text = "${it.city}"
+                binding.descriptionText.text = "${it.description}"
             }
         }
 
@@ -72,6 +73,7 @@ class Auctiondetail : AppCompatActivity() {
         binding.bidButton.setOnClickListener {
             val bidText = binding.bidAmountInput.text.toString()
             val bidAmount = bidText.toDoubleOrNull()
+            Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
 
             if (bidAmount == null || bidAmount <= 0) {
                 Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT).show()
@@ -82,22 +84,38 @@ class Auctiondetail : AppCompatActivity() {
             }
         }
 
-        binding.completeButton.setOnClickListener {
-            val db = FirebaseFirestore.getInstance()
-            db.collection("Transaksi")
-                .whereEqualTo("produk_id", produkId)
-                .whereEqualTo("status", "menang")
-                .limit(1)
-                .get()
-                .addOnSuccessListener { snapshot ->
-                    if (!snapshot.isEmpty) {
-                        val transaksiId = snapshot.documents[0].id
-                        completeTransaction(transaksiId)
-                    } else {
-                        Toast.makeText(this, "Tidak ada transaksi menang ditemukan", Toast.LENGTH_SHORT).show()
-                    }
-                }
-        }
+//        binding.completeButton.setOnClickListener {
+//            val db = FirebaseFirestore.getInstance()
+//            db.collection("Transaksi")
+//                .whereEqualTo("produk_id", produkId)
+//                .whereEqualTo("status", "menang")
+//                .get()
+//                .addOnSuccessListener { snapshot ->
+//                    if (!snapshot.isEmpty) {
+//                        val transaksiDoc = snapshot.documents[0]
+//                        val pemenangId = transaksiDoc.getString("buyer_id") ?: ""
+//                        val transaksiId = transaksiDoc.getString("transaksiId") ?: ""
+//
+//                        if (pemenangId == buyerId) {
+//                            val intent = Intent(this, TransaksiDetailActivity::class.java).apply {
+//                                putExtra("transaksiId", transaksiId)
+//                                putExtra("produkId", produkId)
+//                                putExtra("buyerId", buyerId)
+//                                putExtra("sellerId", sellerId)
+//                                putExtra("bidAmount", transaksiDoc.getDouble("bidAmount"))
+//                            }
+//                            startActivity(intent)
+//                        } else {
+//                            Toast.makeText(this, "Kamu bukan pemenang lelang ini", Toast.LENGTH_SHORT).show()
+//                        }
+//                    } else {
+//                        Toast.makeText(this, "Transaksi pemenang tidak ditemukan", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//                .addOnFailureListener {
+//                    Toast.makeText(this, "Gagal memuat data transaksi", Toast.LENGTH_SHORT).show()
+//                }
+//        }
     }
 
     override fun onStart() {
@@ -117,27 +135,48 @@ class Auctiondetail : AppCompatActivity() {
         bidAmount: Double
     ) {
         val db = FirebaseFirestore.getInstance()
-        val transaksiId = db.collection("Transaksi").document().id
+        val productRef = db.collection("Products").document(produkId)
 
-        val transaksi = hashMapOf(
-            "transaksiId" to transaksiId,
-            "produk_id" to produkId,
-            "buyer_id" to buyerId,
-            "seller_id" to sellerId,
-            "bidAmount" to bidAmount,
-            "bidTime" to System.currentTimeMillis(),
-            "status" to "pending"
-        )
+        productRef.get().addOnSuccessListener { document ->
+            if (document != null && document.exists()) {
+                val currentEndBid = document.getDouble("end_bid") ?: 0.0
+                val currentStartBid = document.getDouble("start_bid") ?: 0.0
+                val minBid = if (currentEndBid > 0) currentEndBid else currentStartBid.toDouble()
 
-        db.collection("Transaksi").document(transaksiId).set(transaksi)
-            .addOnSuccessListener {
-                val formattedAmount = "Rp " + formatterRupiah.format(bidAmount)
-                Toast.makeText(this, "Penawaran sebesar $formattedAmount berhasil dikirim!", Toast.LENGTH_SHORT).show()
-                binding.bidAmountInput.text.clear()
+                if (bidAmount > minBid) {
+                    productRef.update(
+                        mapOf(
+                            "end_bid" to bidAmount,
+                            "buyer_id" to buyerId.toInt()
+                        )
+                    )
+
+                    val transaksiId = db.collection("Transaksi").document().id
+                    val transaksi = hashMapOf(
+                        "transaksiId" to transaksiId,
+                        "produk_id" to produkId,
+                        "buyer_id" to buyerId,
+                        "seller_id" to sellerId,
+                        "bidAmount" to bidAmount,
+                        "bidTime" to System.currentTimeMillis(),
+                        "status" to "pending"
+                    )
+
+                    db.collection("Transaksi").document(transaksiId).set(transaksi)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Penawaran berhasil: Rp ${formatterRupiah.format(bidAmount)}", Toast.LENGTH_SHORT).show()
+                            binding.bidAmountInput.text.clear()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Gagal menyimpan penawaran", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, "Bid harus lebih tinggi dari penawaran saat ini", Toast.LENGTH_SHORT).show()
+                }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Gagal menyimpan penawaran", Toast.LENGTH_SHORT).show()
-            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Gagal mengambil data produk", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun checkAuctionAndSetWinner(itemId: String, endDateString: String, status: Int) {
@@ -146,7 +185,6 @@ class Auctiondetail : AppCompatActivity() {
 
         if (now.isAfter(endDateTime) && status == 0) {
             val db = FirebaseFirestore.getInstance()
-            db.collection("Products").document(itemId).update("status", 1)
 
             db.collection("Transaksi")
                 .whereEqualTo("produk_id", itemId)
@@ -155,25 +193,18 @@ class Auctiondetail : AppCompatActivity() {
                 .get()
                 .addOnSuccessListener { snapshot ->
                     if (!snapshot.isEmpty) {
-                        val winnerId = snapshot.documents[0].id
-                        db.collection("Transaksi").document(winnerId)
+                        val doc = snapshot.documents[0]
+                        val docId = doc.id
+
+                        db.collection("Transaksi").document(docId)
                             .update("status", "menang")
+                            .addOnSuccessListener {
+                                db.collection("Products").document(itemId)
+                                    .update("status", 1)
+                            }
                     }
                 }
         }
-    }
-
-    private fun completeTransaction(transaksiId: String) {
-        val db = FirebaseFirestore.getInstance()
-
-        db.collection("Transaksi").document(transaksiId)
-            .update("status", "complete")
-            .addOnSuccessListener {
-                Toast.makeText(this, "Transaksi berhasil diselesaikan!", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Gagal menyelesaikan transaksi", Toast.LENGTH_SHORT).show()
-            }
     }
 
     private fun startAuctionCountdown(endDateString: String) {

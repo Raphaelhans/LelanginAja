@@ -28,7 +28,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ui.auction.TransactiondetailActivity"
+            android:name=".ui.auction.TransaksiDetailActivity"
             android:exported="false" />
         <activity
             android:name=".AccountNumber"
