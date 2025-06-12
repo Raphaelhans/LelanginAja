@@ -8,10 +8,23 @@
     android:background="#FAF3E0"
     android:padding="16dp">
 
+    <ImageView
+        android:id="@+id/backBtn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/left" />
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/imageContainer"
         android:layout_width="0dp"
         android:layout_height="250dp"
+        android:layout_marginTop="40dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,6 +47,7 @@
         android:layout_marginTop="10dp"
         android:background="#FFFFFF"
         app:cardCornerRadius="16dp"
+        android:layout_marginBottom="12dp"
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -336,9 +350,10 @@
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="Discussion"
                         android:textAllCaps="false"
-                        android:textColor="#1976D2"
+                        android:textColor="#1E38CC"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -353,8 +368,23 @@
                     tools:layout_editor_absoluteY="51dp" />
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Bid History Button -->
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <Button
+        android:id="@+id/btnGiveRating"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="16dp"
+        android:text="Beri Rating"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        app:backgroundTint="#1E88E5"
+        android:textColor="#FFFFFF"
+        app:cornerRadius="12dp"
+        app:layout_constraintTop_toBottomOf="@+id/contentCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,8 +9,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.project.database.App
 import com.example.project.database.dataclass.Users
-import com.example.project.database.local.Item
-import com.example.project.database.local.User
+import com.example.project.database.dataclass.Products
+import com.example.project.database.local.UserSession
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
@@ -18,7 +18,6 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import org.mindrot.jbcrypt.BCrypt
-import kotlinx.coroutines.tasks.await
 
 data class Staff(
     val id_staff: Int = 0,
@@ -34,10 +33,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
 
-    private val _items = MutableLiveData<List<Item>>()
-    val items: LiveData<List<Item>> get() = _items
-    private val _currUser = MutableLiveData<User?>()
-    val currUser: LiveData<User?> get() = _currUser
+    private val _items = MutableLiveData<List<Products>>()
+    val items: LiveData<List<Products>> get() = _items
+    private val _currUser = MutableLiveData<Users?>()
+    val currUser: LiveData<Users?> get() = _currUser
     private val _resresponse = MutableLiveData<String>()
     val resresponse: LiveData<String> get() = _resresponse
     private val _loginDestination = MutableLiveData<String>()
@@ -83,7 +82,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         status = status,
                         location = lokasi,
                         profilePicturePath = "",
-                        pin = ""
+                        pin = "",
+                        seller_rating = 0,
+                        suspended = false
                     )
                     transaction.set(db.collection("Users").document(highestId.toString()), user)
                 }
@@ -97,114 +98,97 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun loginUser(email: String, password: String) {
+    fun loginUser(email: String, password: String, remember:Boolean) {
         viewModelScope.launch {
             try {
-                val query = db.collection("Users")
+                val userQuery = db.collection("Users")
                     .whereEqualTo("email", email)
                     .get()
                     .await()
 
-                if (query.isEmpty) {
-                    _resresponse.value = "Invalid username"
+                if (!userQuery.isEmpty) {
+                    val user = userQuery.documents.first().toObject(Users::class.java)
+                    val storedHash = user?.password ?: throw Exception("Invalid user data")
+
+                    if (user.suspended) {
+                        _resresponse.value = "Account suspended"
+                        checkres.value = false
+                        return@launch
+                    }
+
+                    try {
+                        val isPasswordCorrect = BCrypt.checkpw(password, storedHash)
+                        if (isPasswordCorrect) {
+                            _resresponse.value = "Login successful"
+                            checkres.value = true
+                            _loginDestination.value = "HomeUser"
+                            if (remember){
+                                val session = UserSession(user.user_id.toString(), user.email, user.name, user.status)
+                                App.db.userSessionDao().saveSession(session)
+                            }
+                        } else {
+                            _resresponse.value = "Incorrect password"
+                            checkres.value = false
+                        }
+                    } catch (e: IllegalArgumentException) {
+                        Log.e("LoginError", "Invalid password format for user $email: $storedHash", e)
+                        _resresponse.value = "Invalid password format"
+                        checkres.value = false
+                    }
                     return@launch
                 }
 
-                val user = query.documents.first().toObject(Users::class.java)
-                val storedHash = user?.password ?: throw Exception("Invalid user data")
 
-                val isPasswordCorrect = BCrypt.checkpw(password, storedHash)
+                val staffQuery = db.collection("Staffs")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .await()
 
-                if (isPasswordCorrect) {
-                    checkres.value = true
-                } else {
-                    _resresponse.value = "Incorrect password"
+                if (staffQuery.isEmpty) {
+                    _resresponse.value = "Invalid email"
                     checkres.value = false
+                    return@launch
+                }
+
+                val staff = staffQuery.documents.first().toObject(Staff::class.java)
+                val storedPassword = staff?.password ?: throw Exception("Invalid staff data")
+                Log.d("LoginDebug", "Staff password: $storedPassword")
+
+                if (staff.suspended) {
+                    _resresponse.value = "Account suspended"
+                    checkres.value = false
+                    return@launch
+                }
+
+                if (storedPassword == password) {
+                    _resresponse.value = "Login successful"
+                    checkres.value = true
+                    _loginDestination.value = if (staff.status) "HomeManager" else "HomeStaffs"
+                } else {
+                    checkres.value = false
+                    _resresponse.value = "Incorrect password"
                 }
             } catch (e: Exception) {
+                Log.e("LoginError", "Login failed: ${e.message}", e)
                 _resresponse.value = e.message
                 checkres.value = false
-                try {
-                    val userQuery = db.collection("Users")
-                        .whereEqualTo("email", email)
-                        .get()
-                        .await()
-
-                    if (!userQuery.isEmpty) {
-                        val user = userQuery.documents.first().toObject(Users::class.java)
-                        val storedHash = user?.password ?: throw Exception("Invalid user data")
-                        Log.d("LoginDebug", "User password hash: $storedHash")
-
-                        try {
-                            val isPasswordCorrect = BCrypt.checkpw(password, storedHash)
-                            if (isPasswordCorrect) {
-                                checkres.value = true
-                                _loginDestination.value = "HomeUser"
-                            } else {
-                                _resresponse.value = "Incorrect password"
-                                checkres.value = false
-                            }
-                        } catch (e: IllegalArgumentException) {
-                            Log.e(
-                                "LoginError",
-                                "Invalid password format for user $email: $storedHash",
-                                e
-                            )
-                            _resresponse.value = "Invalid password format"
-                            checkres.value = false
-                        }
-                        return@launch
-                    }
-
-
-                    val staffQuery = db.collection("Staffs")
-                        .whereEqualTo("email", email)
-                        .get()
-                        .await()
-
-                    if (staffQuery.isEmpty) {
-                        _resresponse.value = "Invalid email"
-                        checkres.value = false
-                        return@launch
-                    }
-
-                    val staff = staffQuery.documents.first().toObject(Staff::class.java)
-                    val storedPassword = staff?.password ?: throw Exception("Invalid staff data")
-                    Log.d("LoginDebug", "Staff password: $storedPassword")
-
-                    if (storedPassword == password) {
-                        if (staff.suspended) {
-                            _resresponse.value = "Account suspended"
-                            checkres.value = false
-                            return@launch
-                        }
-                        checkres.value = true
-                        _loginDestination.value = if (staff.status) "HomeManager" else "HomeStaffs"
-                    } else {
-                        _resresponse.value = "Incorrect password"
-                        checkres.value = false
-                    }
-                } catch (e: Exception) {
-                    Log.e("LoginError", "Login failed: ${e.message}", e)
-                    _resresponse.value = e.message
-                    checkres.value = false
-                }
-            }
-        }
-
-        fun getcurrUser(email: String) {
-            viewModelScope.launch {
-                val user = App.db.userDao().getUserByEmail(email)
-                _currUser.value = user
-                Log.d("cekbtrg", currUser.value?.name.toString())
-            }
-        }
-
-        fun getAllItems() {
-            viewModelScope.launch {
-                val items = App.db.itemDao().getItems()
-                _items.value = items
             }
         }
     }
+
+//    fun getcurrUser(email: String) {
+//        viewModelScope.launch {
+//            val user = App.db.userDao().getUserByEmail(email)
+//            _currUser.value = user
+//            Log.d("cekbtrg", currUser.value?.name.toString())
+//        }
+//    }
+//
+//    fun getAllItems() {
+//        viewModelScope.launch {
+//            val items = App.db.itemDao().getItems()
+//            _items.value = items
+//        }
+//    }
+
 }

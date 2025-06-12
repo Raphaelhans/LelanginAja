@@ -4,15 +4,25 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import android.view.View
+import android.widget.RatingBar
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.project.HomeUser
+import com.example.project.R
 import com.example.project.UserViewModel
+import com.example.project.database.dataclass.Products
 import com.example.project.databinding.ActivityAuctiondetailBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.example.project.ui.chat.ChatActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -79,52 +89,31 @@ class Auctiondetail : AppCompatActivity() {
                 Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT).show()
             } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
                 placeBid(produkId, buyerId, sellerId, bidAmount)
+                viewModels.placingBids(produkId, user?.user_id.toString(), sellerId, bidAmount)
+                binding.bidAmountInput.text.clear()
             } else {
                 Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
             }
         }
-
-//        binding.completeButton.setOnClickListener {
-//            val db = FirebaseFirestore.getInstance()
-//            db.collection("Transaksi")
-//                .whereEqualTo("produk_id", produkId)
-//                .whereEqualTo("status", "menang")
-//                .get()
-//                .addOnSuccessListener { snapshot ->
-//                    if (!snapshot.isEmpty) {
-//                        val transaksiDoc = snapshot.documents[0]
-//                        val pemenangId = transaksiDoc.getString("buyer_id") ?: ""
-//                        val transaksiId = transaksiDoc.getString("transaksiId") ?: ""
-//
-//                        if (pemenangId == buyerId) {
-//                            val intent = Intent(this, TransaksiDetailActivity::class.java).apply {
-//                                putExtra("transaksiId", transaksiId)
-//                                putExtra("produkId", produkId)
-//                                putExtra("buyerId", buyerId)
-//                                putExtra("sellerId", sellerId)
-//                                putExtra("bidAmount", transaksiDoc.getDouble("bidAmount"))
-//                            }
-//                            startActivity(intent)
-//                        } else {
-//                            Toast.makeText(this, "Kamu bukan pemenang lelang ini", Toast.LENGTH_SHORT).show()
-//                        }
-//                    } else {
-//                        Toast.makeText(this, "Transaksi pemenang tidak ditemukan", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//                .addOnFailureListener {
-//                    Toast.makeText(this, "Gagal memuat data transaksi", Toast.LENGTH_SHORT).show()
-//                }
-//        }
+        binding.backBtn.setOnClickListener {
+            val intent = Intent(this, HomeUser::class.java)
+            intent.putExtra("email", user?.email)
+            startActivity(intent)
+            finish()
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        val itemId = intent.getStringExtra("auction_item")
+        val itemId = intent.getStringExtra("items_id")
         val email = intent.getStringExtra("email")
-        if (!email.isNullOrEmpty() && !itemId.isNullOrEmpty()) {
+        produkId = intent.getStringExtra("items_id") ?: ""
+        buyerId = intent.getStringExtra("user_id") ?: ""
+        sellerId = intent.getStringExtra("seller_id") ?: ""
+        if (!email.isNullOrEmpty() && !itemId.isNullOrEmpty() && sellerId.isNotEmpty()) {
             viewModels.getCurrUser(email)
             viewModels.getCurrItem(itemId)
+            viewModels.getCurrSeller(sellerId)
         }
     }
 
@@ -207,7 +196,7 @@ class Auctiondetail : AppCompatActivity() {
         }
     }
 
-    private fun startAuctionCountdown(endDateString: String) {
+    fun startAuctionCountdown(endDateString: String) {
         val endDateTime = LocalDateTime.parse(endDateString, formatter)
 
         countdownJob?.cancel()
@@ -224,7 +213,9 @@ class Auctiondetail : AppCompatActivity() {
                 val hours = duration.toHours() % 24
                 val minutes = duration.toMinutes() % 60
 
-                binding.timeRemainingText.text = String.format("%02dd : %02dh : %02dm", days, hours, minutes)
+                binding.timeRemainingText.text = String.format(
+                    "%02dd : %02dh : %02dm", days, hours, minutes
+                )
 
                 delay(60_000)
             }

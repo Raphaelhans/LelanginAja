@@ -73,7 +73,8 @@ class MainActivity : AppCompatActivity() {
                     .load(R.drawable.rotate)
                     .into(binding.loadingLogin)
                 binding.loadingLogin.visibility = View.VISIBLE
-                viewModels.loginUser(email, password)
+                val remember = binding.rememberCheck.isChecked
+                viewModels.loginUser(email, password, remember)
             }
         }
 
@@ -83,6 +84,12 @@ class MainActivity : AppCompatActivity() {
                 Glide.with(this)
                     .asGif()
                     .load(R.drawable.error)
+                    .into(toastImage)
+            }
+            else{
+                Glide.with(this)
+                    .asGif()
+                    .load(R.drawable.like)
                     .into(toastImage)
             }
             with (Toast(applicationContext)) {
@@ -98,18 +105,31 @@ class MainActivity : AppCompatActivity() {
 
         viewModels.checkres.observe(this) { success ->
             if (success) {
-                val intent = Intent(this, HomeUser::class.java)
-                intent.putExtra("email", binding.editTextEmail.text.toString())
-                toastText.text = "Login Success"
-                Glide.with(this)
-                    .asGif()
-                    .load(R.drawable.like)
-                    .into(toastImage)
-                with (Toast(applicationContext)) {
-                    duration = Toast.LENGTH_LONG
-                    view = layout
-                    show()
+                toastText.text = "Login successful"
+                val email = binding.editTextEmail.text.toString()
+                viewModels.loginDestination.observe(this) { destination ->
+                    val intent = when (destination) {
+                        "HomeUser" -> Intent(this, HomeUser::class.java)
+                        "HomeManager" -> Intent(this, HomeManager::class.java)
+                        "HomeStaffs" -> Intent(this, HomeStaffs::class.java)
+                        else -> null
+                    }
+                    intent?.putExtra("email", email)
+                    Glide.with(this)
+                        .asGif()
+                        .load(R.drawable.like)
+                        .into(toastImage)
+                    with (Toast(applicationContext)) {
+                        duration = Toast.LENGTH_LONG
+                        view = layout
+                        show()
+                    }
+                    intent?.let {
+                        startActivity(it)
+                        finish()
+                    }
                 }
+
                 startActivity(intent)
                 finish()
             }
