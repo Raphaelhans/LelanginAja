@@ -64,7 +64,7 @@ class AccountNumber : BaseClass() {
                         viewModel.addBankAccount(dropdown.text.toString(), accName, accNumber)
                     }
                     else{
-                        Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Please fill all the fields and make sure the account number length is 19", Toast.LENGTH_SHORT).show()
                     }
                 }
 

@@ -48,7 +48,9 @@ class HomeUser : BaseClass() {
             }
         }
 
-
+        lifecycleScope.launch {
+            viewModels.checkItemValidity()
+        }
 
         viewModels.currUser.observe(this) { user ->
             if (user != null) {
@@ -56,19 +58,21 @@ class HomeUser : BaseClass() {
                     val categories = viewModels.loadCategories()
 
                     if (categories.isNotEmpty()) {
-                        adapter = FragmentAdapter(this@HomeUser, categories, user.email)
-                        viewPager.adapter = adapter
+                        if (::adapter.isInitialized.not()) {
+                            adapter = FragmentAdapter(this@HomeUser, categories, user.email)
+                            viewPager.adapter = adapter
 
-                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                            tab.text = categories[position].name
-                        }.attach()
+                            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                                tab.text = categories[position].name
+                            }.attach()
 
-                        tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+                            tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+                        }
                     } else {
-                        Toast.makeText(this@HomeUser, "No categories found", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@HomeUser, "No categories found", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
-
                 binding.nameUserDis.text = user.name
                 binding.saldouserDis.text = "Rp. **********"
 
@@ -102,8 +106,10 @@ class HomeUser : BaseClass() {
                 }
 
                 binding.transBtn.setOnClickListener {
-                    val intent = Intent(this, Transaction::class.java)
-                    intent.putExtra("email", viewModels.currUser.value?.email)
+                    val intent = Intent(this, Transaction::class.java).apply {
+                       putExtra("email", viewModels.currUser.value?.email)
+                       putExtra("user_id", viewModels.currUser.value?.user_id.toString())
+                    }
                     startActivity(intent)
                     finish()
                 }

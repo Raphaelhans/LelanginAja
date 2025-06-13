@@ -1,5 +1,7 @@
 package com.example.project.database.dataclass
 
+import java.io.Serializable
+
 data class Products(
     val items_id:String = "",
     val category_id:String = "",
@@ -15,4 +17,4 @@ data class Products(
     val end_bid:Int = 0,
     val image_url:String = "",
     val status:Int = 0,
-)
+) : Serializable
