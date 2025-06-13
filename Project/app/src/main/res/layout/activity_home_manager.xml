@@ -6,6 +6,18 @@
     android:padding="16dp"
     android:background="#FFF9E8">
 
+    <Button
+        android:id="@+id/button_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:padding="8dp"
+        android:layout_margin="16dp"
+        android:backgroundTint="#424242"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <EditText
         android:id="@+id/editTextSearch"
         android:layout_width="0dp"
@@ -13,7 +25,7 @@
         android:hint="Search by name"
         android:padding="8dp"
         android:background="@android:drawable/edit_text"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_logout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
