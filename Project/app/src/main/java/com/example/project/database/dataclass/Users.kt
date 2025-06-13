@@ -1,5 +1,9 @@
 package com.example.project.database.dataclass
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Users(
     val user_id: Int = 0,
     val name: String = "",
@@ -13,4 +17,4 @@ data class Users(
     val pin: String = "",
     val seller_rating: Int = 0,
     val suspended: Boolean = false
-)
+) : Parcelable

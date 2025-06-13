@@ -1,23 +1,20 @@
 package com.example.project
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.project.database.dataclass.Staff
 
 class StaffAdapter(
-    private val staffList: MutableList<Staff>,
-    private val onSuspendClick: (Staff) -> Unit,
-    private val onDeleteClick: (Staff) -> Unit
+    private val staffList: MutableList<Staff>
 ) : RecyclerView.Adapter<StaffAdapter.StaffViewHolder>() {
 
     class StaffViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewName: TextView = itemView.findViewById(R.id.textViewName)
         val textViewStatus: TextView = itemView.findViewById(R.id.textViewStatus)
-        val buttonSuspend: Button = itemView.findViewById(R.id.buttonSuspend)
-        val buttonDelete: Button = itemView.findViewById(R.id.buttonDelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StaffViewHolder {
@@ -29,9 +26,14 @@ class StaffAdapter(
         val staff = staffList[position]
         holder.textViewName.text = staff.name
         holder.textViewStatus.text = if (staff.suspended) "suspended" else "active"
-        holder.buttonSuspend.text = if (staff.suspended) "Active" else "Suspend"
-        holder.buttonSuspend.setOnClickListener { onSuspendClick(staff) }
-        holder.buttonDelete.setOnClickListener { onDeleteClick(staff) }
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, ActivityDetailStaffManager::class.java).apply {
+                putExtra("STAFF", staff)
+            }
+            (context as? ActivityDetailStaffManager)?.startActivityForResult(intent, 2)
+                ?: context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = staffList.size
