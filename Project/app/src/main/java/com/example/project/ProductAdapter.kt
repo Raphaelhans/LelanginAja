@@ -8,7 +8,7 @@ import com.example.project.database.dataclass.Products
 import com.example.project.databinding.ItemProductStaffBinding
 
 class ProductAdapter(
-    private val productList: List<Products>,
+    private val productList: MutableList<Products>,
     private val onSuspendClick: (Products) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
@@ -31,4 +31,10 @@ class ProductAdapter(
     }
 
     override fun getItemCount(): Int = productList.size
+
+    fun updateProducts(products: List<Products>) {
+        productList.clear()
+        productList.addAll(products)
+        notifyDataSetChanged()
+    }
 }
