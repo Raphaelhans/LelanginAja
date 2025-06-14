@@ -5,7 +5,7 @@ data class Transactions(
     val produk_id:String = "",
     val buyer_id:String = "",
     val seller_id:String = "",
-    val bid:Double = 0.0,
+    val bidAmount:Double = 0.0,
     val time_bid:String = "",
     val status:String = ""
 )

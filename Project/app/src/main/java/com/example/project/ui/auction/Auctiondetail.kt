@@ -28,9 +28,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
 class Auctiondetail : AppCompatActivity() {
@@ -89,7 +91,6 @@ class Auctiondetail : AppCompatActivity() {
                 Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT).show()
             } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
                 placeBid(produkId, buyerId, sellerId, bidAmount)
-                viewModels.placingBids(produkId, user?.user_id.toString(), sellerId, bidAmount)
                 binding.bidAmountInput.text.clear()
             } else {
                 Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
@@ -97,7 +98,7 @@ class Auctiondetail : AppCompatActivity() {
         }
         binding.backBtn.setOnClickListener {
             val intent = Intent(this, HomeUser::class.java)
-            intent.putExtra("email", user?.email)
+//            intent.putExtra("email", user?.email)
             startActivity(intent)
             finish()
         }
@@ -125,12 +126,13 @@ class Auctiondetail : AppCompatActivity() {
     ) {
         val db = FirebaseFirestore.getInstance()
         val productRef = db.collection("Products").document(produkId)
-
         productRef.get().addOnSuccessListener { document ->
             if (document != null && document.exists()) {
                 val currentEndBid = document.getDouble("end_bid") ?: 0.0
                 val currentStartBid = document.getDouble("start_bid") ?: 0.0
                 val minBid = if (currentEndBid > 0) currentEndBid else currentStartBid.toDouble()
+                val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+                val formattedDate = dateFormat.format(Date())
 
                 if (bidAmount > minBid) {
                     productRef.update(
@@ -147,7 +149,7 @@ class Auctiondetail : AppCompatActivity() {
                         "buyer_id" to buyerId,
                         "seller_id" to sellerId,
                         "bidAmount" to bidAmount,
-                        "bidTime" to System.currentTimeMillis(),
+                        "time_bid" to formattedDate,
                         "status" to "pending"
                     )
 

@@ -27,7 +27,6 @@ class TransaksiDetailActivity : AppCompatActivity() {
 
         binding.acceptButton.setOnClickListener {
             Toast.makeText(this, "Barang telah diterima dan transaksi selesai!", Toast.LENGTH_SHORT).show()
-            // Tambahkan update Firestore di sini jika ingin menyimpan status transaksi jadi "completed"
         }
     }
 }
