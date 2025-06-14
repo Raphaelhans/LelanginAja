@@ -28,7 +28,7 @@ class TransactionAdapter(private val transactions: List<TransactionwithProduct>)
             binding.barangTxt.text = transaction.produk?.name ?: "Produk"
             binding.lastBidTxt.text = "You Bid: Rp ${transaction.transaksi.bidAmount}"
 
-            binding.tgltext.text = transaction.transaksi.time_bid
+            binding.tgltext.text = transaction.transaksi.time_bid.toString()
             binding.Statustxt.text = transaction.transaksi.status
 
             if (transaction.transaksi.status.equals("Selesai", ignoreCase = true)) {
@@ -44,7 +44,7 @@ class TransactionAdapter(private val transactions: List<TransactionwithProduct>)
                     putExtra("transaksi_id", transaction.transaksi.transaksiId)
                     putExtra("produk_id", transaction.transaksi.produk_id)
                     putExtra("itemName", transaction.produk?.name)
-                    putExtra("lastBid", transaction.transaksi.bidAmount)
+                    putExtra("lastBid", transaction.transaksi.bidAmount.toString())
                     putExtra("status", transaction.transaksi.status)
                     putExtra("sellerName", "John Doe")
                     putExtra("sellerAddress", "Jl. Mawar No.10, Surabaya")

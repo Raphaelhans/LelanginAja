@@ -52,22 +52,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dce9306f-15fa-45ea-81e2-fcf8d7f48e8a" name="Changes" comment="merge branc aniefa into jason on auction detail">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/UserViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/UserViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/database/dataclass/Transactions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/database/dataclass/Transactions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auction.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auctiondetail.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auctiondetail.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Transaksi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Transaksi.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/TransaksiDetailActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/TransaksiDetailActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/TransData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/TransData.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/Transaction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/Transaction.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/TransactionAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/TransactionAdapter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_auctiondetail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_auctiondetail.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
