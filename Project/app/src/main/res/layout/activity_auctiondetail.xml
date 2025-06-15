@@ -52,7 +52,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageContainer">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -265,7 +264,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Description Title -->
             <TextView
                 android:id="@+id/descriptionTitle"
                 android:layout_width="wrap_content"
@@ -278,7 +276,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/bidInputSection" />
 
-            <!-- Description Text -->
             <TextView
                 android:id="@+id/descriptionText"
                 android:layout_width="match_parent"
@@ -360,6 +357,12 @@
                         app:strokeWidth="1dp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                <Button-->
+<!--                    android:id="@+id/completeButton"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Selesaikan Transaksi"-->
+<!--                    tools:layout_editor_absoluteY="51dp" />-->
             </com.google.android.material.card.MaterialCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

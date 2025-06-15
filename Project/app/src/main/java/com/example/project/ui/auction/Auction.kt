@@ -80,6 +80,7 @@ class Auction : Fragment() {
                 val intent = Intent(requireContext(), Auctiondetail::class.java).apply {
                     putExtra("items_id", item.items_id)
                     putExtra("email", user?.email)
+                    putExtra("user_id", user?.user_id.toString())
                     putExtra("seller_id", item.seller_id.toString())
                     putExtra("current_userId", user?.user_id.toString())
 

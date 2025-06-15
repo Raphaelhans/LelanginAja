@@ -21,15 +21,18 @@ import com.example.project.UserViewModel
 import com.example.project.database.dataclass.Products
 import com.example.project.databinding.ActivityAuctiondetailBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.example.project.ui.chat.ChatActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
 class Auctiondetail : AppCompatActivity() {
@@ -44,110 +47,61 @@ class Auctiondetail : AppCompatActivity() {
     private var sellerId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityAuctiondetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModels.currItems.observe(this) { items ->
-            startAuctionCountdown(items?.end_date.toString())
-            Glide.with(this).load(items?.image_url).into(binding.detailImage)
-            binding.detailName.text = items?.name
-            if (items?.end_bid == 0){
-                binding.detailBid.text = "Rp " + formatterRupiah.format(items?.start_bid)
-            }
-            else{
-                binding.detailBid.text = "Rp " + formatterRupiah.format(items?.end_bid)
-            }
+        produkId = intent.getStringExtra("produk_id") ?: ""
+        buyerId = intent.getStringExtra("user_id") ?: ""
+        sellerId = intent.getStringExtra("seller_id") ?: ""
 
-            viewModels.currCategories.observe(this) { cate ->
-                binding.detailCategory.text = cate?.name
-            }
+        viewModels.currItems.observe(this) { item ->
+            item?.let {
+                startAuctionCountdown(it.end_date)
+                checkAuctionAndSetWinner(it.items_id, it.end_date, it.status)
 
-            val dateTime = LocalDateTime.parse(items?.end_date, formatter)
-            val newFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm")
-            val formatted = dateTime.format(newFormatter)
-            binding.auctionDetailTime.text = formatted
-            binding.auctionDetailLocation.text = items?.city
-            binding.descriptionText.text = items?.description
+                Glide.with(this).load(it.image_url).into(binding.detailImage)
+                binding.detailName.text = "Nama Produk: ${it.name}"
+                binding.detailBid.text = "Rp ${formatterRupiah.format(if (it.end_bid == 0) it.start_bid else it.end_bid)}"
 
-            viewModels.getCategoryById(items?.category_id.toString())
-            viewModels.currCategories.observe(this) { cate ->
-                binding.detailCategory.text = cate?.name ?: "-"
-            }
-
-            viewModels.currUser.observe(this) { user ->
-                if (user?.user_id == items?.seller_id) {
-                    binding.bidButton.visibility = View.GONE
-                    binding.bidAmountInput.visibility = View.GONE
-                }
-                else{
-                    binding.bidButton.visibility = View.VISIBLE
-                    binding.bidAmountInput.visibility = View.VISIBLE
-                }
-
-                binding.btnGroup.setOnClickListener {
-                    val intent = Intent(this, ChatActivity::class.java).apply {
-                        putExtra("auction_item", items?.items_id)
-                        putExtra("current_userId", user?.user_id.toString())
-                        putExtra("sellerId", items?.seller_id)
-                        putExtra("item_name", items?.name)
-                    }
-                    startActivity(intent)
-                }
-                binding.bidButton.setOnClickListener {
-                    val bidText = binding.bidAmountInput.text.toString()
-                    val bidAmount = bidText.toDoubleOrNull()
-                    Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
-
-                    if (bidAmount == null || bidAmount <= 0) {
-                        Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT)
-                            .show()
-                    } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
-                        viewModels.placingBids(produkId, user?.user_id.toString(), sellerId, bidAmount)
-                        binding.bidAmountInput.text.clear()
-                    } else {
-                        Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                binding.backBtn.setOnClickListener {
-                    val intent = Intent(this, HomeUser::class.java)
-                    intent.putExtra("email", user?.email)
-                    startActivity(intent)
-                    finish()
-                }
-            }
-
-
-            items?.seller_id?.let { sellerId ->
-                viewModels.getAverageRating(sellerId)
+                val dateTime = LocalDateTime.parse(it.end_date, formatter)
+                val newFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm")
+                binding.auctionDetailTime.text = "${dateTime.format(newFormatter)}"
+                binding.auctionDetailLocation.text = "${it.city}"
+                binding.descriptionText.text = "${it.description}"
             }
         }
 
-        viewModels.currSeller.observe(this) { user ->
+        viewModels.currUser.observe(this) { user ->
             user?.let {
-                binding.sellerName.text = it.name
-
-                if (user.profilePicturePath.isNotEmpty()) {
-                    Glide.with(this).load(user.profilePicturePath).into(binding.sellerAvatar)
-                } else {
-                    binding.sellerAvatar.setImageResource(R.drawable.profile)
-                }
-
-            }
-        }
-
-        viewModels.currRating.observe(this) { rating ->
-            if (rating != null) {
-                val formattedRating = String.format("%.2f", rating.rating)
-                binding.sellerRating.text = "⭐ $formattedRating"
-            } else {
+                binding.sellerName.text = "${it.name}"
+                Glide.with(this).load(it.profilePicturePath).into(binding.sellerAvatar)
+            } ?: run {
                 binding.sellerRating.text = "No rating yet"
             }
         }
 
+        binding.bidButton.setOnClickListener {
+            val bidText = binding.bidAmountInput.text.toString()
+            val bidAmount = bidText.toDoubleOrNull()
+            Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
+
+            if (bidAmount == null || bidAmount <= 0) {
+                Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT).show()
+            } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
+                placeBid(produkId, buyerId, sellerId, bidAmount)
+                binding.bidAmountInput.text.clear()
+            } else {
+                Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.backBtn.setOnClickListener {
+            val intent = Intent(this, HomeUser::class.java)
+//            intent.putExtra("email", user?.email)
+            startActivity(intent)
+            finish()
+        }
     }
 
     override fun onStart() {
@@ -161,6 +115,86 @@ class Auctiondetail : AppCompatActivity() {
             viewModels.getCurrUser(email)
             viewModels.getCurrItem(itemId)
             viewModels.getCurrSeller(sellerId)
+        }
+    }
+
+    private fun placeBid(
+        produkId: String,
+        buyerId: String,
+        sellerId: String,
+        bidAmount: Double
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val productRef = db.collection("Products").document(produkId)
+        productRef.get().addOnSuccessListener { document ->
+            if (document != null && document.exists()) {
+                val currentEndBid = document.getDouble("end_bid") ?: 0.0
+                val currentStartBid = document.getDouble("start_bid") ?: 0.0
+                val minBid = if (currentEndBid > 0) currentEndBid else currentStartBid.toDouble()
+                val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+                val formattedDate = dateFormat.format(Date())
+
+                if (bidAmount > minBid) {
+                    productRef.update(
+                        mapOf(
+                            "end_bid" to bidAmount,
+                            "buyer_id" to buyerId.toInt()
+                        )
+                    )
+
+                    val transaksiId = db.collection("Transaksi").document().id
+                    val transaksi = hashMapOf(
+                        "transaksiId" to transaksiId,
+                        "produk_id" to produkId,
+                        "buyer_id" to buyerId,
+                        "seller_id" to sellerId,
+                        "bidAmount" to bidAmount,
+                        "time_bid" to formattedDate,
+                        "status" to "pending"
+                    )
+
+                    db.collection("Transaksi").document(transaksiId).set(transaksi)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Penawaran berhasil: Rp ${formatterRupiah.format(bidAmount)}", Toast.LENGTH_SHORT).show()
+                            binding.bidAmountInput.text.clear()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Gagal menyimpan penawaran", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, "Bid harus lebih tinggi dari penawaran saat ini", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Gagal mengambil data produk", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun checkAuctionAndSetWinner(itemId: String, endDateString: String, status: Int) {
+        val endDateTime = LocalDateTime.parse(endDateString, formatter)
+        val now = LocalDateTime.now()
+
+        if (now.isAfter(endDateTime) && status == 0) {
+            val db = FirebaseFirestore.getInstance()
+
+            db.collection("Transaksi")
+                .whereEqualTo("produk_id", itemId)
+                .orderBy("bidAmount", Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    if (!snapshot.isEmpty) {
+                        val doc = snapshot.documents[0]
+                        val docId = doc.id
+
+                        db.collection("Transaksi").document(docId)
+                            .update("status", "menang")
+                            .addOnSuccessListener {
+                                db.collection("Products").document(itemId)
+                                    .update("status", 1)
+                            }
+                    }
+                }
         }
     }
 

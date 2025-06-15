@@ -38,6 +38,4 @@ object TransData {
     fun getAllTransactions(): List<TransactionItem> {
         return transactions
     }
-
-
 }

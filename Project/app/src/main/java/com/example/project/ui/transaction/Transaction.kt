@@ -30,6 +30,7 @@ class Transaction : BaseClass() {
         binding = ActivityTransactionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         recyclerView = findViewById(R.id.transRecycler)
 
         viewModel.currUserTransaction.observe(this) { user ->
