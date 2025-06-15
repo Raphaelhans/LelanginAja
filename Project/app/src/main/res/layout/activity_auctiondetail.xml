@@ -357,12 +357,12 @@
                         app:strokeWidth="1dp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-                <Button
-                    android:id="@+id/completeButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Selesaikan Transaksi"
-                    tools:layout_editor_absoluteY="51dp" />
+<!--                <Button-->
+<!--                    android:id="@+id/completeButton"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Selesaikan Transaksi"-->
+<!--                    tools:layout_editor_absoluteY="51dp" />-->
             </com.google.android.material.card.MaterialCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

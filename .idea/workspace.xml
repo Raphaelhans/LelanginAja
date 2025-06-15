@@ -10,6 +10,11 @@
           <theme>@style/Theme.Project</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/Project/app/src/main/res/layout/activity_home_user.xml">
+        <config>
+          <theme>@style/Theme.Project</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/Project/app/src/main/res/layout/activity_transaction.xml">
         <config>
           <theme>@style/Theme.Project</theme>
@@ -40,6 +45,11 @@
           <theme>@style/Theme.Project</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/Project/app/src/main/res/layout/itemlayout.xml">
+        <config>
+          <theme>@style/Theme.Project</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/Project/app/src/main/res/layout/translayout.xml">
         <config>
           <theme>@style/Theme.Project</theme>
@@ -53,9 +63,10 @@
   <component name="ChangeListManager">
     <list default="true" id="dce9306f-15fa-45ea-81e2-fcf8d7f48e8a" name="Changes" comment="merge branc aniefa into jason on auction detail">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auctiondetail.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/Auctiondetail.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/TransaksiDetailActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/auction/TransaksiDetailActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/Transaction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/Transaction.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/TransactionAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/java/com/example/project/ui/transaction/TransactionAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_auctiondetail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/app/src/main/res/layout/activity_auctiondetail.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

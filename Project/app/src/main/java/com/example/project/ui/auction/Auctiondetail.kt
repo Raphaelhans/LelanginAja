@@ -75,7 +75,7 @@ class Auctiondetail : AppCompatActivity() {
 
         viewModels.currUser.observe(this) { user ->
             user?.let {
-                binding.sellerName.text = "Penjual: ${it.name}"
+                binding.sellerName.text = "${it.name}"
                 Glide.with(this).load(it.profilePicturePath).into(binding.sellerAvatar)
             } ?: run {
                 binding.sellerRating.text = "No rating yet"
