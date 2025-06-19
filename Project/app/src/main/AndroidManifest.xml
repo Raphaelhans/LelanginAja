@@ -82,6 +82,18 @@
             android:name=".TopUp"
             android:exported="false" />
         <activity
+            android:name=".LaporanManager"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityDetailStaffManager"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityDetailUserStaffs"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityDetailProductStaff"
+            android:exported="false" />
+        <activity
             android:name=".LandingActivity"
             android:exported="true">
 

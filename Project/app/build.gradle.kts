@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
     alias(libs.plugins.google.gms.google.services)
+    id("kotlin-parcelize")
+
 }
 
 val localProperties = Properties().apply {
