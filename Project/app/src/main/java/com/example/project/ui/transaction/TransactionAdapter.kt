@@ -10,6 +10,8 @@ import com.bumptech.glide.Glide
 import com.example.project.database.dataclass.TransactionwithProduct
 import com.example.project.databinding.TranslayoutBinding
 import com.example.project.ui.auction.TransaksiDetailActivity
+import java.text.NumberFormat
+import java.util.Locale
 
 class TransactionAdapter(private val transactions: List<TransactionwithProduct>) :
     RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
@@ -27,7 +29,9 @@ class TransactionAdapter(private val transactions: List<TransactionwithProduct>)
             }
 
             binding.barangTxt.text = transaction.produk?.name ?: "Produk"
-            binding.lastBidTxt.text = "Rp ${transaction.transaksi.bidAmount}"
+            val rupiahFormat = NumberFormat.getNumberInstance(Locale("in", "ID"))
+            val formattedBid = rupiahFormat.format(transaction.transaksi.bidAmount)
+            binding.lastBidTxt.text = "You Bid: Rp $formattedBid"
             binding.tgltext.text = transaction.transaksi.time_bid.toString()
 
             val status = transaction.produk?.status ?: 0
