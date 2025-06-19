@@ -2,7 +2,10 @@ package com.example.project.ui.transaction
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -11,12 +14,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.project.HomeUser
 import com.example.project.ui.profile.Profile
 import com.example.project.R
+import com.example.project.SellerAddBarang
+import com.example.project.UserViewModel
 import com.example.project.databinding.ActivityTransactionBinding
 
 class Transaction : AppCompatActivity() {
     private lateinit var binding: ActivityTransactionBinding
     private lateinit var recyclerView: RecyclerView
-//    private lateinit var viewModel: TransactionHistoryViewModel
+    private val viewModel by viewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +45,23 @@ class Transaction : AppCompatActivity() {
 
         binding.homebtn.setOnClickListener {
             val intent = Intent(this, HomeUser::class.java)
+            intent.putExtra("email", viewModel.currUser.value?.email)
             startActivity(intent)
             finish()
+        }
+
+        viewModel.currUser.observe(this) { user ->
+            if (user?.status == 1) {
+                binding.addBid.visibility = View.VISIBLE
+                binding.addBid.setOnClickListener {
+                    val intent = Intent(this, SellerAddBarang::class.java)
+                    intent.putExtra("email", user.email)
+                    startActivity(intent)
+                    finish()
+                }
+            } else {
+                binding.addBid.visibility = View.GONE
+            }
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

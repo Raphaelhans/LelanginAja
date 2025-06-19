@@ -2,6 +2,7 @@ package com.example.project
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -45,6 +46,7 @@ class History : AppCompatActivity() {
         }
 
         viewModels.historyList.observe(this) { historyList ->
+            Log.e("viewmodel", historyList.toString())
             historyAdapter.submitList(historyList ?: emptyList())
 
             if (historyList.isNullOrEmpty()) {

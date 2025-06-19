@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.example.project.AccountNumber
 import com.example.project.AuthViewModel
 import com.example.project.BaseClass
+import com.example.project.History
 import com.example.project.HomeUser
 import com.example.project.MainActivity
 import com.example.project.R
@@ -100,6 +101,13 @@ class Profile : BaseClass() {
 
             binding.accNumberBtn.setOnClickListener{
                 val intent = Intent(this, AccountNumber::class.java)
+                intent.putExtra("email", viewModel.currUser.value?.email)
+                startActivity(intent)
+                finish()
+            }
+
+            binding.accHistoryBtn.setOnClickListener{
+                val intent = Intent(this, History::class.java)
                 intent.putExtra("email", viewModel.currUser.value?.email)
                 startActivity(intent)
                 finish()

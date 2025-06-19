@@ -337,8 +337,7 @@ class UserViewModel:ViewModel() {
             val final = result.documents.mapNotNull {
                 it.toObject(Products::class.java)
             }.filter {
-                it.category_id == category &&
-                it.status == 0
+                it.category_id == category && it.status == 0 && !it.deleted
             }
             _Items.postValue(final)
             final

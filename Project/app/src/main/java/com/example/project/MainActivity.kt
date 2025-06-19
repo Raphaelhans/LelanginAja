@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                     val intent = when (destination) {
                         "HomeUser" -> Intent(this, HomeUser::class.java)
                         "HomeManager" -> Intent(this, HomeManager::class.java)
-                        "HomeStaffs" -> Intent(this, HomeStaffs::class.java)
+//                        "HomeStaffs" -> Intent(this, HomeStaffs::class.java)
                         else -> null
                     }
                     intent?.putExtra("email", email)

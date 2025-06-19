@@ -1,22 +1,21 @@
 package com.example.project
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.database.dataclass.Users
 
 class UserAdapter(
-    private val userList: MutableList<Users>,
-    private val onSuspendClick: (Users) -> Unit
+    private val userList: MutableList<Users>
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textViewName: TextView = itemView.findViewById(R.id.textViewName)
+        val textViewEmail: TextView = itemView.findViewById(R.id.textViewEmail)
         val textViewStatus: TextView = itemView.findViewById(R.id.textViewStatus)
-        val buttonSuspend: Button = itemView.findViewById(R.id.buttonSuspend)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
@@ -26,15 +25,21 @@ class UserAdapter(
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = userList[position]
-        holder.textViewName.text = user.name
-        holder.textViewStatus.text = if (user.suspended) "suspended" else "active"
-        holder.buttonSuspend.text = if (user.suspended) "Activate" else "Suspend"
-        holder.buttonSuspend.setOnClickListener { onSuspendClick(user) }
+        holder.textViewEmail.text = user.email
+        holder.textViewStatus.text = if (user.suspended) "Suspended" else "Active"
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, ActivityDetailUserStaffs::class.java).apply {
+                putExtra("USER", user)
+            }
+            (context as? AppCompatActivity)?.startActivityForResult(intent, 1)
+                ?: context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = userList.size
 
-    fun updateUserList(newList: List<Users>) {
+    fun updateUsers(newList: List<Users>) {
         userList.clear()
         userList.addAll(newList)
         notifyDataSetChanged()
