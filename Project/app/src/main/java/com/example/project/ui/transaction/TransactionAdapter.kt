@@ -29,9 +29,9 @@ class TransactionAdapter(private val transactions: List<TransactionwithProduct>)
             }
 
             binding.barangTxt.text = transaction.produk?.name ?: "Produk"
-            val rupiahFormat = NumberFormat.getNumberInstance(Locale("in", "ID"))
-            val formattedBid = rupiahFormat.format(transaction.transaksi.bidAmount)
-            binding.lastBidTxt.text = "You Bid: Rp $formattedBid"
+//            val rupiahFormat = NumberFormat.getNumberInstance(Locale("in", "ID"))
+//            val formattedBid = rupiahFormat.format(transaction.transaksi.bidAmount)
+            binding.lastBidTxt.text = "You Bid: Rp ${transaction.transaksi.bidAmount}"
             binding.tgltext.text = transaction.transaksi.time_bid.toString()
 
             val status = transaction.produk?.status ?: 0
