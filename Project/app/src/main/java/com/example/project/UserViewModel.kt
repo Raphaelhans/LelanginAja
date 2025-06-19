@@ -1,13 +1,10 @@
 package com.example.project
 
-import android.R
 import android.util.Log
 import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.Rating
 import android.net.Uri
-import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,46 +13,33 @@ import com.example.project.database.App
 import com.example.project.database.dataclass.BankAccount
 import com.example.project.database.dataclass.Categories
 import com.example.project.database.dataclass.CustomerDetails
+import com.example.project.database.dataclass.DisplayItem
 import com.example.project.database.dataclass.ItemDetails
 import com.example.project.database.dataclass.MidtransPayload
-import com.example.project.database.dataclass.MidtransResponse
 import com.example.project.database.dataclass.Payment
 import com.example.project.database.dataclass.Products
 import com.example.project.database.dataclass.Ratings
 import com.example.project.database.dataclass.TransactionDetails
-//import com.example.project.database.dataclass.Transactions
-//import com.example.project.database.dataclass.TransactionwithProduct
+import com.example.project.database.dataclass.Transactions
+import com.example.project.database.dataclass.TransactionwithProduct
 import org.mindrot.jbcrypt.BCrypt
 import com.example.project.database.dataclass.Users
 import com.example.project.database.dataclass.Withdraws
-import com.example.project.ui.auction.AuctionItem
-import com.example.project.ui.transaction.TransactionItem
+import com.example.project.database.local.User
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.AggregateSource
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
-import okhttp3.internal.wait
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -71,8 +55,8 @@ class UserViewModel:ViewModel() {
     private val _currUser = MutableLiveData<Users?>()
     val currUser: LiveData<Users?> get() = _currUser
 
-//    private val _currUserTransaction = MutableLiveData<List<TransactionwithProduct>>()
-//    val currUserTransaction: LiveData<List<TransactionwithProduct>> get() = _currUserTransaction
+    private val _currUserTransaction = MutableLiveData<List<TransactionwithProduct>>()
+    val currUserTransaction: LiveData<List<TransactionwithProduct>> get() = _currUserTransaction
 
     private val _currSeller = MutableLiveData<Users?>()
     val currSeller: LiveData<Users?> get() = _currSeller
@@ -104,9 +88,6 @@ class UserViewModel:ViewModel() {
     private val _Items = MutableLiveData<List<Products>>()
     val Items: LiveData<List<Products>> = _Items
 
-    private val _transactions = MutableLiveData<List<TransactionItem>>()
-    val transactions: LiveData<List<TransactionItem>> = _transactions
-
     private val _currItems = MutableLiveData<Products?>()
     val currItems: LiveData<Products?> = _currItems
 
@@ -119,8 +100,12 @@ class UserViewModel:ViewModel() {
     private val _search = MutableLiveData<String>()
     val searchBrg: LiveData<String> = _search
 
-    private val _historyList = MutableLiveData<List<TransactionItem>>()
-    val historyList: LiveData<List<TransactionItem>> get() = _historyList
+    private val _combinedTransactionHistory = MutableLiveData<List<DisplayItem>>(emptyList())
+    val combinedTransactionHistory: LiveData<List<DisplayItem>> = _combinedTransactionHistory
+
+    fun setSearchBrg(query: String) {
+        _search.value = query
+    }
 
     fun getCurrUser(email: String) {
         viewModelScope.launch {
@@ -135,7 +120,8 @@ class UserViewModel:ViewModel() {
                     val sellerId = user?.user_id
 
                     val allRatingsSnapshot = db.collection("Ratings").get().await()
-                    val allRatings = allRatingsSnapshot.documents.mapNotNull { it.toObject(Ratings::class.java) }
+                    val allRatings =
+                        allRatingsSnapshot.documents.mapNotNull { it.toObject(Ratings::class.java) }
                     val globalAvg = allRatings.map { it.rating }.average()
 
                     val sellerRatings = allRatings.filter { it.seller_id == sellerId }
@@ -169,7 +155,9 @@ class UserViewModel:ViewModel() {
 
                 if (!curruser.isEmpty) {
                     val user = curruser.documents.first().toObject(Users::class.java)
-                    val currRate = db.collection("Ratings").whereEqualTo("seller_id", user?.user_id).get().await()
+                    val currRate =
+                        db.collection("Ratings").whereEqualTo("seller_id", user?.user_id).get()
+                            .await()
                     val rate = currRate.documents.mapNotNull { it.toObject(Ratings::class.java) }
                     _currRatingSeller.value = rate.firstOrNull()
                     _currSeller.value = user
@@ -205,7 +193,8 @@ class UserViewModel:ViewModel() {
             try {
                 val currItem = db.collection("Products").document(itemIds).get().await()
                 val item = currItem.toObject(Products::class.java)
-                val currcate = db.collection("Categories").document(item?.category_id!!).get().await()
+                val currcate =
+                    db.collection("Categories").document(item?.category_id!!).get().await()
                 val cate = currcate.toObject(Categories::class.java)
                 Log.d("Firestore", "Current item: $item")
                 _currCategories.value = cate
@@ -251,57 +240,111 @@ class UserViewModel:ViewModel() {
             }
     }
 
-    fun giveRating(sellerId: Int, ratingValue: Int) {
-        val currentUserId = getCurrentUserId()
+    fun submitProductRating(
+        itemId: String,
+        transactionId: String,
+        sellerId: Int,
+        ratingValue: Double,
+        reviewText: String = ""
+    ) {
         viewModelScope.launch {
-            val existing = db.collection("Ratings")
-                .whereEqualTo("seller_id", sellerId)
-                .whereEqualTo("buyer_id", currentUserId)
-                .get()
-                .await()
+            try {
+                val currentBuyerId = currUser.value?.user_id
 
-            if (existing.isEmpty) {
-                val rating = hashMapOf(
-                    "seller_id" to sellerId,
-                    "buyer_id" to currentUserId,
-                    "rating" to ratingValue,
-                    "timestamp" to FieldValue.serverTimestamp()
+                if (currentBuyerId == null || currentBuyerId == 0) {
+                    _resresponse.postValue("Gagal memberi rating: Pengguna belum login.")
+                    Log.e("Rating", "User not logged in or invalid ID.")
+                    return@launch
+                }
+                if (itemId.isBlank() || transactionId.isBlank() || sellerId == 0 || ratingValue !in 1.0..5.0) {
+                    _resresponse.postValue("Gagal memberi rating: Data tidak lengkap atau tidak valid.")
+                    Log.e("Rating", "Incomplete or invalid rating data provided.")
+                    return@launch
+                }
+
+                val transactionQuery = db.collection("Transaksi")
+                    .whereEqualTo("transaksiId", transactionId)
+                    .whereEqualTo("buyer_id", currentBuyerId)
+                    .whereEqualTo("produk_id", itemId)
+                     .whereEqualTo("status", "complete")
+                    .limit(1)
+                    .get()
+                    .await()
+
+                if (transactionQuery.isEmpty) {
+                    _resresponse.postValue("Gagal memberi rating: Transaksi tidak ditemukan atau belum selesai.")
+                    Log.e("Rating", "Transaction $transactionId not found or not completed for user $currentBuyerId and item $itemId.")
+                    return@launch
+                }
+
+                val existingRatingQuery = db.collection("Ratings")
+                    .whereEqualTo("transaction_id", transactionId)
+                    .whereEqualTo("buyer_id", currentBuyerId)
+                    .limit(1)
+                    .get()
+                    .await()
+
+                if (!existingRatingQuery.isEmpty) {
+                    _resresponse.postValue("Anda sudah memberikan rating untuk transaksi ini.")
+                    Log.d("Rating", "sudah ada rating $transactionId by user $currentBuyerId.")
+                    return@launch
+                }
+
+                val newRatingId = db.collection("Ratings").document().id
+                val ratingData = Ratings(
+                    rating_id = newRatingId,
+                    seller_id = sellerId,
+                    buyer_id = currentBuyerId,
+                    item_id = itemId,
+                    transaction_id = transactionId,
+                    rating = ratingValue,
+                    review = reviewText,
+                    date = SimpleDateFormat("dd MMMMyyyy, HH:mm", Locale("id", "ID")).format(Date())
                 )
-                db.collection("Ratings").add(rating)
+
+                db.collection("Ratings").document(newRatingId).set(ratingData).await()
+
+                _resresponse.postValue("Rating berhasil dikirim!")
+                Log.d("Rating", "Rating submitted: $ratingData")
+
+                 getAverageRating(sellerId)
+            } catch (e: Exception) {
+                _resresponse.postValue("Gagal memberi rating: ${e.message}")
+                Log.e("Rating Error", "Error submitting rating: ${e.message}", e)
             }
         }
     }
 
-//    fun getUserTrans(userid: String) {
-//        viewModelScope.launch {
-//            try {
-//                val rawTrans = db.collection("Transaksi")
-//                    .whereEqualTo("buyer_id", userid)
-//                    .get().await()
-//
-//                val transactions = rawTrans.documents.mapNotNull {
-//                    it.toObject(Transactions::class.java)
-//                }
-//                Log.d("Firestore", "Loaded transactions: $transactions")
-//
-//                val transactionWithProductList = transactions.map { transaction ->
-//                    val productSnapshot = db.collection("Products")
-//                        .document(transaction.produk_id)
-//                        .get().await()
-//
-//                    val product = productSnapshot.toObject(Products::class.java)
-//
-//                    TransactionwithProduct(transaction, product)
-//                }
-//                Log.d("Firestore", "Transaction with product list: $transactionWithProductList")
-//
-//                _currUserTransaction.value = transactionWithProductList
-//            } catch (e: Exception) {
-//                Log.e("Firestore Error", "Failed to load transactions: ${e.message}", e)
-//                _currUserTransaction.value = emptyList()
-//            }
-//        }
-//    }
+    fun getUserTrans(userid: String) {
+        viewModelScope.launch {
+            try {
+                val rawTrans = db.collection("Transaksi")
+                    .whereEqualTo("buyer_id", userid)
+                    .get().await()
+
+                val transactions = rawTrans.documents.mapNotNull {
+                    it.toObject(Transactions::class.java)
+                }
+                Log.d("Firestore", "Loaded transactions: $transactions")
+
+                val transactionWithProductList = transactions.map { transaction ->
+                    val productSnapshot = db.collection("Products")
+                        .document(transaction.produk_id)
+                        .get().await()
+
+                    val product = productSnapshot.toObject(Products::class.java)
+
+                    TransactionwithProduct(transaction, product)
+                }
+                Log.d("Firestore", "Transaction with product list: $transactionWithProductList")
+
+                _currUserTransaction.value = transactionWithProductList
+            } catch (e: Exception) {
+                Log.e("Firestore Error", "Failed to load transactions: ${e.message}", e)
+                _currUserTransaction.value = emptyList()
+            }
+        }
+    }
 
     suspend fun checkItemValidity() {
         val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy | HH:mm", Locale.ENGLISH)
@@ -337,7 +380,8 @@ class UserViewModel:ViewModel() {
             val final = result.documents.mapNotNull {
                 it.toObject(Products::class.java)
             }.filter {
-                it.category_id == category && it.status == 0 && !it.deleted
+                it.category_id == category &&
+                        it.status == 0
             }
             _Items.postValue(final)
             final
@@ -347,26 +391,52 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    fun addItems(name:String, description:String, city:String, address:String, start_bid:Int, start_date:String, end_date:String, category: String, image_url:Uri, ContentResolver:ContentResolver){
+    fun addItems(
+        name: String,
+        description: String,
+        city: String,
+        address: String,
+        start_bid: Int,
+        start_date: String,
+        end_date: String,
+        category: String,
+        image_url: Uri,
+        ContentResolver: ContentResolver
+    ) {
         viewModelScope.launch {
             try {
                 val collectionRef = db.collection("Products").document().id
 
                 val imgUrl = uploadImageToStorage(image_url, ContentResolver, "")
 
-                val item = Products(collectionRef, category, currUser.value?.user_id!!, 0, name, description, city, address, start_date, end_date, start_bid,0, imgUrl,0)
+                val item = Products(
+                    collectionRef,
+                    category,
+                    currUser.value?.user_id!!,
+                    0,
+                    name,
+                    description,
+                    city,
+                    address,
+                    start_date,
+                    end_date,
+                    start_bid,
+                    0,
+                    imgUrl,
+                    0
+                )
                 db.runTransaction { transaction ->
                     transaction.set(db.collection("Products").document(collectionRef), item)
                 }.await()
 
                 _resresponse.value = "Successfully added item"
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("Firestore Error", "Error adding item: ${e.message}", e)
             }
         }
     }
 
-    fun addBankAccount(bankName: String, accountHolder: String, accountNumber: String){
+    fun addBankAccount(bankName: String, accountHolder: String, accountNumber: String) {
         viewModelScope.launch {
             try {
                 val count = (db.collection("BankAccounts")
@@ -375,11 +445,18 @@ class UserViewModel:ViewModel() {
                     .await()
                     .count + 1) ?: 1
 
-                val exists = userBankAccount.value?.any { it.accountNumber == accountNumber } == true
+                val exists =
+                    userBankAccount.value?.any { it.accountNumber == accountNumber } == true
 
                 if (!exists) {
                     val id = "Bank-$count"
-                    val account = BankAccount(id, currUser.value?.user_id!!, bankName, accountHolder, accountNumber)
+                    val account = BankAccount(
+                        id,
+                        currUser.value?.user_id!!,
+                        bankName,
+                        accountHolder,
+                        accountNumber
+                    )
 
                     db.runTransaction { transaction ->
                         transaction.set(db.collection("BankAccounts").document(id), account)
@@ -391,14 +468,14 @@ class UserViewModel:ViewModel() {
                     _resresponse.value = "Bank account already exists"
                 }
 
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("Firestore Error", "Error adding bank account: ${e.message}", e)
 
             }
         }
     }
 
-    fun getUserAccount(){
+    fun getUserAccount() {
         viewModelScope.launch {
             try {
                 val bankAcc = db.collection("BankAccounts")
@@ -406,21 +483,25 @@ class UserViewModel:ViewModel() {
                     .get()
                     .await()
 
-                if (!bankAcc.isEmpty){
-                    val accList = bankAcc.documents.mapNotNull { it.toObject(BankAccount::class.java) }
+                if (!bankAcc.isEmpty) {
+                    val accList =
+                        bankAcc.documents.mapNotNull { it.toObject(BankAccount::class.java) }
                     _userBankAccount.value = accList.reversed()
-                }
-                else{
+                } else {
                     Log.d("Firestore", "No user found with user id: ${currUser.value?.user_id}")
                 }
 
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Log.e("Firestore Error", "Error fetching user: ${e.message}", e)
             }
         }
     }
 
-    suspend fun uploadImageToStorage(uri: Uri, contentResolver: ContentResolver, condition: String): String {
+    suspend fun uploadImageToStorage(
+        uri: Uri,
+        contentResolver: ContentResolver,
+        condition: String
+    ): String {
         return withContext(Dispatchers.IO) {
             try {
                 val inputStream: InputStream? = contentResolver.openInputStream(uri)
@@ -440,8 +521,10 @@ class UserViewModel:ViewModel() {
                 val clientId = "1e4cd04cd3b4bce"
                 val requestBody = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("image", "profile_${currUser.value?.user_id}.jpg",
-                        okhttp3.RequestBody.create("image/jpeg".toMediaType(), imageBytes))
+                    .addFormDataPart(
+                        "image", "profile_${currUser.value?.user_id}.jpg",
+                        okhttp3.RequestBody.create("image/jpeg".toMediaType(), imageBytes)
+                    )
                     .build()
 
                 val request = Request.Builder()
@@ -476,14 +559,15 @@ class UserViewModel:ViewModel() {
     }
 
 
-    fun editProfile(condition: String, changes:String){
+    fun editProfile(condition: String, changes: String) {
         viewModelScope.launch {
-            if (condition == "Name"){
-                db.collection("Users").document(currUser.value?.user_id.toString()).update("name", changes)
+            if (condition == "Name") {
+                db.collection("Users").document(currUser.value?.user_id.toString())
+                    .update("name", changes)
                 _resresponse.value = "Name successfully changed to $changes"
-            }
-            else if (condition == "Phone"){
-                db.collection("Users").document(currUser.value?.user_id.toString()).update("phone", changes)
+            } else if (condition == "Phone") {
+                db.collection("Users").document(currUser.value?.user_id.toString())
+                    .update("phone", changes)
                 _resresponse.value = "Phone successfully changed to $changes"
             }
             getCurrUser(currUser.value?.email.toString())
@@ -499,8 +583,7 @@ class UserViewModel:ViewModel() {
                     .update("password", hashedPassword)
                 _resresponse.value = "Password successfully changed"
                 getCurrUser(currUser.value?.email.toString())
-            }
-            else{
+            } else {
                 _resresponse.value = "Incorrect old password"
             }
         }
@@ -509,14 +592,13 @@ class UserViewModel:ViewModel() {
     fun changePIN(currPIN: String, newPIN: String) {
         viewModelScope.launch {
             val checkPIN = BCrypt.checkpw(currPIN, currUser.value?.pin.toString())
-            if (checkPIN){
+            if (checkPIN) {
                 val hashedPIN = BCrypt.hashpw(newPIN, BCrypt.gensalt())
                 db.collection("Users").document(currUser.value?.user_id.toString())
                     .update("pin", hashedPIN)
                 _resresponse.value = "Successfully changed PIN"
                 getCurrUser(currUser.value?.email.toString())
-            }
-            else{
+            } else {
                 _resresponse.value = "Incorrect current PIN"
             }
         }
@@ -532,7 +614,7 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    fun process(email: String, inputPin: String, amount: Int){
+    fun process(email: String, inputPin: String, amount: Int) {
         viewModelScope.launch {
             try {
                 val userSnapshot = db.collection("Users")
@@ -578,7 +660,7 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    fun logout(){
+    fun logout() {
         viewModelScope.launch {
             try {
                 _currUser.value = null
@@ -587,41 +669,56 @@ class UserViewModel:ViewModel() {
                 _withdrawResult.value = ""
                 _userBankAccount.value = emptyList()
 //                App.db.userSessionDao().clearSession()
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("Logout", "Error: ${e.message}", e)
             }
         }
     }
 
-    fun withdrawConfirmation(saldotarik:Int, pin:String, bank:String, accNumber:String, accHolder: String){
+    fun withdrawConfirmation(
+        saldotarik: Int,
+        pin: String,
+        bank: String,
+        accNumber: String,
+        accHolder: String
+    ) {
         viewModelScope.launch {
             try {
-                val inputPIN = BCrypt.checkpw(pin,currUser.value?.pin)
+                val inputPIN = BCrypt.checkpw(pin, currUser.value?.pin)
                 val count = db.collection("Withdraws")
                     .count()
                     .get(AggregateSource.SERVER)
                     .await()
                     .count
 
-                if (inputPIN){
+                if (inputPIN) {
                     val formatter = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
                     val formattedDate = formatter.format(Date())
+                    val newWdId = db.collection("Withdraws").document()
                     db.runTransaction { transaction ->
-                         val wd = Withdraws(
-//                             currUser.value?.user_id!!, saldotarik, bank, accNumber, accHolder,formattedDate
+                        val wd = Withdraws(
+                            newWdId.id,
+                            currUser.value?.user_id!!,
+                            saldotarik,
+                            bank,
+                            accNumber,
+                            accHolder,
+                            formattedDate
                         )
-                        transaction.set(db.collection("Withdraws").document("Withdraw-"+count.toString()), wd)
+                        transaction.set(
+                            db.collection("Withdraws").document("Withdraw-" + count.toString()), wd
+                        )
                     }
 
-                    db.collection("Users").document(currUser.value?.user_id.toString()).update("balance", currUser.value?.balance?.minus(saldotarik))
+                    db.collection("Users").document(currUser.value?.user_id.toString())
+                        .update("balance", currUser.value?.balance?.minus(saldotarik))
 
                     _resresponse.value = "Withdraw successful"
                     getCurrUser(currUser.value?.email.toString())
-                }
-                else{
+                } else {
                     _resresponse.value = "Incorrect PIN"
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 _resresponse.value = "Payment failed: ${e.message}"
             }
         }
@@ -630,7 +727,9 @@ class UserViewModel:ViewModel() {
     fun createMidtransTransaction(amount: Int) {
         viewModelScope.launch {
             try {
-                val orderId = "ORDER-${System.currentTimeMillis()}-${UUID.randomUUID().toString().substring(0, 8)}"
+                val orderId = "ORDER-${System.currentTimeMillis()}-${
+                    UUID.randomUUID().toString().substring(0, 8)
+                }"
                 val customerName = currUser.value?.name.toString()
                 val customerEmail = currUser.value?.email.toString()
 
@@ -651,14 +750,15 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    fun becomeSeller(){
+    fun becomeSeller() {
         viewModelScope.launch {
             try {
-                db.collection("Users").document(currUser.value?.user_id.toString()).update("status", 1)
+                db.collection("Users").document(currUser.value?.user_id.toString())
+                    .update("status", 1)
 
                 _resresponse.value = "Successfully become a seller"
                 getCurrUser(currUser.value?.email.toString())
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 _resresponse.value = "Changes to Seller Failed: ${e.message}"
             }
         }
@@ -667,63 +767,37 @@ class UserViewModel:ViewModel() {
     fun topupPayment(transactionId: String, paymentType: String, transactionStatus: String) {
         viewModelScope.launch {
             try {
-                // Validasi input
-                val currentUser = currUser.value
-                val topupAmount = amountTopup.value?.toString()?.toIntOrNull()
-                val orderId = orderID.value?.toString()
-
-                if (currentUser == null) {
-                    _resresponse.value = "User not found"
-                    return@launch
-                }
-
-                if (topupAmount == null || topupAmount <= 0) {
-                    _resresponse.value = "Invalid topup amount"
-                    return@launch
-                }
-
-                if (orderId.isNullOrEmpty()) {
-                    _resresponse.value = "Order ID not found"
-                    return@launch
-                }
-
                 val formatter = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
                 val formattedDate = formatter.format(Date())
-
-                // Gunakan batch write untuk atomicity yang lebih baik
-                val batch = db.batch()
-
-                // Buat payment record
-                val payment = Payment(
-                    transaction_id = transactionId,
-                    name = "Top Up Balance", // Atau nama yang sesuai
-                    amount = topupAmount,
-                    payment_type = paymentType,
-                    transaction_status = transactionStatus,
-                    emailUser = currentUser.email,
-                    date = formattedDate
+                db.runTransaction { transaction ->
+                    val pays = Payment(
+                        transactionId,
+                        amountTopup.value.toString().toInt(),
+                        paymentType,
+                        transactionStatus,
+                        currUser.value?.email.toString(),
+                        formattedDate
+                    )
+                    transaction.set(
+                        db.collection("Payments").document(orderID.value.toString()),
+                        pays
+                    )
+                }
+                db.collection("Users").document(currUser.value?.user_id.toString()).update(
+                    "balance",
+                    currUser.value?.balance?.plus(amountTopup.value.toString().toInt())
                 )
 
-                val paymentRef = db.collection("Payments").document(orderId)
-                batch.set(paymentRef, payment)
-
-                val newBalance = currentUser.balance + topupAmount
-                val userRef = db.collection("Users").document(currentUser.user_id.toString())
-                batch.update(userRef, "balance", newBalance)
-
-                batch.commit().await()
-
-                getCurrUser(currentUser.email)
+                getCurrUser(currUser.value?.email.toString())
                 _resresponse.value = "Payment successful"
-
             } catch (e: Exception) {
                 _resresponse.value = "Payment failed: ${e.message}"
-                Log.e("PaymentVM", "Error in topupPayment: ${e.message}", e)
+                Log.e("PaymentVM", "Error: ${e.message}", e)
             }
         }
     }
 
-    fun placingBids(produkId: String, buyerId: String, sellerId: String, bidAmount: Double){
+    fun placingBids(produkId: String, buyerId: String, sellerId: String, bidAmount: Double) {
         viewModelScope.launch {
             try {
                 val produkRef = db.collection("Products").document(produkId)
@@ -746,7 +820,10 @@ class UserViewModel:ViewModel() {
                     val currEndBid = produk2.getDouble("end_bid") ?: 0.0
                     val startBid = produk2.getDouble("start_bid") ?: 0.0
                     var userBalance = user2.getDouble("balance") ?: 0.0
-                    Log.d("BID_DEBUG2", "currEndBid: $currEndBid, startBid: $startBid, userBalance: $userBalance")
+                    Log.d(
+                        "BID_DEBUG2",
+                        "currEndBid: $currEndBid, startBid: $startBid, userBalance: $userBalance"
+                    )
 
                     val highestBid = if (currEndBid == 0.0) startBid else currEndBid
 
@@ -768,11 +845,13 @@ class UserViewModel:ViewModel() {
                         }
 
                         userBalance -= bidAmount
-                        transaction.update(existingDoc.reference, mapOf(
-                            "bid" to bidAmount,
-                            "time_bid" to formattedDate,
-                            "status" to "Pending"
-                        ))
+                        transaction.update(
+                            existingDoc.reference, mapOf(
+                                "bid" to bidAmount,
+                                "time_bid" to formattedDate,
+                                "status" to "Pending"
+                            )
+                        )
                     } else {
                         userBalance -= bidAmount
                         val transaksiId = db.collection("Transaksi").document().id
@@ -801,13 +880,17 @@ class UserViewModel:ViewModel() {
                 }.addOnFailureListener { e ->
                     _resresponse.value = "Gagal Bid: ${e.message}"
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 _resresponse.value = "Gagal: ${e.message}"
             }
         }
     }
 
-    private fun calculateBayesianRating(userRatings: List<Ratings>, globalAvg: Double, threshold: Int = 5): Double {
+    private fun calculateBayesianRating(
+        userRatings: List<Ratings>,
+        globalAvg: Double,
+        threshold: Int = 5
+    ): Double {
         val v = userRatings.size
         val R = if (v > 0) userRatings.map { it.rating }.average() else 0.0
         val m = threshold
@@ -816,104 +899,104 @@ class UserViewModel:ViewModel() {
         return ((v.toDouble() / (v + m)) * R) + ((m.toDouble() / (v + m)) * C)
     }
 
-    fun loadTransactions(userId: String? = null) {
+    private suspend fun getAllUsersFirestore(): List<User> {
+        return try {
+            db.collection("Users").get().await().documents.mapNotNull { document ->
+                document.toObject(User::class.java)
+            }
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error getting users: ${e.message}")
+            emptyList()
+        }
+    }
+
+    private suspend fun getAllProductsFirestore(): List<Products> {
+        return try {
+            db.collection("Products").get().await().documents.mapNotNull { document ->
+                document.toObject(Products::class.java)
+            }
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error getting products: ${e.message}")
+            emptyList()
+        }
+    }
+
+    private suspend fun getAllTransactionsFirestore(): List<Transactions> {
+        return try {
+            db.collection("Transactions").get().await().documents.mapNotNull { document ->
+                document.toObject(Transactions::class.java)
+                }
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error getting transactions: ${e.message}")
+            emptyList()
+        }
+    }
+
+    private suspend fun getAllRatingsFirestore(): List<Ratings> {
+        return try {
+            db.collection("Ratings").get().await().documents.mapNotNull {
+                it.toObject(Ratings::class.java)
+            }
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error getting ratings: ${e.message}")
+            emptyList()
+        }
+    }
+
+    fun loadCombined() {
         viewModelScope.launch {
             try {
-                val transactionList = if (userId != null) {
-                    getUserTransactions(userId)
-                } else {
-                    getAllTransactions()
+                val users = getAllUsersFirestore()
+                val products = getAllProductsFirestore()
+                val transactions = getAllTransactionsFirestore()
+                val ratings = getAllRatingsFirestore()
+                Log.d("CombinedHistory", "Users fetched: ${users.size}")
+                Log.d("CombinedHistory", "Products fetched: ${products.size}")
+                Log.d("CombinedHistory", "Transactions fetched: ${transactions.size}")
+                Log.d("CombinedHistory", "Ratings fetched: ${ratings.size}")
+
+
+
+                val userMap = users.associateBy { it.id }
+                val productMap = products.associateBy { it.items_id }
+                val transactionMap = transactions.associateBy { it.transaksiId }
+
+                val combinedList: List<DisplayItem> = transactions.mapNotNull { transaction ->
+                    val user = userMap[transaction.buyer_id]
+                    val product = productMap[transaction.produk_id]
+                    val associatedRating = ratings.find { it.transaction_id == transaction.transaksiId }
+
+                    Log.d("CombinedHistory", "Processing transaction: ${transaction.transaksiId}")
+                    Log.d("CombinedHistory", "  User for buyer_id ${transaction.buyer_id}: ${user?.name}")
+                    Log.d("CombinedHistory", "  Product for produk_id ${transaction.produk_id}: ${product?.name}")
+                    Log.d("CombinedHistory", "  Rating for transaction_id ${transaction.transaksiId}: ${associatedRating?.rating}")
+
+
+                    if (user != null) {
+                        DisplayItem(
+                            userName = user.name,
+                            productName = product?.name ?: "Produk tidak ditemukan",
+                            transactionDate = transaction.time_bid,
+                            rating = associatedRating?.rating,
+                            review = associatedRating?.review,
+                            status = transaction.status,
+                            itemId = transaction.produk_id,
+                            transactionId = transaction.transaksiId,
+                            sellerId = transaction.seller_id
+                        )
+                    } else {
+                        Log.e(
+                            "Firestore",
+                            "Failed to load transaction for user ID ${transaction.buyer_id} (transaction ID: ${transaction.transaksiId}) - User not found."
+                        )
+                        null
+                    }
                 }
-
-                loadProductDataForTransactions(transactionList)
-
+                _combinedTransactionHistory.postValue(combinedList.sortedByDescending { it.transactionDate })
             } catch (e: Exception) {
-                _resresponse.value = "Gagal memuat data transaksi: ${e.message}"
-                _transactions.value = emptyList()
+                Log.e("Firestore Error", "Error loading combined history: ${e.message}", e)
+                _combinedTransactionHistory.postValue(emptyList())
             }
         }
     }
-
-    private suspend fun getUserTransactions(userId: String): List<TransactionItem> {
-        return try {
-            val snapshot = db.collection("transactions")
-                .whereEqualTo("userId", userId)
-                .orderBy("date", Query.Direction.DESCENDING)
-                .get()
-                .await()
-
-            snapshot.documents.mapNotNull { document ->
-                document.toObject(TransactionItem::class.java)?.copy(id = document.id)
-            }
-        } catch (e: Exception) {
-            Log.e("Firestore", "Error fetching user transactions: ${e.message}", e)
-            emptyList()
-        }
-    }
-
-    private suspend fun getAllTransactions(): List<TransactionItem> {
-        return try {
-            val snapshot = db.collection("transactions")
-                .orderBy("date", Query.Direction.DESCENDING)
-                .get()
-                .await()
-
-            snapshot.documents.mapNotNull { document ->
-                document.toObject(TransactionItem::class.java)?.copy(id = document.id)
-            }
-        } catch (e: Exception) {
-            Log.e("Firestore", "Error fetching all transactions: ${e.message}", e)
-            emptyList()
-        }
-    }
-
-    private suspend fun loadProductDataForTransactions(transactions: List<TransactionItem>) {
-        if (transactions.isEmpty()) {
-            _transactions.value = transactions
-            return
-        }
-
-        val updatedTransactions = mutableListOf<TransactionItem>()
-
-        for (transaction in transactions) {
-            if (transaction.itemId.isNotEmpty()) {
-                try {
-                    val productData = getCurrItemData(transaction.itemId)
-                    val updatedTransaction = transaction.copy(
-                        itemName = productData.first?.name ?: "Produk tidak ditemukan",
-                        itemImageResId = R.drawable.btn_default
-                    )
-                    updatedTransactions.add(updatedTransaction)
-                } catch (e: Exception) {
-                    Log.e("TransactionViewModel", "Error loading product ${transaction.id}: ${e.message}")
-                    updatedTransactions.add(transaction.copy(itemName = "Error loading product"))
-                }
-            } else {
-                updatedTransactions.add(transaction)
-            }
-        }
-
-        _transactions.value = updatedTransactions
-    }
-
-    private suspend fun getCurrItemData(itemIds: String): Pair<Products?, Categories?> {
-        return try {
-            val currItem = db.collection("Products").document(itemIds).get().await()
-            val item = currItem.toObject(Products::class.java)
-
-            val cate = if (item?.category_id != null) {
-                val currcate = db.collection("Categories").document(item.category_id).get().await()
-                currcate.toObject(Categories::class.java)
-            } else {
-                null
-            }
-
-            Log.d("Firestore", "Current item: $item")
-            Pair(item, cate)
-        } catch (e: Exception) {
-            Log.e("Firestore Error", "Error fetching item: ${e.message}", e)
-            Pair(null, null)
-        }
-    }
-
 }

@@ -1,0 +1,71 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/detailImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop" />
+
+    <!-- Nama Produk -->
+    <TextView
+        android:id="@+id/detailName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nama Produk"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp"
+        android:textColor="#212121" />
+
+    <!-- Lokasi -->
+    <TextView
+        android:id="@+id/detailLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lokasi"
+        android:textSize="16sp"
+        android:textColor="#757575"
+        android:paddingTop="4dp" />
+
+    <!-- Section Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Informasi Penjual"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:paddingTop="16dp"
+        android:textColor="#000000" />
+
+    <!-- Nama Penjual -->
+    <TextView
+        android:id="@+id/sellerName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nama Penjual"
+        android:textSize="16sp"
+        android:textColor="#424242"
+        android:paddingTop="4dp" />
+
+    <!-- Alamat Penjual -->
+    <TextView
+        android:id="@+id/sellerAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alamat Penjual"
+        android:textSize="16sp"
+        android:textColor="#424242"
+        android:paddingTop="2dp" />
+
+    <!-- Tombol Selesai -->
+    <Button
+        android:id="@+id/completeButton"
+        android:text="Selesaikan Transaksi"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

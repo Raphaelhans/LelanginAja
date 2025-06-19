@@ -62,7 +62,6 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@id/priceHistory"
-                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toEndOf="@id/icon_container"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Payment for Auction Item" />
@@ -79,9 +78,9 @@
                 android:text="Date"
                 android:textColor="#666666"
                 android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="@id/itemHistory"
-                app:layout_constraintStart_toEndOf="@+id/icon_container"
                 app:layout_constraintTop_toBottomOf="@id/itemHistory"
+                app:layout_constraintStart_toEndOf="@id/icon_container"
+                app:layout_constraintEnd_toEndOf="@id/itemHistory"
                 tools:text="15 Juni 2024 | 14:30" />
 
             <TextView
@@ -96,8 +95,8 @@
                 android:textColor="#4CAF50"
                 android:textSize="12sp"
                 android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@id/dateHistory"
                 app:layout_constraintTop_toBottomOf="@id/dateHistory"
+                app:layout_constraintStart_toStartOf="@id/dateHistory"
                 tools:text="Success"
                 tools:visibility="visible" />
 
@@ -114,6 +113,64 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="Rp 150.000" />
+
+            <LinearLayout
+                android:id="@+id/ratingContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/statusHistory"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rating Anda: "
+                    android:textStyle="bold"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/design_default_color_primary"
+                    android:text="5.0/5" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvReview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="13sp"
+                android:textStyle="italic"
+                android:text="Review Anda: 'Ini adalah review dari produk yang dibeli.'"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/ratingContainer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <Button
+                android:id="@+id/btnGiveRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Beri Rating"
+                android:layout_marginTop="8dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textSize="12sp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/tvReview"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

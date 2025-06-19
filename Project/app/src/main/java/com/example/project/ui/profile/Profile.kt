@@ -26,6 +26,7 @@ import com.example.project.History
 import com.example.project.HomeUser
 import com.example.project.MainActivity
 import com.example.project.R
+import com.example.project.RatingActivity
 import com.example.project.SellerAddBarang
 import com.example.project.UserViewModel
 import com.example.project.databinding.ActivityProfileBinding
@@ -40,7 +41,6 @@ class Profile : BaseClass() {
     private var selectedImageUri: Uri? = null
 
     val avatarNames = listOf("bycicle", "profile", "burger", "friedchicken")
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,6 +110,14 @@ class Profile : BaseClass() {
                 val intent = Intent(this, History::class.java)
                 intent.putExtra("email", viewModel.currUser.value?.email)
                 startActivity(intent)
+                finish()
+            }
+
+            binding.accReview.setOnClickListener{
+                val intent = Intent(this, RatingActivity::class.java)
+                intent.putExtra("email", viewModel.currUser.value?.email)
+                startActivity(intent)
+                Log.e("profil", "start")
                 finish()
             }
 

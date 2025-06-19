@@ -16,6 +16,7 @@ import com.example.project.databinding.ActivityAuctiondetailBinding
 import com.example.project.databinding.ActivityHistoryBinding
 import com.example.project.databinding.ActivityHomeUserBinding
 import com.example.project.databinding.ItemHistoryBinding
+import com.example.project.ui.profile.Profile
 import kotlinx.coroutines.Job
 import java.text.NumberFormat
 import java.time.format.DateTimeFormatter
@@ -38,11 +39,15 @@ class History : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@History)
             adapter = historyAdapter
         }
-
-        binding.backbtn.setOnClickListener {
-            val intent = Intent(this, HomeUser::class.java)
-            startActivity(intent)
-            finish()
+        viewModels.currUser.observe(this) { user ->
+            if (user != null) {
+                binding.backbtn.setOnClickListener {
+                    val intent = Intent(this, Profile::class.java)
+                    intent.putExtra("email", user.email)
+                    startActivity(intent)
+                    finish()
+                }
+            }
         }
 
         viewModels.historyList.observe(this) { historyList ->

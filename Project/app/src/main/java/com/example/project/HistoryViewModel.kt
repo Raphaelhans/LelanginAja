@@ -295,3 +295,4 @@ class HistoryViewModel: ViewModel() {
         }
     }
 }
+
