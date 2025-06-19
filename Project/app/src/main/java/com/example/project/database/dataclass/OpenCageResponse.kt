@@ -1,4 +1,4 @@
-package com.example.project.database
+package com.example.project.database.dataclass
 
 data class OpenCageResponse(
     val results: List<OpenCageResult>

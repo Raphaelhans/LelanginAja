@@ -7,11 +7,13 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.project.databinding.ActivityHomeUserBinding
 import com.example.project.ui.profile.Profile
 import com.example.project.ui.transaction.Transaction
+import com.example.project.ui.auction.AuctionData
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
@@ -34,7 +36,21 @@ class HomeUser : BaseClass() {
 
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+        val etSearch = binding.etSearch
+        val btnSearch = binding.btnSearch
 
+        btnSearch.setOnClickListener {
+            val query = etSearch.text.toString().trim()
+            if (query.isNotEmpty()) {
+                viewModels.setSearchBrg(query)
+            } else {
+                Toast.makeText(this, "Enter Product Name!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModels.checkItemValidity()
+        }
 
         viewModels.currUser.observe(this) { user ->
             if (user != null) {
@@ -42,19 +58,21 @@ class HomeUser : BaseClass() {
                     val categories = viewModels.loadCategories()
 
                     if (categories.isNotEmpty()) {
-                        adapter = FragmentAdapter(this@HomeUser, categories, user.email)
-                        viewPager.adapter = adapter
+                        if (::adapter.isInitialized.not()) {
+                            adapter = FragmentAdapter(this@HomeUser, categories, user.email)
+                            viewPager.adapter = adapter
 
-                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                            tab.text = categories[position].name
-                        }.attach()
+                            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                                tab.text = categories[position].name
+                            }.attach()
 
-                        tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+                            tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+                        }
                     } else {
-                        Toast.makeText(this@HomeUser, "No categories found", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@HomeUser, "No categories found", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
-
                 binding.nameUserDis.text = user.name
                 binding.saldouserDis.text = "Rp. **********"
 
@@ -88,8 +106,10 @@ class HomeUser : BaseClass() {
                 }
 
                 binding.transBtn.setOnClickListener {
-                    val intent = Intent(this, Transaction::class.java)
-                    intent.putExtra("email", viewModels.currUser.value?.email)
+                    val intent = Intent(this, Transaction::class.java).apply {
+                       putExtra("email", viewModels.currUser.value?.email)
+                       putExtra("user_id", viewModels.currUser.value?.user_id.toString())
+                    }
                     startActivity(intent)
                     finish()
                 }
