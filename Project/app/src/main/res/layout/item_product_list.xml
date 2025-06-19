@@ -1,44 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="12dp"
+    android:background="?attr/selectableItemBackground"
+    android:elevation="2dp">
+
 
     <ImageView
         android:id="@+id/imageViewProduct"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
         android:contentDescription="Product Image"
-        android:scaleType="centerCrop"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="#DDDDDD"
+        android:layout_marginEnd="12dp" />
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/textViewName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:text="sabun"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        app:layout_constraintTop_toTopOf="@id/imageViewProduct"
+        app:layout_constraintStart_toEndOf="@id/imageViewProduct"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/textViewName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
 
-        <TextView
-            android:id="@+id/textViewStartDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp"/>
+    <TextView
+        android:id="@+id/textViewStartDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Tanggal Mulai: 19 Juni 2025"
+        android:textSize="14sp"
+        android:textColor="#555555"
+        app:layout_constraintTop_toBottomOf="@id/textViewName"
+        app:layout_constraintStart_toStartOf="@id/textViewName"
+        app:layout_constraintEnd_toEndOf="@id/textViewName"
+        android:layout_marginTop="4dp" />
 
-        <TextView
-            android:id="@+id/textViewStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp"/>
-    </LinearLayout>
-</LinearLayout>
+    
+    <TextView
+        android:id="@+id/textViewStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Status: Aktif"
+        android:textSize="14sp"
+        android:textColor="#777777"
+        app:layout_constraintTop_toBottomOf="@id/textViewStartDate"
+        app:layout_constraintStart_toStartOf="@id/textViewStartDate"
+        app:layout_constraintEnd_toEndOf="@id/textViewStartDate"
+        android:layout_marginTop="4dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
