@@ -52,18 +52,16 @@ class HistoryViewModel: ViewModel() {
                 val payments = fetchPaymentsByEmail(userEmail)
                 val withdraws = fetchWithdrawsByUser(userEmail)
                 val bids = fetchBidsByUser(userEmail)
-                val topups = fetchTopupsByUser(userEmail)
 
-                val paymentItems = payments.map { payment ->
-                    val relatedTransactionItems = fetchTransactionItemsByPaymentId(payment.transaction_id ?: "")
-                    val produkIds = relatedTransactionItems.map { it.itemId }.joinToString(", ")
-                    val itemNames = relatedTransactionItems.map { it.itemName }.joinToString(", ")
-
+                val paymentItems = payments.filter {
+                    // Exclude top-up payments, as they will be handled specifically
+                    !it.payment_type.equals("topup", ignoreCase = true)
+                }.map { payment ->
                     TransactionItem(
                         id = payment.transaction_id ?: "",
                         type = "Payment",
-                        itemName = if (itemNames.isNotEmpty()) itemNames else "Payment Transaction",
-                        itemId = if (produkIds.isNotEmpty()) produkIds else "",
+                        itemName = "Top Up",
+                        itemId = "",
                         date = payment.date ?: "",
                         status = payment.transaction_status ?: "Tidak diketahui",
                         info = "${payment.payment_type ?: "-"} • ${payment.transaction_status ?: "Tidak diketahui"}",
@@ -78,10 +76,10 @@ class HistoryViewModel: ViewModel() {
                     TransactionItem(
                         id = it.id ?: "",
                         type = "Withdraw",
-                        itemName = "Withdraw to ${it.bank ?: "-"}",
+                        itemName = "Withdraw ke ${it.bank ?: "-"}",
                         itemId = "",
                         date = it.date ?: "",
-                        status = "",
+                        status = "Success",
                         info = "${it.bank ?: "-"} • Success",
                         amount = it.amountWd,
                         itemImageResId = com.example.project.R.drawable.transaction,
@@ -92,18 +90,11 @@ class HistoryViewModel: ViewModel() {
 
                 val bidItems = bids.map { bidDoc ->
                     val bidAmount = bidDoc.getLong("bidAmount")?.toInt() ?: 0
-                    val bidTimeAwal = bidDoc.get("bidTime")
-                    val bidTimeMillis: Long = when (bidTimeAwal) {
-                        is Number -> bidTimeAwal.toLong()
-                        is String -> bidTimeAwal.toLongOrNull() ?: System.currentTimeMillis()
-                        else -> System.currentTimeMillis()
-                    }
-
+                    val timeBid = bidDoc.getString("time_bid") ?: ""
                     val productId = bidDoc.getString("produk_id") ?: ""
                     val status = bidDoc.getString("status") ?: "Pending"
                     val transaksiId = bidDoc.getString("transaksiId") ?: ""
 
-                    val bidDate = convertTimestampToFormattedDate(bidTimeMillis)
                     val productName = getProductNameById(productId)
 
                     TransactionItem(
@@ -111,7 +102,7 @@ class HistoryViewModel: ViewModel() {
                         type = "Bid",
                         itemName = productName,
                         itemId = productId,
-                        date = bidDate,
+                        date = timeBid,
                         status = status,
                         info = "Bid • $status",
                         amount = bidAmount,
@@ -121,7 +112,9 @@ class HistoryViewModel: ViewModel() {
                     )
                 }
 
-                val topupItems = topups.map { topup ->
+                val topupItems = payments.filter {
+                    it.payment_type.equals("topup", ignoreCase = true)
+                }.map { topup ->
                     TransactionItem(
                         id = topup.transaction_id,
                         type = "Topup",
@@ -143,7 +136,7 @@ class HistoryViewModel: ViewModel() {
                 _historyList.postValue(combinedHistory)
 
             } catch (e: Exception) {
-                Log.e("UserViewModel", "Error fetching history: ${e.message}", e)
+                Log.e("HistoryViewModel", "Error fetching history: ${e.message}", e)
                 _historyList.postValue(emptyList())
                 _resresponse.postValue("Gagal memuat riwayat: ${e.message}")
             } finally {
@@ -155,30 +148,18 @@ class HistoryViewModel: ViewModel() {
     private fun convertTimestampToFormattedDate(timestamp: Long): String {
         val instant = Instant.ofEpochMilli(timestamp)
         val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-        val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
+        val formatter = DateTimeFormatter.ofPattern("dd MMMM, HH:mm", Locale("id", "ID"))
         return localDateTime.format(formatter)
     }
 
     suspend fun fetchTransactionItemsByPaymentId(paymentId: String): List<TransactionItem> {
-        return try {
-            val snapshot = db.collection("Payments")
-                .whereEqualTo("transaction_id", paymentId)
-                .get()
-                .await()
-
-            snapshot.documents.mapNotNull { doc ->
-                doc.toObject(TransactionItem::class.java)?.copy(id = doc.id)
-            }
-        } catch (e: Exception) {
-            Log.e("UserViewModel", "Error fetching transaction items: ${e.message}", e)
-            emptyList()
-        }
+        return emptyList()
     }
 
     suspend fun fetchPaymentsByEmail(email: String): List<Payment> {
         return try {
             val snapshot = Firebase.firestore
-                .collection("payments")
+                .collection("Payments")
                 .whereEqualTo("emailUser", email)
                 .get()
                 .await()
@@ -188,7 +169,7 @@ class HistoryViewModel: ViewModel() {
                 doc.toObject(Payment::class.java)?.copy(transaction_id = doc.id)
             }
         } catch (e: Exception) {
-            Log.e("UserViewModel", "Error fetching payments: ${e.message}", e)
+            Log.e("HistoryViewModel", "Error fetching payments: ${e.message}", e)
             emptyList()
         }
     }
@@ -199,9 +180,12 @@ class HistoryViewModel: ViewModel() {
                 .whereEqualTo("email", email)
                 .get()
                 .await()
-            Log.e("user-wd", userSnapshot.toString())
 
-            val userId = userSnapshot.documents.firstOrNull()?.getString("user_id") ?: return emptyList()
+            val userId = userSnapshot.documents.firstOrNull()?.get("user_id")?.toString()
+                ?: run {
+                    Log.e("HistoryViewModel", "User not found for email: $email")
+                    return emptyList()
+                }
 
             val withdrawSnapshot = db.collection("Withdraws")
                 .whereEqualTo("user_id", userId)
@@ -213,7 +197,7 @@ class HistoryViewModel: ViewModel() {
                 doc.toObject(Withdraws::class.java)?.copy(id = doc.id)
             }
         } catch (e: Exception) {
-            Log.e("UserViewModel", "Error fetching withdraws: ${e.message}", e)
+            Log.e("HistoryViewModel", "Error fetching withdraws: ${e.message}", e)
             emptyList()
         }
     }
@@ -234,33 +218,9 @@ class HistoryViewModel: ViewModel() {
 
             bidSnapshot.documents
         } catch (e: Exception) {
-            Log.e("UserViewModel", "Error fetching bids: ${e.message}", e)
+            Log.e("HistoryViewModel", "Error fetching bids: ${e.message}", e)
             emptyList()
         }
-    }
-
-    suspend fun fetchTopupsByUser(email: String): List<Payment> {
-        return try {
-            val snapshot = db.collection("payments")
-                .whereEqualTo("emailUser", email)
-                .whereEqualTo("name", "Top Up Balance")
-                .get()
-                .await()
-
-            snapshot.documents.mapNotNull { doc ->
-                doc.toObject(Payment::class.java)?.copy(transaction_id = doc.id)
-            }
-        } catch (e: Exception) {
-            Log.e("UserViewModel", "Error fetching topups: ${e.message}", e)
-            emptyList()
-        }
-    }
-
-    fun getProductIdsFromPayment(paymentId: String, transactionItems: List<TransactionItem>): List<String> {
-        return transactionItems
-            .filter { it.id == paymentId || it.itemId == paymentId }
-            .map { it.itemId }
-            .filter { it.isNotEmpty() }
     }
 
     suspend fun getProductNameById(productId: String): String {
@@ -275,24 +235,36 @@ class HistoryViewModel: ViewModel() {
             val product = productDoc.toObject(Products::class.java)
             product?.name ?: "Produk tidak ditemukan"
         } catch (e: Exception) {
-            Log.e("UserViewModel", "Error fetching product name: ${e.message}", e)
+            Log.e("HistoryViewModel", "Error fetching product name: ${e.message}", e)
             "Error memuat produk"
         }
     }
 
     private fun parseDate(dateString: String): Date {
+        if (dateString.isNullOrEmpty()) {
+            Log.w("HistoryViewModel", "Attempted to parse empty date string. Returning current date.")
+            return Date()
+        }
         return try {
-            val isoFormatter = DateTimeFormatter.ISO_DATE_TIME
-            val localDateTime = LocalDateTime.parse(dateString, isoFormatter)
-            Date.from(localDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant())
+            // Try parsing as "dd MMMM yyyy" for "Transaksi" time_bid (e.g., "15 Juni 2025")
+            val bidDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+            bidDateFormat.parse(dateString) ?: Date()
         } catch (e: Exception) {
             try {
-                val indonesianFormat = SimpleDateFormat("dd MMMM, HH:mm", Locale("id", "ID"))
-                indonesianFormat.parse(dateString) ?: Date()
+                // Fallback to ISO_DATE_TIME
+                val isoFormatter = DateTimeFormatter.ISO_DATE_TIME
+                val localDateTime = LocalDateTime.parse(dateString, isoFormatter)
+                Date.from(localDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant())
             } catch (e2: Exception) {
-                Date()
+                try {
+                    // Fallback to "dd MMMM, HH:mm"
+                    val indonesianFormat = SimpleDateFormat("dd MMMM, HH:mm", Locale("id", "ID"))
+                    indonesianFormat.parse(dateString) ?: Date()
+                } catch (e3: Exception) {
+                    Log.e("HistoryViewModel", "Failed to parse date string: $dateString", e3)
+                    Date()
+                }
             }
         }
     }
 }
-

@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.database.App
+import com.example.project.database.TransactionRepository
 import com.example.project.database.dataclass.BankAccount
 import com.example.project.database.dataclass.Categories
 import com.example.project.database.dataclass.CustomerDetails
@@ -31,6 +32,7 @@ import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -48,9 +50,10 @@ import java.util.Date
 import java.util.Locale
 import java.util.UUID
 
-class UserViewModel:ViewModel() {
+class UserViewModel(): ViewModel() {
     private val db = Firebase.firestore
     private val client = OkHttpClient()
+    private val transactionRepository = TransactionRepository(db)
 
     private val _currUser = MutableLiveData<Users?>()
     val currUser: LiveData<Users?> get() = _currUser
@@ -107,7 +110,11 @@ class UserViewModel:ViewModel() {
         _search.value = query
     }
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
     fun getCurrUser(email: String) {
+        _isLoading.value = true
         viewModelScope.launch {
             try {
                 val curruser = db.collection("Users")
@@ -141,6 +148,8 @@ class UserViewModel:ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.e("Firestore Error", "Error fetching user: ${e.message}", e)
+            } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -266,14 +275,17 @@ class UserViewModel:ViewModel() {
                     .whereEqualTo("transaksiId", transactionId)
                     .whereEqualTo("buyer_id", currentBuyerId)
                     .whereEqualTo("produk_id", itemId)
-                     .whereEqualTo("status", "complete")
+                    .whereEqualTo("status", "complete")
                     .limit(1)
                     .get()
                     .await()
 
                 if (transactionQuery.isEmpty) {
                     _resresponse.postValue("Gagal memberi rating: Transaksi tidak ditemukan atau belum selesai.")
-                    Log.e("Rating", "Transaction $transactionId not found or not completed for user $currentBuyerId and item $itemId.")
+                    Log.e(
+                        "Rating",
+                        "Transaction $transactionId not found or not completed for user $currentBuyerId and item $itemId."
+                    )
                     return@launch
                 }
 
@@ -307,7 +319,7 @@ class UserViewModel:ViewModel() {
                 _resresponse.postValue("Rating berhasil dikirim!")
                 Log.d("Rating", "Rating submitted: $ratingData")
 
-                 getAverageRating(sellerId)
+                getAverageRating(sellerId)
             } catch (e: Exception) {
                 _resresponse.postValue("Gagal memberi rating: ${e.message}")
                 Log.e("Rating Error", "Error submitting rating: ${e.message}", e)
@@ -347,7 +359,7 @@ class UserViewModel:ViewModel() {
     }
 
     suspend fun checkItemValidity() {
-        val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy | HH:mm", Locale.ENGLISH)
+        val formatter = DateTimeFormatter.ofPattern("dd MMMMyyyy | HH:mm", Locale.ENGLISH)
         try {
             val now = LocalDateTime.now()
             val productSnapshot = db.collection("Products").get().await()
@@ -692,7 +704,7 @@ class UserViewModel:ViewModel() {
                     .count
 
                 if (inputPIN) {
-                    val formatter = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
+                    val formatter = SimpleDateFormat("dd MMMMyyyy, HH:mm", Locale("id", "ID"))
                     val formattedDate = formatter.format(Date())
                     val newWdId = db.collection("Withdraws").document()
                     db.runTransaction { transaction ->
@@ -767,7 +779,7 @@ class UserViewModel:ViewModel() {
     fun topupPayment(transactionId: String, paymentType: String, transactionStatus: String) {
         viewModelScope.launch {
             try {
-                val formatter = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
+                val formatter = SimpleDateFormat("dd MMMMyyyy, HH:mm", Locale("id", "ID"))
                 val formattedDate = formatter.format(Date())
                 db.runTransaction { transaction ->
                     val pays = Payment(
@@ -803,7 +815,7 @@ class UserViewModel:ViewModel() {
                 val produkRef = db.collection("Products").document(produkId)
                 val userRef = db.collection("Users").document(buyerId)
                 Log.d("BID_DEBUG1", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
-                val formatter = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
+                val formatter = SimpleDateFormat("dd MMMMyyyy, HH:mm", Locale("id", "ID"))
                 val formattedDate = formatter.format(Date())
 
                 val existingBidQuery = db.collection("Transaksi")
@@ -899,104 +911,72 @@ class UserViewModel:ViewModel() {
         return ((v.toDouble() / (v + m)) * R) + ((m.toDouble() / (v + m)) * C)
     }
 
-    private suspend fun getAllUsersFirestore(): List<User> {
-        return try {
-            db.collection("Users").get().await().documents.mapNotNull { document ->
-                document.toObject(User::class.java)
-            }
-        } catch (e: Exception) {
-            Log.e("Firestore", "Error getting users: ${e.message}")
-            emptyList()
-        }
-    }
-
-    private suspend fun getAllProductsFirestore(): List<Products> {
-        return try {
-            db.collection("Products").get().await().documents.mapNotNull { document ->
-                document.toObject(Products::class.java)
-            }
-        } catch (e: Exception) {
-            Log.e("Firestore", "Error getting products: ${e.message}")
-            emptyList()
-        }
-    }
-
-    private suspend fun getAllTransactionsFirestore(): List<Transactions> {
-        return try {
-            db.collection("Transactions").get().await().documents.mapNotNull { document ->
-                document.toObject(Transactions::class.java)
-                }
-        } catch (e: Exception) {
-            Log.e("Firestore", "Error getting transactions: ${e.message}")
-            emptyList()
-        }
-    }
-
-    private suspend fun getAllRatingsFirestore(): List<Ratings> {
-        return try {
-            db.collection("Ratings").get().await().documents.mapNotNull {
-                it.toObject(Ratings::class.java)
-            }
-        } catch (e: Exception) {
-            Log.e("Firestore", "Error getting ratings: ${e.message}")
-            emptyList()
-        }
-    }
-
     fun loadCombined() {
+        _isLoading.value = true
         viewModelScope.launch {
             try {
-                val users = getAllUsersFirestore()
-                val products = getAllProductsFirestore()
-                val transactions = getAllTransactionsFirestore()
-                val ratings = getAllRatingsFirestore()
-                Log.d("CombinedHistory", "Users fetched: ${users.size}")
-                Log.d("CombinedHistory", "Products fetched: ${products.size}")
-                Log.d("CombinedHistory", "Transactions fetched: ${transactions.size}")
-                Log.d("CombinedHistory", "Ratings fetched: ${ratings.size}")
+                val currentUserId = _currUser.value?.user_id
 
-
-
-                val userMap = users.associateBy { it.id }
-                val productMap = products.associateBy { it.items_id }
-                val transactionMap = transactions.associateBy { it.transaksiId }
-
-                val combinedList: List<DisplayItem> = transactions.mapNotNull { transaction ->
-                    val user = userMap[transaction.buyer_id]
-                    val product = productMap[transaction.produk_id]
-                    val associatedRating = ratings.find { it.transaction_id == transaction.transaksiId }
-
-                    Log.d("CombinedHistory", "Processing transaction: ${transaction.transaksiId}")
-                    Log.d("CombinedHistory", "  User for buyer_id ${transaction.buyer_id}: ${user?.name}")
-                    Log.d("CombinedHistory", "  Product for produk_id ${transaction.produk_id}: ${product?.name}")
-                    Log.d("CombinedHistory", "  Rating for transaction_id ${transaction.transaksiId}: ${associatedRating?.rating}")
-
-
-                    if (user != null) {
-                        DisplayItem(
-                            userName = user.name,
-                            productName = product?.name ?: "Produk tidak ditemukan",
-                            transactionDate = transaction.time_bid,
-                            rating = associatedRating?.rating,
-                            review = associatedRating?.review,
-                            status = transaction.status,
-                            itemId = transaction.produk_id,
-                            transactionId = transaction.transaksiId,
-                            sellerId = transaction.seller_id
-                        )
-                    } else {
-                        Log.e(
-                            "Firestore",
-                            "Failed to load transaction for user ID ${transaction.buyer_id} (transaction ID: ${transaction.transaksiId}) - User not found."
-                        )
-                        null
-                    }
+                if (currentUserId == null) {
+                    _combinedTransactionHistory.postValue(emptyList())
+                    _isLoading.postValue(false)
+                    return@launch
                 }
+
+                val deferredUsers = async { transactionRepository.getAllUsersFirestore() } //
+                val deferredProducts = async { transactionRepository.getAllProductsFirestore() } //
+                val deferredTransactions = async { transactionRepository.getAllTransactionsFirestore() } //
+                val deferredRatings = async { transactionRepository.getAllRatingsFirestore() } //
+
+                val users = deferredUsers.await()
+                val products = deferredProducts.await()
+                val transactions = deferredTransactions.await()
+                val ratings = deferredRatings.await()
+
+                val userMap = users.associateBy { it.user_id }
+                val productMap = products.associateBy { it.items_id }
+                val ratingMap = ratings.groupBy { it.transaction_id }
+
+                val combinedList: List<DisplayItem> = transactions
+                    .filter { it.buyer_id == currentUserId && it.status == "complete" && ratingMap[it.transaksiId]?.any { rating -> rating.buyer_id == currentUserId } == true }
+                    .mapNotNull { transaction ->
+                        val user = userMap[transaction.buyer_id]
+                        val product = productMap[transaction.produk_id]
+                        val associatedRating = ratingMap[transaction.transaksiId]?.find {
+                            it.buyer_id == transaction.buyer_id
+                        }
+
+                        if (user == null) {
+                            Log.e(
+                                "UserViewModel", "Failed load transaction user ${transaction.buyer_id} (${transaction.transaksiId})"
+                            )
+                            null
+                        } else {
+                            DisplayItem(
+                                userName = user.name,
+                                productName = product?.name ?: "Produk tidak ditemukan",
+                                transactionDate = transaction.time_bid,
+                                rating = associatedRating?.rating,
+                                review = associatedRating?.review,
+                                status = transaction.status,
+                                itemId = transaction.produk_id,
+                                transactionId = transaction.transaksiId,
+                                sellerId = transaction.seller_id,
+                            )
+                        }
+                    }
                 _combinedTransactionHistory.postValue(combinedList.sortedByDescending { it.transactionDate })
             } catch (e: Exception) {
-                Log.e("Firestore Error", "Error loading combined history: ${e.message}", e)
+                Log.e("UserViewModel Error", "Error loading combined history: ${e.message}", e)
                 _combinedTransactionHistory.postValue(emptyList())
+            } finally {
+                _isLoading.value = false
             }
         }
     }
+
+    fun setCurrentUser(user: Users) {
+        _currUser.value = user
+    }
+
 }

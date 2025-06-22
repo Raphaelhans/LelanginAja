@@ -117,7 +117,6 @@ class Profile : BaseClass() {
                 val intent = Intent(this, RatingActivity::class.java)
                 intent.putExtra("email", viewModel.currUser.value?.email)
                 startActivity(intent)
-                Log.e("profil", "start")
                 finish()
             }
 

@@ -72,7 +72,7 @@ class History : AppCompatActivity() {
         viewModels.isLoading.observe(this) { isLoading ->
             binding.progresBar.visibility = if (isLoading) View.VISIBLE else View.GONE
             binding.rvHistory.visibility = if (isLoading) View.GONE else View.VISIBLE
-            binding.tvNoTransaction.visibility = if (isLoading) View.GONE else View.VISIBLE // Adjust visibility of no transaction text as needed
+            binding.tvNoTransaction.visibility = if (isLoading) View.GONE else View.VISIBLE
         }
     }
 

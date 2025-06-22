@@ -3,20 +3,22 @@ package com.example.project
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.project.databinding.ActivityRatingBinding // Assuming you're using ViewBinding
-import android.widget.Toast // For showing messages
+import com.example.project.databinding.ActivityRatingBinding
+import android.widget.Toast
 import com.example.project.database.dataclass.DisplayItem
 import com.example.project.ui.profile.Profile
+import android.util.Log
 
 class RatingActivity : AppCompatActivity() {
     private lateinit var userViewModel: UserViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RatingAdapter
-    private lateinit var binding: ActivityRatingBinding // Declare binding
+    private lateinit var binding: ActivityRatingBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,41 +31,66 @@ class RatingActivity : AppCompatActivity() {
         recyclerView = binding.rvRating
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        adapter = RatingAdapter(emptyList()) { clickedItem ->
+        adapter = RatingAdapter { clickedItem ->
             showRatingInputDialog(clickedItem)
         }
         recyclerView.adapter = adapter
 
-        userViewModel.combinedTransactionHistory.observe(this){ displayItems ->
-            adapter = RatingAdapter(displayItems) { clickedItem ->
-                showRatingInputDialog(clickedItem)
-            }
-            recyclerView.adapter = adapter
+        val userEmail = intent.getStringExtra("email")
+        if (userEmail != null) {
+            userViewModel.getCurrUser(userEmail)
+        } else {
+            Toast.makeText(this, "User email not provided.", Toast.LENGTH_SHORT).show()
+            finish()
+            return
         }
 
-        userViewModel.loadCombined()
+        userViewModel.currUser.observe(this) { user ->
+            if (user != null) {
+                userViewModel.loadCombined()
+                binding.backbtn.setOnClickListener {
+                    val intent = Intent(this, Profile::class.java)
+                    intent.putExtra("email", user.email)
+                    startActivity(intent)
+                    finish()
+                }
+            } else {
+                Toast.makeText(this, "Failed to load user data.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+        userViewModel.combinedTransactionHistory.observe(this){ displayItems ->
+            adapter.submitList(displayItems)
+
+            if (displayItems.isNullOrEmpty()) {
+                binding.tvNoTransaction.visibility = View.VISIBLE
+                binding.rvRating.visibility = View.GONE
+            } else {
+                binding.tvNoTransaction.visibility = View.GONE
+                binding.rvRating.visibility = View.VISIBLE
+            }
+        }
 
         userViewModel.resresponse.observe(this) { message ->
             if (!message.isNullOrEmpty()) {
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-                // userViewModel.clearResResponse() // You might need to add this function to ViewModel
             }
         }
 
-        binding.backbtn.setOnClickListener{
-            val intent = Intent(this, Profile::class.java)
-            val userEmail = userViewModel.currUser.value?.email
-            if (userEmail != null) {
-                intent.putExtra("email", userEmail)
-            } else {
-                Toast.makeText(this, "User email not available.", Toast.LENGTH_SHORT).show()
-            }
-            startActivity(intent)
-            finish()
+        userViewModel.isLoading.observe(this) { isLoading ->
+            binding.progresBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.rvRating.visibility = if (isLoading) View.GONE else View.VISIBLE
+            binding.tvNoTransaction.visibility = if (isLoading) View.GONE else View.VISIBLE
         }
     }
 
     private fun showRatingInputDialog(item: DisplayItem) {
+        if (item.rating != null) {
+            Toast.makeText(this, "Anda sudah memberikan rating untuk produk ini.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         Toast.makeText(this, "Opening rating for ${item.productName}", Toast.LENGTH_SHORT).show()
 
         val builder = android.app.AlertDialog.Builder(this)

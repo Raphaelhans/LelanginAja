@@ -6,17 +6,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil // Import DiffUtil
+import androidx.recyclerview.widget.ListAdapter // Import ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.database.dataclass.DisplayItem
 import java.util.Locale
 
 class RatingAdapter(
-    private val transactions: List<DisplayItem>,
     private val onGiveRatingClick: (DisplayItem) -> Unit
-) : RecyclerView.Adapter<RatingAdapter.RatingViewHolder>() {
+) : ListAdapter<DisplayItem, RatingAdapter.RatingViewHolder>(DIFF_CALLBACK) {
 
     class RatingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvUserName: TextView = view.findViewById(R.id.tvUserName)
         val tvProductName: TextView = view.findViewById(R.id.tvProductName)
         val tvTransactionDate: TextView = view.findViewById(R.id.tvTransactionDate)
         val ratingContainer: LinearLayout = view.findViewById(R.id.ratingContainer)
@@ -32,8 +32,7 @@ class RatingAdapter(
     }
 
     override fun onBindViewHolder(holder: RatingViewHolder, position: Int) {
-        val item = transactions[position]
-        holder.tvUserName.text = "Pembeli: ${item.userName}"
+        val item = getItem(position)
         holder.tvProductName.text = "Produk: ${item.productName}"
         holder.tvTransactionDate.text = "Tanggal: ${item.transactionDate}"
 
@@ -51,18 +50,19 @@ class RatingAdapter(
         } else {
             holder.ratingContainer.visibility = View.GONE
             holder.tvReview.visibility = View.GONE
-
-            if (item.status == "complete") {
-                holder.btnGiveRating.visibility = View.VISIBLE
-            } else {
-                holder.btnGiveRating.visibility = View.GONE
-            }
-
-            holder.btnGiveRating.setOnClickListener {
-                onGiveRatingClick(item)
-            }
+            holder.btnGiveRating.visibility = View.GONE
         }
     }
 
-    override fun getItemCount(): Int = transactions.size
+    companion object {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<DisplayItem>() {
+            override fun areItemsTheSame(oldItem: DisplayItem, newItem: DisplayItem): Boolean {
+                return oldItem.transactionId == newItem.transactionId
+            }
+
+            override fun areContentsTheSame(oldItem: DisplayItem, newItem: DisplayItem): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 }
