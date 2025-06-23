@@ -104,20 +104,20 @@ class ManagerViewModel : ViewModel() {
         users: List<Users>,
         categories: List<Categories>
     ) {
-        val successfulAuctions = transactions.count { it.status == "complete" }
-        _successfulAuctions.postValue(successfulAuctions.toString())
-
-        val buyerCounts = transactions.groupBy { it.buyer_id }
-            .mapValues { it.value.size }
-            .toList()
-            .sortedByDescending { it.second }
-            .take(5)
-        val topBuyersText = if (buyerCounts.isNotEmpty()) {
-            buyerCounts.joinToString("\n") { "Buyer ID: ${it.first} (${it.second} bids)" }
-        } else {
-            "No buyers found"
-        }
-        _topBuyers.postValue(topBuyersText)
+//        val successfulAuctions = transactions.count { it.status == "complete" }
+//        _successfulAuctions.postValue(successfulAuctions.toString())
+//
+//        val buyerCounts = transactions.groupBy { it.buyer_id }
+//            .mapValues { it.value.size }
+//            .toList()
+//            .sortedByDescending { it.second }
+//            .take(5)
+//        val topBuyersText = if (buyerCounts.isNotEmpty()) {
+//            buyerCounts.joinToString("\n") { "Buyer ID: ${it.first} (${it.second} bids)" }
+//        } else {
+//            "No buyers found"
+//        }
+//        _topBuyers.postValue(topBuyersText)
 
         val sellerCounts = products.groupBy { it.seller_id }
             .mapValues { it.value.size }

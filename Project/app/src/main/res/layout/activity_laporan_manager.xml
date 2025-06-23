@@ -66,29 +66,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="16dp">-->
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="✅ Successful Auctions"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#212121" />
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="✅ Successful Auctions"-->
+<!--                        android:textSize="18sp"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:textColor="#212121" />-->
 
-                    <TextView
-                        android:id="@+id/tv_successful_auctions"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="16sp"
-                        android:textColor="#616161"
-                        android:layout_marginTop="4dp" />
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_successful_auctions"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="0"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textColor="#616161"-->
+<!--                        android:layout_marginTop="4dp" />-->
+<!--                </LinearLayout>-->
             </androidx.cardview.widget.CardView>
 
 
@@ -103,29 +103,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="16dp">-->
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="🛒 Top Buyers"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#212121" />
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="🛒 Top Buyers"-->
+<!--                        android:textSize="18sp"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:textColor="#212121" />-->
 
-                    <TextView
-                        android:id="@+id/tv_top_buyers"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Buyer ID: 8 (1 bid)"
-                        android:textSize="16sp"
-                        android:textColor="#616161"
-                        android:layout_marginTop="4dp" />
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_top_buyers"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Buyer ID: 8 (1 bid)"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textColor="#616161"-->
+<!--                        android:layout_marginTop="4dp" />-->
+<!--                </LinearLayout>-->
             </androidx.cardview.widget.CardView>
 
 
