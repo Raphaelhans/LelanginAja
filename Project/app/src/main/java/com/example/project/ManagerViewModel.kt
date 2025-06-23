@@ -104,7 +104,7 @@ class ManagerViewModel : ViewModel() {
         users: List<Users>,
         categories: List<Categories>
     ) {
-        val successfulAuctions = transactions.count { it.status == "completed" }
+        val successfulAuctions = transactions.count { it.status == "complete" }
         _successfulAuctions.postValue(successfulAuctions.toString())
 
         val buyerCounts = transactions.groupBy { it.buyer_id }
