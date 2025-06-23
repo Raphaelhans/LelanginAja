@@ -67,6 +67,7 @@
                 app:strokeWidth="1dp">
 
                 <LinearLayout
+                    android:id="@+id/editName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -96,8 +97,8 @@
                         android:id="@+id/imageView13"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        app:tint="#777777"
-                        app:srcCompat="@drawable/chevron" />
+                        app:srcCompat="@drawable/chevron"
+                        app:tint="#777777" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -113,6 +114,7 @@
                 app:strokeWidth="1dp">
 
                 <LinearLayout
+                    android:id="@+id/editNumber"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -142,8 +144,8 @@
                         android:id="@+id/imageView14"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        app:tint="#777777"
-                        app:srcCompat="@drawable/chevron" />
+                        app:srcCompat="@drawable/chevron"
+                        app:tint="#777777" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -159,6 +161,7 @@
                 app:strokeWidth="1dp">
 
                 <LinearLayout
+                    android:id="@+id/editPass"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -188,8 +191,55 @@
                         android:id="@+id/imageView15"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        app:tint="#777777"
-                        app:srcCompat="@drawable/chevron" />
+                        app:srcCompat="@drawable/chevron"
+                        app:tint="#777777" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/constraintLayout8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:strokeColor="#E9DAB1"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:id="@+id/editPIN"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/textView26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PIN"
+                        android:textColor="#555555"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/userEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:text="TextView"
+                        android:textColor="#333333"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/imageView17"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:srcCompat="@drawable/chevron"
+                        app:tint="#777777" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -221,46 +271,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/userEmail"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:text="TextView"
-                        android:textColor="#333333"
-                        android:textSize="16sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/constraintLayout6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:strokeColor="#E9DAB1"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/textView23"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Account Number"
-                        android:textColor="#555555"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/userAccNum"
+                        android:id="@+id/UserPIN"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"

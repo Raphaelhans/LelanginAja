@@ -3,6 +3,7 @@ package com.example.project.ui.transaction
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,7 @@ import com.example.project.BaseClass
 import com.example.project.HomeUser
 import com.example.project.ui.profile.Profile
 import com.example.project.R
+import com.example.project.SellerAddBarang
 import com.example.project.UserViewModel
 import com.example.project.databinding.ActivityTransactionBinding
 
@@ -51,6 +53,16 @@ class Transaction : BaseClass() {
                 startActivity(intent)
                 finish()
             }
+
+            if (user?.status == 1){
+                binding.addBid.visibility = View.VISIBLE
+                binding.addBid.setOnClickListener {
+                    val intent = Intent(this, SellerAddBarang::class.java)
+                    intent.putExtra("email", viewModel.currUser.value?.email)
+                    startActivity(intent)
+                    finish()
+                }
+            }
         }
 
     }
@@ -67,3 +79,4 @@ class Transaction : BaseClass() {
         }
     }
 }
+

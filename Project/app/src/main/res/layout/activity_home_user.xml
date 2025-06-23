@@ -16,16 +16,16 @@
         android:layout_marginTop="16dp"
         android:background="#FFFFFF"
         android:ems="10"
+        android:hint="Find Products.."
         android:inputType="text"
         android:paddingStart="10dp"
-        android:text="Find product.."
         android:textSize="16sp"
         app:circularflow_radiusInDP="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/btnSearch"
         android:layout_width="40dp"
         android:layout_height="45dp"
         android:layout_marginTop="16dp"
@@ -44,7 +44,7 @@
         android:background="#FFFFFF"
         android:paddingStart="10dp"
         android:textAlignment="viewStart"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/btnSearch"
         app:layout_constraintStart_toEndOf="@+id/etSearch"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -141,9 +141,11 @@
         android:layout_height="578dp"
         android:background="#FAF3E0"
         android:padding="10dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/Botmenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Botmenu"
@@ -208,12 +210,25 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="580dp"
         android:background="#F6F0F0"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/viewPager"
+        app:layout_constraintBottom_toTopOf="@+id/Botmenu"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:tabGravity="center"
         app:tabMode="fixed" />
+
+    <ImageView
+        android:id="@+id/nodatagif"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/Botmenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

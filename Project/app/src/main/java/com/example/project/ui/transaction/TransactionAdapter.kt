@@ -46,6 +46,7 @@ class TransactionAdapter(private val transactions: List<TransactionwithProduct>)
                 }
             )
 
+            // Tampilkan rateLayout hanya jika sudah complete
             binding.ratelayout.visibility = if (status == 2) View.VISIBLE else View.GONE
 
             binding.root.setOnClickListener {
