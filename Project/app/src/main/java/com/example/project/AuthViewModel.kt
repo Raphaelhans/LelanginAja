@@ -82,8 +82,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         status = status,
                         location = lokasi,
                         profilePicturePath = "",
-                        pin = ""
-                        suspended = false
+                        pin = "",
+                        0,
+                        false
                     )
                     transaction.set(db.collection("Users").document(highestId.toString()), user)
                 }
@@ -119,6 +120,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     try {
                         val isPasswordCorrect = BCrypt.checkpw(password, storedHash)
                         if (isPasswordCorrect) {
+                            _resresponse.value = "Login successful"
                             checkres.value = true
                             _loginDestination.value = "HomeUser"
                         } else {
@@ -156,11 +158,12 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 }
 
                 if (storedPassword == password) {
+                    _resresponse.value = "Login successful"
                     checkres.value = true
                     _loginDestination.value = if (staff.status) "HomeManager" else "HomeStaffs"
                 } else {
-                    _resresponse.value = "Incorrect password"
                     checkres.value = false
+                    _resresponse.value = "Incorrect password"
                 }
             } catch (e: Exception) {
                 Log.e("LoginError", "Login failed: ${e.message}", e)

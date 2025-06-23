@@ -1,38 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:padding="12dp"
+    android:background="?android:selectableItemBackground"
+    android:elevation="2dp">
+
 
     <TextView
-        android:id="@+id/textViewName"
+        android:id="@+id/textViewEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Name"
+        android:text="jason@gmail.com"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="#1E88E5"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/buttonSuspend" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/statusIndicator"
+        app:layout_constraintBottom_toTopOf="@+id/textViewStatus"
+        android:layout_marginEnd="8dp"/>
+
 
     <TextView
         android:id="@+id/textViewStatus"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="active"
+        android:text="Status: Active"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@id/textViewName"
-        app:layout_constraintTop_toBottomOf="@id/textViewName" />
-
-    <Button
-        android:id="@+id/buttonSuspend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Suspend"
-        android:backgroundTint="#ADD8E6"
-        android:textColor="#000000"
+        android:textColor="#424242"
+        app:layout_constraintTop_toBottomOf="@id/textViewEmail"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="4dp"/>
+
+
+    <View
+        android:id="@+id/statusIndicator"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:backgroundTint="#4CAF50"
+        android:background="@android:drawable/presence_online"
+        app:layout_constraintTop_toTopOf="@id/textViewEmail"
+        app:layout_constraintBottom_toBottomOf="@id/textViewEmail"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

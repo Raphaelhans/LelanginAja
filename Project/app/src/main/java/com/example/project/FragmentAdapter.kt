@@ -6,6 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.project.database.dataclass.Categories
 import com.example.project.ui.auction.Auction
 import kotlinx.coroutines.CoroutineScope
+import com.example.project.ui.auction.AuctionData
 
 class FragmentAdapter(
     activity: AppCompatActivity,
