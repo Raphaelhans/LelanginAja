@@ -73,8 +73,7 @@ class MainActivity : AppCompatActivity() {
                     .load(R.drawable.rotate)
                     .into(binding.loadingLogin)
                 binding.loadingLogin.visibility = View.VISIBLE
-                val remember = binding.rememberCheck.isChecked
-                viewModels.loginUser(email, password, remember)
+                viewModels.loginUser(email, password)
             }
         }
 
@@ -99,10 +98,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModels.resresponse.observe(this) { response ->
-            Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
-        }
-
         viewModels.checkres.observe(this) { success ->
             if (success) {
                 toastText.text = "Login successful"
@@ -111,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                     val intent = when (destination) {
                         "HomeUser" -> Intent(this, HomeUser::class.java)
                         "HomeManager" -> Intent(this, HomeManager::class.java)
-                        "HomeStaffs" -> Intent(this, HomeStaffs::class.java)
+//                        "HomeStaffs" -> Intent(this, HomeStaffs::class.java)
                         else -> null
                     }
                     intent?.putExtra("email", email)
@@ -136,26 +131,9 @@ class MainActivity : AppCompatActivity() {
             else{
                 binding.LoginBtn.visibility = View.VISIBLE
                 binding.loadingLogin.visibility = View.GONE
-                val email = binding.editTextEmail.text.toString()
-                viewModels.loginDestination.observe(this) { destination ->
-                    val intent = when (destination) {
-                        "HomeUser" -> Intent(this, HomeUser::class.java)
-                        "HomeManager" -> Intent(this, HomeManager::class.java)
-                        "HomeStaffs" -> Intent(this, HomeStaffs::class.java)
-                        else -> null
-                    }
-                    intent?.putExtra("email", email)
-                    Toast.makeText(application, "Login Success", Toast.LENGTH_SHORT).show()
-                    intent?.let {
-                        startActivity(it)
-                        finish()
-                    }
-                }
             }
-//            else {
-//                binding.LoginBtn.text = "Login"
-//                binding.loadingGif.visibility = View.GONE
-//            }
         }
+
+
     }
 }

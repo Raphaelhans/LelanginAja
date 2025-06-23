@@ -11,7 +11,7 @@ import com.example.project.BuildConfig
 import com.example.project.MidtransDao
 import com.example.project.UserViewModel
 import com.example.project.database.dataclass.MidtransSnap
-import com.example.project.database.AppDatabase
+import com.example.project.database.local.AppDatabase
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.firestore

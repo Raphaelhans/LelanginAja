@@ -40,7 +40,8 @@ class AuctionAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemlayoutBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
+            LayoutInflater.from(parent.context),
+            parent, false
         )
         return ViewHolder(binding)
     }

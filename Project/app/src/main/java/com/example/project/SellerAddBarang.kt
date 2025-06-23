@@ -171,10 +171,8 @@ class SellerAddBarang : BaseClass() {
                 }
 
                 binding.transBtn.setOnClickListener {
-                    val intent = Intent(this, Transaction::class.java).apply {
-                        putExtra("email", viewModel.currUser.value?.email)
-                        putExtra("user_id", viewModel.currUser.value?.user_id.toString())
-                    }
+                    val intent = Intent(this, Transaction::class.java)
+                    intent.putExtra("email", user.email)
                     startActivity(intent)
                     finish()
                 }
