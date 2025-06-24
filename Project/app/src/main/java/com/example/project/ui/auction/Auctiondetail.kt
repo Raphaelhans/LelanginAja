@@ -47,6 +47,7 @@ class Auctiondetail : AppCompatActivity() {
     private var produkId: String = ""
     private var buyerId: String = ""
     private var sellerId: String = ""
+    private var email: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,25 +80,34 @@ class Auctiondetail : AppCompatActivity() {
             user?.let {
                 binding.sellerName.text = "${it.name}"
                 Glide.with(this).load(it.profilePicturePath).into(binding.sellerAvatar)
+
+                if (user.email == email) {
+                    binding.bidButton.visibility = View.GONE
+                }
+                else{
+                    binding.bidButton.setOnClickListener {
+                        val bidText = binding.bidAmountInput.text.toString()
+                        val bidAmount = bidText.toDoubleOrNull()
+                        Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
+
+                        if (bidAmount == null || bidAmount <= 0 ) {
+                            Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT).show()
+                        } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
+                            placeBid(produkId, buyerId, sellerId, bidAmount)
+                            binding.bidAmountInput.text.clear()
+                        } else {
+                            Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+
+
             } ?: run {
                 binding.sellerRating.text = "No rating yet"
             }
         }
 
-        binding.bidButton.setOnClickListener {
-            val bidText = binding.bidAmountInput.text.toString()
-            val bidAmount = bidText.toDoubleOrNull()
-            Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
-
-            if (bidAmount == null || bidAmount <= 0 ) {
-                Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT).show()
-            } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
-                placeBid(produkId, buyerId, sellerId, bidAmount)
-                binding.bidAmountInput.text.clear()
-            } else {
-                Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
-            }
-        }
+        
 
 //        val localeID = Locale("in", "ID")
 //        binding.bidAmountInput.addTextChangedListener(object : TextWatcher {
@@ -134,12 +144,12 @@ class Auctiondetail : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val itemId = intent.getStringExtra("items_id")
-        val email = intent.getStringExtra("email")
+        email = intent.getStringExtra("email")
         produkId = intent.getStringExtra("items_id") ?: ""
         buyerId = intent.getStringExtra("user_id") ?: ""
         sellerId = intent.getStringExtra("seller_id") ?: ""
         if (!email.isNullOrEmpty() && !itemId.isNullOrEmpty() && sellerId.isNotEmpty()) {
-            viewModels.getCurrUser(email)
+            viewModels.getCurrUser(email!!)
             viewModels.getCurrItem(itemId)
             viewModels.getCurrSeller(sellerId)
         }

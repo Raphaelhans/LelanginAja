@@ -114,9 +114,9 @@ class UserViewModel(): ViewModel() {
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     fun getCurrUser(email: String) {
-        _isLoading.value = true
         viewModelScope.launch {
             try {
+                _isLoading.value = true
                 val curruser = db.collection("Users")
                     .whereEqualTo("email", email)
                     .get()
