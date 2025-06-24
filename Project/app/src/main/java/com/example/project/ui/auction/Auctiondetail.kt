@@ -2,6 +2,8 @@ package com.example.project.ui.auction
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import android.view.View
@@ -96,6 +98,31 @@ class Auctiondetail : AppCompatActivity() {
                 Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
             }
         }
+
+//        val localeID = Locale("in", "ID")
+//        binding.bidAmountInput.addTextChangedListener(object : TextWatcher {
+//            private var current = ""
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//            override fun afterTextChanged(s: Editable?) {
+//                if (s.toString() != current) {
+//                    binding.bidAmountInput.removeTextChangedListener(this)
+//
+//                    val cleanString = s.toString().replace("[Rp,.\\s]".toRegex(), "")
+//                    if (cleanString.isNotEmpty()) {
+//                        val parsed = cleanString.toDouble()
+//                        val formatted = NumberFormat.getNumberInstance(localeID).format(parsed)
+//
+//                        current = formatted
+//                        binding.bidAmountInput.setText(formatted)
+//                        binding.bidAmountInput.setSelection(formatted.length)
+//                    }
+//
+//                    binding.bidAmountInput.addTextChangedListener(this)
+//                }
+//            }
+//        })
+
         binding.backBtn.setOnClickListener {
             val intent = Intent(this, HomeUser::class.java)
 //            intent.putExtra("email", user?.email)
