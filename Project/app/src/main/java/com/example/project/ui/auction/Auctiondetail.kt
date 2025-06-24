@@ -81,7 +81,7 @@ class Auctiondetail : AppCompatActivity() {
                 binding.sellerName.text = "${it.name}"
                 Glide.with(this).load(it.profilePicturePath).into(binding.sellerAvatar)
 
-                if (user.email == email) {
+                if (user.email == sellerId) {
                     binding.bidButton.visibility = View.GONE
                 }
                 else{
