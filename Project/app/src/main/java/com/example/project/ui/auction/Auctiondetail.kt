@@ -107,8 +107,6 @@ class Auctiondetail : AppCompatActivity() {
             }
         }
 
-        
-
 //        val localeID = Locale("in", "ID")
 //        binding.bidAmountInput.addTextChangedListener(object : TextWatcher {
 //            private var current = ""
@@ -163,6 +161,12 @@ class Auctiondetail : AppCompatActivity() {
     ) {
         val db = FirebaseFirestore.getInstance()
         val productRef = db.collection("Products").document(produkId)
+
+        if (buyerId == sellerId) {
+            Toast.makeText(this, "Kamu tidak bisa melakukan penawaran pada produk sendiri", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         productRef.get().addOnSuccessListener { document ->
             if (document != null && document.exists()) {
                 val currentEndBid = document.getDouble("end_bid") ?: 0.0
