@@ -40,6 +40,9 @@ class TopUp: BaseClass() {
                     TransactionResult::class.java
                 )
                 transactionResult?.let { res ->
+                    Log.d("Midtrans", "Transaction Result: ${res.paymentType}")
+                    Log.d("Midtrans", "Transaction Result: ${res.transactionId}")
+
                     when (res.status) {
                         "success" -> {
                             Toast.makeText(this, "Payment Success: ${res.transactionId}", Toast.LENGTH_SHORT).show()
@@ -51,7 +54,7 @@ class TopUp: BaseClass() {
                         }
                         "pending" -> {
                             Toast.makeText(this, "Payment Pending", Toast.LENGTH_SHORT).show()
-                            finish()
+//                            finish()
                         }
                         "failed" -> {
                             Toast.makeText(this, "Payment Failed", Toast.LENGTH_SHORT).show()
@@ -62,8 +65,13 @@ class TopUp: BaseClass() {
                             finish()
                         }
                         else -> {
-                            Toast.makeText(this, "Unknown payment status: ${res.status}", Toast.LENGTH_SHORT).show()
-                            finish()
+                            Toast.makeText(this, "Payment Success", Toast.LENGTH_SHORT).show()
+                            viewModel.topupPayment(
+                                res.transactionId ?: "",
+                                res.paymentType ?: "",
+                                "success",
+                            )
+
                         }
                     }
                 }
