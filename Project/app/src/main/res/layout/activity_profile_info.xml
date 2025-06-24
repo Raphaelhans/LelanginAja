@@ -225,7 +225,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/userEmail"
+                        android:id="@+id/userPIN"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -271,7 +271,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/UserPIN"
+                        android:id="@+id/UserEmail"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"

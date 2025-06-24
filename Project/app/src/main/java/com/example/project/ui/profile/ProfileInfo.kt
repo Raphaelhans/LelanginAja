@@ -33,12 +33,12 @@ class ProfileInfo : AppCompatActivity() {
             binding.userName.text = viewModel.currUser.value?.name
             binding.userNumber.text = viewModel.currUser.value?.phone
             binding.UserPass.text = "*********"
-            binding.userEmail.text = viewModel.currUser.value?.email
+            binding.UserEmail.text = viewModel.currUser.value?.email
             if (viewModel.currUser.value?.pin == ""){
-                binding.UserPIN.text = "Set a PIN"
+                binding.userPIN.text = "Set a PIN"
             }
             else{
-                binding.UserPIN.text = "*********"
+                binding.userPIN.text = "*********"
             }
 
             binding.editName.setOnClickListener{
