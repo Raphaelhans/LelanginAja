@@ -945,41 +945,41 @@ class UserViewModel(): ViewModel() {
                 // Group ratings by transaction_id for easier lookup
                 val ratingMap = ratings.groupBy { it.transaction_id }
 
-                val combinedList: List<DisplayItem> = transactions
-                    .filter {
-                        // Filter for current user's completed transactions
-                        it.buyer_id == currentUserId && it.status == "complete" &&
-                                // NEW CONDITION: Ensure there is an associated rating for this transaction by this buyer
-                                ratingMap[it.transaksiId]?.any { rating -> rating.buyer_id == currentUserId } == true
-                    }
-                    .mapNotNull { transaction ->
-                        val user = userMap[transaction.buyer_id]
-                        val product = productMap[transaction.produk_id]
-                        val associatedRating = ratingMap[transaction.transaksiId]?.find {
-                            it.buyer_id == transaction.buyer_id
-                        }
-
-                        if (user == null || associatedRating == null) {
-                            Log.e(
-                                "UserViewModel",
-                                "Skipping transaction ${transaction.transaksiId}: User not found or no associated rating."
-                            )
-                            null
-                        } else {
-                            DisplayItem(
-                                userName = user.name,
-                                productName = product?.name ?: "Produk tidak ditemukan",
-                                transactionDate = transaction.time_bid,
-                                rating = associatedRating.rating, // Use the associatedRating
-                                review = associatedRating.review, // Use the associatedRating
-                                status = transaction.status,
-                                itemId = transaction.produk_id,
-                                transactionId = transaction.transaksiId,
-                                sellerId = transaction.seller_id
-                            )
-                        }
-                    }
-                _combinedTransactionHistory.postValue(combinedList.sortedByDescending { it.transactionDate })
+//                val combinedList: List<DisplayItem> = transactions
+//                    .filter {
+//                        // Filter for current user's completed transactions
+//                        it.buyer_id == currentUserId.toString() && it.status == "complete" &&
+//                                // NEW CONDITION: Ensure there is an associated rating for this transaction by this buyer
+//                                ratingMap[it.transaksiId]?.any { rating -> rating.buyer_id == currentUserId } == true
+//                    }
+//                    .mapNotNull { transaction ->
+//                        val user = userMap[transaction.buyer_id]
+//                        val product = productMap[transaction.produk_id]
+//                        val associatedRating = ratingMap[transaction.transaksiId]?.find {
+//                            it.buyer_id.toString() == transaction.buyer_id
+//                        }
+//
+//                        if (user == null || associatedRating == null) {
+//                            Log.e(
+//                                "UserViewModel",
+//                                "Skipping transaction ${transaction.transaksiId}: User not found or no associated rating."
+//                            )
+//                            null
+//                        } else {
+//                            DisplayItem(
+//                                userName = user.name,
+//                                productName = product?.name ?: "Produk tidak ditemukan",
+//                                transactionDate = transaction.time_bid,
+//                                rating = associatedRating.rating, // Use the associatedRating
+//                                review = associatedRating.review, // Use the associatedRating
+//                                status = transaction.status,
+//                                itemId = transaction.produk_id,
+//                                transactionId = transaction.transaksiId,
+//                                sellerId = transaction.seller_id
+//                            )
+//                        }
+//                    }
+               // _combinedTransactionHistory.postValue(combinedList.sortedByDescending { it.transactionDate })
             } catch (e: Exception) {
                 Log.e("UserViewModel Error", "Error loading combined history: ${e.message}", e)
                 _combinedTransactionHistory.postValue(emptyList())

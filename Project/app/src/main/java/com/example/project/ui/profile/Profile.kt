@@ -48,11 +48,7 @@ class Profile : BaseClass() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.transBtn.setOnClickListener {
-            val intent = Intent(this, Transaction::class.java)
-            startActivity(intent)
-            finish()
-        }
+
 
         binding.logoutBtn.setOnClickListener{
             showOutsellDialog("Are you sure you want to logout?", "logout") { newValue ->
@@ -64,6 +60,13 @@ class Profile : BaseClass() {
             binding.homebtn.setOnClickListener {
                 val intent = Intent(this, HomeUser::class.java)
                 intent.putExtra("email", viewModel.currUser.value?.email)
+                startActivity(intent)
+                finish()
+            }
+            binding.transBtn.setOnClickListener {
+                val intent = Intent(this, Transaction::class.java)
+                intent.putExtra("email", viewModel.currUser.value?.email)
+                intent.putExtra("user_id", viewModel.currUser.value?.user_id.toString())
                 startActivity(intent)
                 finish()
             }
