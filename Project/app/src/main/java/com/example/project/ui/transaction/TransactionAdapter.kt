@@ -35,24 +35,28 @@ class TransactionAdapter(private val transactions: List<TransactionwithProduct>)
             binding.lastBidTxt.text = "You Bid: Rp ${transaction.transaksi.bidAmount}"
             binding.tgltext.text = transaction.transaksi.time_bid.toString()
 
-            val status = transaction.produk?.status ?: 0
-            val statusText = when (status) {
-                1 -> "Menang"
-                2 -> "Complete"
+
+            val productStatus = transaction.produk?.status ?: 0
+            val transaksiStatus = transaction.transaksi.status.lowercase()
+
+            val statusText = when {
+                transaksiStatus == "complete" -> "Complete"
+                productStatus == 1 -> "Menang"
+                productStatus == 2 -> "Complete"
                 else -> "Pending"
             }
 
             binding.Statustxt.text = statusText
             binding.Statustxt.setTextColor(
-                when (status) {
-                    1 -> Color.parseColor("#33BA21")
-                    2 -> Color.parseColor("#1E88E5")
+                when (statusText.lowercase()) {
+                    "menang" -> Color.parseColor("#33BA21")
+                    "complete" -> Color.parseColor("#1E88E5")
                     else -> Color.parseColor("#FF0000")
                 }
             )
 
             // Tampilkan rateLayout hanya jika sudah complete
-            binding.ratelayout.visibility = if (status == 2) View.VISIBLE else View.GONE
+            binding.ratelayout.visibility = if (statusText.lowercase() == "complete") View.VISIBLE else View.GONE
 
             val sellerId = transaction.produk?.seller_id ?: return
             val db = FirebaseFirestore.getInstance()
@@ -70,7 +74,7 @@ class TransactionAdapter(private val transactions: List<TransactionwithProduct>)
                             putExtra("produk_id", transaction.transaksi.produk_id)
                             putExtra("itemName", transaction.produk?.name)
                             putExtra("lastBid", transaction.transaksi.bidAmount.toString())
-                            putExtra("status", statusText)
+                                putExtra("status", statusText)
                             putExtra("sellerName", sellerName)
                             putExtra("sellerAddress", sellerAddress)
                         }
