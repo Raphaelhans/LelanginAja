@@ -359,7 +359,7 @@ class UserViewModel(): ViewModel() {
     }
 
     suspend fun checkItemValidity() {
-        val formatter = DateTimeFormatter.ofPattern("dd MMMMyyyy | HH:mm", Locale.ENGLISH)
+        val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy | HH:mm", Locale.ENGLISH)
         try {
             val now = LocalDateTime.now()
             val productSnapshot = db.collection("Products").get().await()
