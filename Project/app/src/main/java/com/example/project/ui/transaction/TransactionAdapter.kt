@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.project.database.dataclass.TransactionwithProduct
 import com.example.project.databinding.TranslayoutBinding
 import com.example.project.ui.auction.TransaksiDetailActivity
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -53,18 +54,57 @@ class TransactionAdapter(private val transactions: List<TransactionwithProduct>)
             // Tampilkan rateLayout hanya jika sudah complete
             binding.ratelayout.visibility = if (status == 2) View.VISIBLE else View.GONE
 
-            binding.root.setOnClickListener {
-                val intent = Intent(context, TransaksiDetailActivity::class.java).apply {
-                    putExtra("transaksi_id", transaction.transaksi.transaksiId)
-                    putExtra("produk_id", transaction.transaksi.produk_id)
-                    putExtra("itemName", transaction.produk?.name)
-                    putExtra("lastBid", transaction.transaksi.bidAmount.toString())
-                    putExtra("status", statusText)
-                    putExtra("sellerName", "John Doe")
-                    putExtra("sellerAddress", "Jl. Mawar No.10, Surabaya")
+            val sellerId = transaction.produk?.seller_id ?: return
+            val db = FirebaseFirestore.getInstance()
+
+            db.collection("Users")
+                .whereEqualTo("user_id", sellerId)
+                .limit(1)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val sellerName = snapshot.documents.firstOrNull()?.getString("name") ?: "Tidak Diketahui"
+                    val sellerAddress = snapshot.documents.firstOrNull()?.getString("location") ?: "Tidak Diketahui"
+                    binding.root.setOnClickListener {
+                        val intent = Intent(context, TransaksiDetailActivity::class.java).apply {
+                            putExtra("transaksi_id", transaction.transaksi.transaksiId)
+                            putExtra("produk_id", transaction.transaksi.produk_id)
+                            putExtra("itemName", transaction.produk?.name)
+                            putExtra("lastBid", transaction.transaksi.bidAmount.toString())
+                            putExtra("status", statusText)
+                            putExtra("sellerName", sellerName)
+                            putExtra("sellerAddress", sellerAddress)
+                        }
+                        context.startActivity(intent)
+                    }
                 }
-                context.startActivity(intent)
-            }
+                .addOnFailureListener {
+                    binding.root.setOnClickListener {
+                        val intent = Intent(context, TransaksiDetailActivity::class.java).apply {
+                            putExtra("transaksi_id", transaction.transaksi.transaksiId)
+                            putExtra("produk_id", transaction.transaksi.produk_id)
+                            putExtra("itemName", transaction.produk?.name)
+                            putExtra("lastBid", transaction.transaksi.bidAmount.toString())
+                            putExtra("status", statusText)
+                            putExtra("sellerName", "Tidak Diketahui")
+                            putExtra("sellerAddress", "Tidak Diketahui")
+                        }
+                        context.startActivity(intent)
+                    }
+                }
+//            binding.root.setOnClickListener {
+//                val intent = Intent(context, TransaksiDetailActivity::class.java).apply {
+//                    putExtra("transaksi_id", transaction.transaksi.transaksiId)
+//                    putExtra("produk_id", transaction.transaksi.produk_id)
+//                    putExtra("itemName", transaction.produk?.name)
+//                    putExtra("lastBid", transaction.transaksi.bidAmount.toString())
+//                    putExtra("status", statusText)
+////                    putExtra("sellerName", "John Doe")
+////                    putExtra("sellerAddress", "Jl. Mawar No.10, Surabaya")
+//                    putExtra("sellerName", transaction.produk?.seller_name ?: "Penjual Tidak Diketahui")
+//                    putExtra("sellerAddress", transaction.produk?.address ?: "Alamat Tidak Diketahui")
+//                }
+//                context.startActivity(intent)
+//            }
         }
     }
 

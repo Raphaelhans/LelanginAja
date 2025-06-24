@@ -100,8 +100,6 @@ class Auctiondetail : AppCompatActivity() {
                         }
                     }
                 }
-
-
             } ?: run {
                 binding.sellerRating.text = "No rating yet"
             }
