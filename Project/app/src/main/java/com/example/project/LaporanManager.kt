@@ -22,13 +22,13 @@ class LaporanManager : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.successfulAuctions.observe(this) { count ->
-            binding.tvSuccessfulAuctions.text = count.toString()
-        }
-
-        viewModel.topBuyers.observe(this) { buyers ->
-            binding.tvTopBuyers.text = buyers
-        }
+//        viewModel.successfulAuctions.observe(this) { count ->
+//            binding.tvSuccessfulAuctions.text = count.toString()
+//        }
+//
+//        viewModel.topBuyers.observe(this) { buyers ->
+//            binding.tvTopBuyers.text = buyers
+//        }
 
         viewModel.topSellers.observe(this) { sellers ->
             binding.tvTopSellers.text = sellers
