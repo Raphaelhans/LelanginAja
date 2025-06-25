@@ -127,8 +127,7 @@ class UserViewModel(): ViewModel() {
                     val sellerId = user?.user_id
 
                     val allRatingsSnapshot = db.collection("Ratings").get().await()
-                    val allRatings =
-                        allRatingsSnapshot.documents.mapNotNull { it.toObject(Ratings::class.java) }
+                    val allRatings = allRatingsSnapshot.documents.mapNotNull { it.toObject(Ratings::class.java) }
                     val globalAvg = allRatings.map { it.rating }.average()
 
                     val sellerRatings = allRatings.filter { it.seller_id == sellerId }
