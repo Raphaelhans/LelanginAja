@@ -90,7 +90,7 @@ class Auctiondetail : AppCompatActivity() {
                         val bidAmount = bidText.toDoubleOrNull()
                         Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
 
-                        if (bidAmount == null || bidAmount <= 0 ) {
+                        if (bidAmount == null || bidAmount <= 0 || bidAmount > user.balance) {
                             Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT).show()
                         } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
                             placeBid(produkId, buyerId, sellerId, bidAmount)
