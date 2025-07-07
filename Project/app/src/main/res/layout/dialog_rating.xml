@@ -18,19 +18,18 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/etRatingValue"
+        android:id="@+id/etRating"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="#EBE9E9FF"
         android:inputType="numberDecimal"
         android:maxLength="3"
-        android:hint="Contoh: 4.5"
         android:padding="12dp"
-        android:background="@drawable/edittext_border"
-        app:layout_constraintTop_toBottomOf="@id/tvRatingLabel"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvRatingLabel" />
 
     <TextView
         android:id="@+id/tvReviewLabel"
@@ -42,21 +41,20 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etRatingValue" />
+        app:layout_constraintTop_toBottomOf="@id/etRating" />
 
     <EditText
-        android:id="@+id/etReviewText"
+        android:id="@+id/etReview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="#EBE9E9FF"
+        android:gravity="top|start"
         android:inputType="textMultiLine"
         android:lines="3"
-        android:gravity="top|start"
-        android:hint="Contoh: Produknya sangat bagus dan sesuai deskripsi!"
         android:padding="12dp"
-        android:background="@drawable/edittext_border"
-        app:layout_constraintTop_toBottomOf="@id/tvReviewLabel"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvReviewLabel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

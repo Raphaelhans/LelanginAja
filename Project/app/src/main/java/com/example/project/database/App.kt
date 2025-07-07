@@ -11,7 +11,7 @@ import com.example.project.BuildConfig
 import com.example.project.MidtransDao
 import com.example.project.UserViewModel
 import com.example.project.database.dataclass.MidtransSnap
-import com.example.project.database.local.AppDatabase
+import com.example.project.database.AppDatabase
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.firestore
@@ -32,7 +32,7 @@ class App: Application() {
             get() = if (isEmulator())
                 "http://10.0.2.2:8000/api/"
             else
-                "http://10.10.4.249:8000/api/"
+                "http://192.168.0.100:8000/api/"
 
         fun isEmulator(): Boolean {
             return Build.FINGERPRINT.contains("generic") ||

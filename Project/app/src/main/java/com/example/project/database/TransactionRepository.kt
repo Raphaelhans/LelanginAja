@@ -67,8 +67,8 @@ class TransactionRepository(private val firestore: FirebaseFirestore) {
                     Transactions(
                         transaksiId = document.getString("transaksiId") ?: "",
                         produk_id = document.getString("produk_id") ?: "",
-                        buyer_id = buyerIdInt,
-                        seller_id = sellerIdInt,
+                        buyer_id = buyerIdInt.toString(),
+                        seller_id = sellerIdInt.toString(),
                         bidAmount = document.getLong("bidAmount")?.toDouble() ?: 0.0,
                         time_bid = document.getString("time_bid") ?: "",
                         status = document.getString("status") ?: ""

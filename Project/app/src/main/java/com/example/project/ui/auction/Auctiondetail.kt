@@ -2,6 +2,8 @@ package com.example.project.ui.auction
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import android.view.View
@@ -45,6 +47,7 @@ class Auctiondetail : AppCompatActivity() {
     private var produkId: String = ""
     private var buyerId: String = ""
     private var sellerId: String = ""
+    private var email: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,25 +80,55 @@ class Auctiondetail : AppCompatActivity() {
             user?.let {
                 binding.sellerName.text = "${it.name}"
                 Glide.with(this).load(it.profilePicturePath).into(binding.sellerAvatar)
+
+                if (user.email == sellerId) {
+                    binding.bidButton.visibility = View.GONE
+                }
+                else{
+                    binding.bidButton.setOnClickListener {
+                        val bidText = binding.bidAmountInput.text.toString()
+                        val bidAmount = bidText.toDoubleOrNull()
+                        Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
+
+                        if (bidAmount == null || bidAmount <= 0 || bidAmount > user.balance) {
+                            Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT).show()
+                        } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
+                            placeBid(produkId, buyerId, sellerId, bidAmount)
+                            binding.bidAmountInput.text.clear()
+                        } else {
+                            Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             } ?: run {
                 binding.sellerRating.text = "No rating yet"
             }
         }
 
-        binding.bidButton.setOnClickListener {
-            val bidText = binding.bidAmountInput.text.toString()
-            val bidAmount = bidText.toDoubleOrNull()
-            Log.d("BID_DEBUG", "produkId: $produkId, buyerId: $buyerId, sellerId: $sellerId")
+//        val localeID = Locale("in", "ID")
+//        binding.bidAmountInput.addTextChangedListener(object : TextWatcher {
+//            private var current = ""
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//            override fun afterTextChanged(s: Editable?) {
+//                if (s.toString() != current) {
+//                    binding.bidAmountInput.removeTextChangedListener(this)
+//
+//                    val cleanString = s.toString().replace("[Rp,.\\s]".toRegex(), "")
+//                    if (cleanString.isNotEmpty()) {
+//                        val parsed = cleanString.toDouble()
+//                        val formatted = NumberFormat.getNumberInstance(localeID).format(parsed)
+//
+//                        current = formatted
+//                        binding.bidAmountInput.setText(formatted)
+//                        binding.bidAmountInput.setSelection(formatted.length)
+//                    }
+//
+//                    binding.bidAmountInput.addTextChangedListener(this)
+//                }
+//            }
+//        })
 
-            if (bidAmount == null || bidAmount <= 0) {
-                Toast.makeText(this, "Masukkan nominal bid yang valid", Toast.LENGTH_SHORT).show()
-            } else if (produkId.isNotEmpty() && buyerId.isNotEmpty() && sellerId.isNotEmpty()) {
-                placeBid(produkId, buyerId, sellerId, bidAmount)
-                binding.bidAmountInput.text.clear()
-            } else {
-                Toast.makeText(this, "Data tidak lengkap", Toast.LENGTH_SHORT).show()
-            }
-        }
         binding.backBtn.setOnClickListener {
             val intent = Intent(this, HomeUser::class.java)
 //            intent.putExtra("email", user?.email)
@@ -107,12 +140,12 @@ class Auctiondetail : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val itemId = intent.getStringExtra("items_id")
-        val email = intent.getStringExtra("email")
+        email = intent.getStringExtra("email")
         produkId = intent.getStringExtra("items_id") ?: ""
         buyerId = intent.getStringExtra("user_id") ?: ""
         sellerId = intent.getStringExtra("seller_id") ?: ""
         if (!email.isNullOrEmpty() && !itemId.isNullOrEmpty() && sellerId.isNotEmpty()) {
-            viewModels.getCurrUser(email)
+            viewModels.getCurrUser(email!!)
             viewModels.getCurrItem(itemId)
             viewModels.getCurrSeller(sellerId)
         }
@@ -126,6 +159,12 @@ class Auctiondetail : AppCompatActivity() {
     ) {
         val db = FirebaseFirestore.getInstance()
         val productRef = db.collection("Products").document(produkId)
+
+        if (buyerId == sellerId) {
+            Toast.makeText(this, "Kamu tidak bisa melakukan penawaran pada produk sendiri", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         productRef.get().addOnSuccessListener { document ->
             if (document != null && document.exists()) {
                 val currentEndBid = document.getDouble("end_bid") ?: 0.0

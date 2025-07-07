@@ -26,6 +26,7 @@ class History : AppCompatActivity() {
     private lateinit var binding: ActivityHistoryBinding
     private val viewModels by viewModels<HistoryViewModel>()
     private lateinit var historyAdapter: HistoryAdapter
+    private var userEmail: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,20 +35,19 @@ class History : AppCompatActivity() {
         binding = ActivityHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        userEmail = intent.getStringExtra("email")
+
+        binding.backbtn.setOnClickListener {
+            val intent = Intent(this, Profile::class.java)
+            intent.putExtra("email", userEmail)
+            startActivity(intent)
+            finish()
+        }
+
         historyAdapter = HistoryAdapter()
         binding.rvHistory.apply {
             layoutManager = LinearLayoutManager(this@History)
             adapter = historyAdapter
-        }
-        viewModels.currUser.observe(this) { user ->
-            if (user != null) {
-                binding.backbtn.setOnClickListener {
-                    val intent = Intent(this, Profile::class.java)
-                    intent.putExtra("email", user.email)
-                    startActivity(intent)
-                    finish()
-                }
-            }
         }
 
         viewModels.historyList.observe(this) { historyList ->
@@ -72,7 +72,7 @@ class History : AppCompatActivity() {
         viewModels.isLoading.observe(this) { isLoading ->
             binding.progresBar.visibility = if (isLoading) View.VISIBLE else View.GONE
             binding.rvHistory.visibility = if (isLoading) View.GONE else View.VISIBLE
-            binding.tvNoTransaction.visibility = if (isLoading) View.GONE else View.VISIBLE
+            binding.tvNoTransaction.visibility = if (isLoading) View.GONE else View.VISIBLE // Adjust visibility of no transaction text as needed
         }
     }
 

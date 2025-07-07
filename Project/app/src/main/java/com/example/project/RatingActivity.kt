@@ -12,7 +12,7 @@ import com.example.project.databinding.ActivityRatingBinding
 import android.widget.Toast
 import com.example.project.database.dataclass.DisplayItem
 import com.example.project.ui.profile.Profile
-import android.util.Log
+import android.util.Log // Import Log for debugging
 
 class RatingActivity : AppCompatActivity() {
     private lateinit var userViewModel: UserViewModel
@@ -47,6 +47,7 @@ class RatingActivity : AppCompatActivity() {
 
         userViewModel.currUser.observe(this) { user ->
             if (user != null) {
+                Log.e("user", user.toString())
                 userViewModel.loadCombined()
                 binding.backbtn.setOnClickListener {
                     val intent = Intent(this, Profile::class.java)
@@ -61,13 +62,14 @@ class RatingActivity : AppCompatActivity() {
 
 
         userViewModel.combinedTransactionHistory.observe(this){ displayItems ->
+            Log.d("RatingActivity", "Observed combinedTransactionHistory: ${displayItems.size} items")
             adapter.submitList(displayItems)
 
             if (displayItems.isNullOrEmpty()) {
-                binding.tvNoTransaction.visibility = View.VISIBLE
+                binding.tvNoReview.visibility = View.VISIBLE
                 binding.rvRating.visibility = View.GONE
             } else {
-                binding.tvNoTransaction.visibility = View.GONE
+                binding.tvNoReview.visibility = View.GONE
                 binding.rvRating.visibility = View.VISIBLE
             }
         }
@@ -81,11 +83,12 @@ class RatingActivity : AppCompatActivity() {
         userViewModel.isLoading.observe(this) { isLoading ->
             binding.progresBar.visibility = if (isLoading) View.VISIBLE else View.GONE
             binding.rvRating.visibility = if (isLoading) View.GONE else View.VISIBLE
-            binding.tvNoTransaction.visibility = if (isLoading) View.GONE else View.VISIBLE
+            binding.tvNoReview.visibility = if (isLoading) View.GONE else View.VISIBLE
         }
     }
 
     private fun showRatingInputDialog(item: DisplayItem) {
+        // Ensure that we only show the dialog if the item hasn't been rated yet
         if (item.rating != null) {
             Toast.makeText(this, "Anda sudah memberikan rating untuk produk ini.", Toast.LENGTH_SHORT).show()
             return
@@ -97,8 +100,8 @@ class RatingActivity : AppCompatActivity() {
         builder.setTitle("Beri Rating untuk ${item.productName}")
 
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_rating, null)
-        val etRating = view.findViewById<android.widget.EditText>(R.id.etRatingValue)
-        val etReview = view.findViewById<android.widget.EditText>(R.id.etReviewText)
+        val etRating = view.findViewById<android.widget.EditText>(R.id.etRating)
+        val etReview = view.findViewById<android.widget.EditText>(R.id.etReview)
 
         builder.setView(view)
 

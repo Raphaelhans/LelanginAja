@@ -114,9 +114,9 @@ class UserViewModel(): ViewModel() {
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     fun getCurrUser(email: String) {
-        _isLoading.value = true
         viewModelScope.launch {
             try {
+                _isLoading.value = true
                 val curruser = db.collection("Users")
                     .whereEqualTo("email", email)
                     .get()
@@ -127,8 +127,7 @@ class UserViewModel(): ViewModel() {
                     val sellerId = user?.user_id
 
                     val allRatingsSnapshot = db.collection("Ratings").get().await()
-                    val allRatings =
-                        allRatingsSnapshot.documents.mapNotNull { it.toObject(Ratings::class.java) }
+                    val allRatings = allRatingsSnapshot.documents.mapNotNull { it.toObject(Ratings::class.java) }
                     val globalAvg = allRatings.map { it.rating }.average()
 
                     val sellerRatings = allRatings.filter { it.seller_id == sellerId }
@@ -359,7 +358,7 @@ class UserViewModel(): ViewModel() {
     }
 
     suspend fun checkItemValidity() {
-        val formatter = DateTimeFormatter.ofPattern("dd MMMMyyyy | HH:mm", Locale.ENGLISH)
+        val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy | HH:mm", Locale.ENGLISH)
         try {
             val now = LocalDateTime.now()
             val productSnapshot = db.collection("Products").get().await()
@@ -911,6 +910,7 @@ class UserViewModel(): ViewModel() {
         return ((v.toDouble() / (v + m)) * R) + ((m.toDouble() / (v + m)) * C)
     }
 
+    // In UserViewModel.kt
     fun loadCombined() {
         _isLoading.value = true
         viewModelScope.launch {
@@ -918,54 +918,67 @@ class UserViewModel(): ViewModel() {
                 val currentUserId = _currUser.value?.user_id
 
                 if (currentUserId == null) {
+                    Log.e("UserViewModel", "Current user ID is null. Cannot load combined history.")
                     _combinedTransactionHistory.postValue(emptyList())
                     _isLoading.postValue(false)
                     return@launch
                 }
 
-                val deferredUsers = async { transactionRepository.getAllUsersFirestore() } //
-                val deferredProducts = async { transactionRepository.getAllProductsFirestore() } //
-                val deferredTransactions = async { transactionRepository.getAllTransactionsFirestore() } //
-                val deferredRatings = async { transactionRepository.getAllRatingsFirestore() } //
+                val deferredUsers = async { transactionRepository.getAllUsersFirestore() }
+                val deferredProducts = async { transactionRepository.getAllProductsFirestore() }
+                val deferredTransactions = async { transactionRepository.getAllTransactionsFirestore() }
+                val deferredRatings = async { transactionRepository.getAllRatingsFirestore() }
 
                 val users = deferredUsers.await()
                 val products = deferredProducts.await()
                 val transactions = deferredTransactions.await()
                 val ratings = deferredRatings.await()
 
+                Log.d("CombinedHistory", "Users fetched: ${users.size}")
+                Log.d("CombinedHistory", "Products fetched: ${products.size}")
+                Log.d("CombinedHistory", "Transactions fetched: ${transactions.size}")
+                Log.d("CombinedHistory", "Ratings fetched: ${ratings.size}")
+
                 val userMap = users.associateBy { it.user_id }
                 val productMap = products.associateBy { it.items_id }
+                // Group ratings by transaction_id for easier lookup
                 val ratingMap = ratings.groupBy { it.transaction_id }
 
-                val combinedList: List<DisplayItem> = transactions
-                    .filter { it.buyer_id == currentUserId && it.status == "complete" && ratingMap[it.transaksiId]?.any { rating -> rating.buyer_id == currentUserId } == true }
-                    .mapNotNull { transaction ->
-                        val user = userMap[transaction.buyer_id]
-                        val product = productMap[transaction.produk_id]
-                        val associatedRating = ratingMap[transaction.transaksiId]?.find {
-                            it.buyer_id == transaction.buyer_id
-                        }
-
-                        if (user == null) {
-                            Log.e(
-                                "UserViewModel", "Failed load transaction user ${transaction.buyer_id} (${transaction.transaksiId})"
-                            )
-                            null
-                        } else {
-                            DisplayItem(
-                                userName = user.name,
-                                productName = product?.name ?: "Produk tidak ditemukan",
-                                transactionDate = transaction.time_bid,
-                                rating = associatedRating?.rating,
-                                review = associatedRating?.review,
-                                status = transaction.status,
-                                itemId = transaction.produk_id,
-                                transactionId = transaction.transaksiId,
-                                sellerId = transaction.seller_id,
-                            )
-                        }
-                    }
-                _combinedTransactionHistory.postValue(combinedList.sortedByDescending { it.transactionDate })
+//                val combinedList: List<DisplayItem> = transactions
+//                    .filter {
+//                        // Filter for current user's completed transactions
+//                        it.buyer_id == currentUserId.toString() && it.status == "complete" &&
+//                                // NEW CONDITION: Ensure there is an associated rating for this transaction by this buyer
+//                                ratingMap[it.transaksiId]?.any { rating -> rating.buyer_id == currentUserId } == true
+//                    }
+//                    .mapNotNull { transaction ->
+//                        val user = userMap[transaction.buyer_id]
+//                        val product = productMap[transaction.produk_id]
+//                        val associatedRating = ratingMap[transaction.transaksiId]?.find {
+//                            it.buyer_id.toString() == transaction.buyer_id
+//                        }
+//
+//                        if (user == null || associatedRating == null) {
+//                            Log.e(
+//                                "UserViewModel",
+//                                "Skipping transaction ${transaction.transaksiId}: User not found or no associated rating."
+//                            )
+//                            null
+//                        } else {
+//                            DisplayItem(
+//                                userName = user.name,
+//                                productName = product?.name ?: "Produk tidak ditemukan",
+//                                transactionDate = transaction.time_bid,
+//                                rating = associatedRating.rating, // Use the associatedRating
+//                                review = associatedRating.review, // Use the associatedRating
+//                                status = transaction.status,
+//                                itemId = transaction.produk_id,
+//                                transactionId = transaction.transaksiId,
+//                                sellerId = transaction.seller_id
+//                            )
+//                        }
+//                    }
+               // _combinedTransactionHistory.postValue(combinedList.sortedByDescending { it.transactionDate })
             } catch (e: Exception) {
                 Log.e("UserViewModel Error", "Error loading combined history: ${e.message}", e)
                 _combinedTransactionHistory.postValue(emptyList())
@@ -978,5 +991,4 @@ class UserViewModel(): ViewModel() {
     fun setCurrentUser(user: Users) {
         _currUser.value = user
     }
-
 }

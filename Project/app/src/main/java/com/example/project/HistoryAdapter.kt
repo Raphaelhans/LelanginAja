@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.databinding.ItemHistoryBinding
 import com.example.project.ui.transaction.TransactionItem
+import com.bumptech.glide.Glide
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -25,11 +26,11 @@ class HistoryAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: TransactionItem) {
-            binding.itemHistory.text = when (item.type.lowercase()) {
-                "topup" -> "Top Up Saldo"
-                "withdraw" -> item.itemName
-                "payment" -> item.itemName
-                "bid" -> item.itemName
+            binding.itemHistory.text = when {
+                item.itemName.isNotEmpty() -> item.itemName
+                item.type.contains("topup", ignoreCase = true) -> "Top Up Saldo"
+                item.type.contains("withdraw", ignoreCase = true) -> "Withdraw"
+                item.type.contains("payment", ignoreCase = true) -> "Pembayaran"
                 else -> "Transaksi"
             }
 
@@ -38,19 +39,14 @@ class HistoryAdapter(
                 LocalDateTime.parse(item.date, DateTimeFormatter.ISO_DATE_TIME).format(outputFormat)
             } catch (e: Exception) {
                 try {
-                    val date = SimpleDateFormat("dd MMMM, HH:mm", Locale("id", "ID"))
-                    date.format(date.parse(item.date) ?: Date())
+                    val sdf = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
+                    sdf.format(sdf.parse(item.date) ?: Date())
                 } catch (e2: Exception) {
-                    try {
-                        val dateYear = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
-                        dateYear.format(dateYear.parse(item.date) ?: Date())
-                    } catch (e3: Exception) {
-                        item.date
-                    }
+                    item.date
                 }
             }
 
-            val displayAmount = if (item.amount > 0) item.amount else item.lastBid // Prioritize 'amount' for payments/topups/withdraws, 'lastBid' for bids
+            val displayAmount = if (item.lastBid > 0) item.lastBid else item.lastBid
             binding.priceHistory.text = "Rp ${NumberFormat.getNumberInstance(Locale("in", "ID")).format(displayAmount)}"
 
             setTransactionTypeUI(item)
@@ -59,37 +55,34 @@ class HistoryAdapter(
                 onItemClick(item)
             }
 
-            // Use Glide if itemImageResId is a URL or handle as a drawable resource
             if (item.itemImageResId != 0) {
                 binding.imgItemHistory.setImageResource(item.itemImageResId)
             }
-            // If you have image URLs in your TransactionItem for products, you would use Glide here:
-            // Glide.with(binding.imgItemHistory.context).load(item.imageUrl).into(binding.imgItemHistory)
         }
 
         private fun setTransactionTypeUI(item: TransactionItem) {
             val context = binding.root.context
 
             when (item.type.lowercase()) {
-                "topup" -> {
+                "topup", "top up", "top-up" -> {
                     binding.imgItemHistory.setImageResource(R.drawable.add)
                     binding.priceHistory.setTextColor(
                         ContextCompat.getColor(context, android.R.color.holo_green_dark)
                     )
                 }
-                "payment" -> {
+                "payment", "pembayaran", "bayar" -> {
                     binding.imgItemHistory.setImageResource(R.drawable.card)
                     binding.priceHistory.setTextColor(
                         ContextCompat.getColor(context, android.R.color.holo_red_dark)
                     )
                 }
-                "withdraw" -> {
+                "withdraw", "penarikan" -> {
                     binding.imgItemHistory.setImageResource(R.drawable.transaction)
                     binding.priceHistory.setTextColor(
                         ContextCompat.getColor(context, android.R.color.holo_orange_dark)
                     )
                 }
-                "bid" -> {
+                "bid", "penawaran" -> {
                     binding.imgItemHistory.setImageResource(R.drawable.auction)
                     binding.priceHistory.setTextColor(
                         ContextCompat.getColor(context, android.R.color.holo_blue_dark)

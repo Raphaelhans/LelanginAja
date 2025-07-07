@@ -46,10 +46,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="4.7/5"
-                android:textColor="#2BB631"
+                android:textColor="#4CAF50"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
             <TextView
             android:id="@+id/tvReview"
             android:layout_width="match_parent"
